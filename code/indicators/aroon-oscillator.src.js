@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v8.0.0 (2019-12-10)
+ * @license Highstock JS v8.0.4 (2020-03-10)
  *
  * Indicator series type for Highstock
  *
@@ -31,15 +31,15 @@
     _registerModule(_modules, 'mixins/multipe-lines.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /**
          *
-         *  (c) 2010-2019 Wojciech Chmiel
+         *  (c) 2010-2020 Wojciech Chmiel
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var defined = U.defined;
-        var each = H.each, merge = H.merge, error = H.error, SMA = H.seriesTypes.sma;
+        var defined = U.defined, error = U.error, merge = U.merge;
+        var each = H.each, SMA = H.seriesTypes.sma;
         /**
          * Mixin useful for all indicators that have more than one line.
          * Merge it with your implementation where you will provide
@@ -203,17 +203,17 @@
 
         return multipleLinesMixin;
     });
-    _registerModule(_modules, 'mixins/indicator-required.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'mixins/indicator-required.js', [_modules['parts/Utilities.js']], function (U) {
         /**
          *
-         *  (c) 2010-2019 Daniel Studencki
+         *  (c) 2010-2020 Daniel Studencki
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var error = H.error;
+        var error = U.error;
         /* eslint-disable no-invalid-this, valid-jsdoc */
         var requiredIndicatorMixin = {
             /**
@@ -260,7 +260,7 @@
 
         return requiredIndicatorMixin;
     });
-    _registerModule(_modules, 'indicators/aroon-oscillator.src.js', [_modules['parts/Globals.js'], _modules['mixins/multipe-lines.js'], _modules['mixins/indicator-required.js']], function (H, multipleLinesMixin, requiredIndicatorMixin) {
+    _registerModule(_modules, 'indicators/aroon-oscillator.src.js', [_modules['parts/Globals.js'], _modules['mixins/multipe-lines.js'], _modules['mixins/indicator-required.js'], _modules['parts/Utilities.js']], function (H, multipleLinesMixin, requiredIndicatorMixin, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -268,6 +268,7 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
+        var merge = U.merge, seriesType = U.seriesType;
         var AROON = H.seriesTypes.aroon, requiredIndicator = requiredIndicatorMixin;
         /**
          * The Aroon Oscillator series type.
@@ -278,7 +279,7 @@
          *
          * @augments Highcharts.Series
          */
-        H.seriesType('aroonoscillator', 'aroon', 
+        seriesType('aroonoscillator', 'aroon', 
         /**
          * Aroon Oscillator. This series requires the `linkedTo` option to be set
          * and should be loaded after the `stock/indicators/indicators.js` and
@@ -321,7 +322,7 @@
         /**
          * @lends Highcharts.Series#
          */
-        H.merge(multipleLinesMixin, {
+        merge(multipleLinesMixin, {
             nameBase: 'Aroon Oscillator',
             pointArrayMap: ['y'],
             pointValKey: 'y',

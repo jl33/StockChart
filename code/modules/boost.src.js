@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v8.0.0 (2019-12-10)
+ * @license Highcharts JS v8.0.4 (2020-03-10)
  *
  * Boost module
  *
@@ -93,7 +93,7 @@
     _registerModule(_modules, 'modules/boost/boostables.js', [], function () {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -121,7 +121,7 @@
     _registerModule(_modules, 'modules/boost/boostable-map.js', [_modules['modules/boost/boostables.js']], function (boostables) {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -141,7 +141,7 @@
     _registerModule(_modules, 'modules/boost/wgl-shader.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -150,7 +150,7 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var clamp = U.clamp;
+        var clamp = U.clamp, error = U.error;
         var pick = H.pick;
         /* eslint-disable valid-jsdoc */
         /**
@@ -366,7 +366,7 @@
              */
             function handleErrors() {
                 if (errors.length) {
-                    H.error('[highcharts boost] shader error - ' + errors.join('\n'));
+                    error('[highcharts boost] shader error - ' + errors.join('\n'));
                 }
             }
             /**
@@ -612,7 +612,7 @@
     _registerModule(_modules, 'modules/boost/wgl-vbuffer.js', [], function () {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -764,10 +764,10 @@
 
         return GLVertexBuffer;
     });
-    _registerModule(_modules, 'modules/boost/wgl-renderer.js', [_modules['parts/Globals.js'], _modules['modules/boost/wgl-shader.js'], _modules['modules/boost/wgl-vbuffer.js'], _modules['parts/Utilities.js']], function (H, GLShader, GLVertexBuffer, U) {
+    _registerModule(_modules, 'modules/boost/wgl-renderer.js', [_modules['parts/Globals.js'], _modules['modules/boost/wgl-shader.js'], _modules['modules/boost/wgl-vbuffer.js'], _modules['parts/Color.js'], _modules['parts/Utilities.js']], function (H, GLShader, GLVertexBuffer, Color, U) {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -776,8 +776,9 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var isNumber = U.isNumber, objEach = U.objectEach;
-        var win = H.win, doc = win.document, merge = H.merge, some = H.some, Color = H.Color, pick = H.pick;
+        var color = Color.parse;
+        var isNumber = U.isNumber, merge = U.merge, objectEach = U.objectEach;
+        var win = H.win, doc = win.document, some = H.some, pick = H.pick;
         /* eslint-disable valid-jsdoc */
         /**
          * Main renderer. Used to render series.
@@ -961,7 +962,7 @@
                 // For some reason eslint/TypeScript don't pick up that this is
                 // actually used: --- bre1470: it is never read, just set
                 // maxVal: (number|undefined), // eslint-disable-line no-unused-vars
-                points = series.points || false, lastX = false, lastY = false, minVal, color, scolor, sdata = isStacked ? series.data : (xData || rawData), closestLeft = { x: Number.MAX_VALUE, y: 0 }, closestRight = { x: -Number.MAX_VALUE, y: 0 }, 
+                points = series.points || false, lastX = false, lastY = false, minVal, pcolor, scolor, sdata = isStacked ? series.data : (xData || rawData), closestLeft = { x: Number.MAX_VALUE, y: 0 }, closestRight = { x: -Number.MAX_VALUE, y: 0 }, 
                 //
                 skipped = 0, hadPoints = false, 
                 //
@@ -979,14 +980,14 @@
                 if (zones) {
                     some(zones, function (zone) {
                         if (typeof zone.value === 'undefined') {
-                            zoneDefColor = new H.Color(zone.color);
+                            zoneDefColor = new Color(zone.color);
                             return true;
                         }
                     });
                     if (!zoneDefColor) {
                         zoneDefColor = ((series.pointAttribs && series.pointAttribs().fill) ||
                             series.color);
-                        zoneDefColor = new H.Color(zoneDefColor);
+                        zoneDefColor = new Color(zoneDefColor);
                     }
                 }
                 if (chart.inverted) {
@@ -1103,10 +1104,10 @@
                                 pointAttr = point.series.pointAttribs(point);
                             swidth = pointAttr['stroke-width'] || 0;
                             // Handle point colors
-                            color = H.color(pointAttr.fill).rgba;
-                            color[0] /= 255.0;
-                            color[1] /= 255.0;
-                            color[2] /= 255.0;
+                            pcolor = color(pointAttr.fill).rgba;
+                            pcolor[0] /= 255.0;
+                            pcolor[1] /= 255.0;
+                            pcolor[2] /= 255.0;
                             // So there are two ways of doing this. Either we can
                             // create a rectangle of two triangles, or we can do a
                             // point and use point size. Latter is faster, but
@@ -1116,7 +1117,7 @@
                             // If there's stroking, we do an additional rect
                             if (series.type === 'treemap') {
                                 swidth = swidth || 1;
-                                scolor = H.color(pointAttr.stroke).rgba;
+                                scolor = color(pointAttr.stroke).rgba;
                                 scolor[0] /= 255.0;
                                 scolor[1] /= 255.0;
                                 scolor[2] /= 255.0;
@@ -1137,7 +1138,7 @@
                                 shapeArgs.width = -shapeArgs.width;
                                 shapeArgs.height = -shapeArgs.height;
                             }
-                            pushRect(shapeArgs.x + swidth, shapeArgs.y + swidth, shapeArgs.width - (swidth * 2), shapeArgs.height - (swidth * 2), color);
+                            pushRect(shapeArgs.x + swidth, shapeArgs.y + swidth, shapeArgs.width - (swidth * 2), shapeArgs.height - (swidth * 2), pcolor);
                         }
                     });
                     closeSegment();
@@ -1272,7 +1273,7 @@
                             var last = zones[i - 1];
                             if (typeof zone.value !== 'undefined' && y <= zone.value) {
                                 if (!last || y >= last.value) {
-                                    pcolor = H.color(zone.color).rgba;
+                                    pcolor = color(zone.color).rgba;
                                 }
                                 return true;
                             }
@@ -1365,7 +1366,7 @@
                     vertice(x, y, 0, series.type === 'bubble' ? (z || 1) : 2, pcolor);
                     // Uncomment this to support color axis.
                     // if (caxis) {
-                    //     color = H.color(caxis.toColor(y)).rgba;
+                    //     pcolor = color(caxis.toColor(y)).rgba;
                     //     inst.colorData.push(color[0] / 255.0);
                     //     inst.colorData.push(color[1] / 255.0);
                     //     inst.colorData.push(color[2] / 255.0);
@@ -1563,7 +1564,7 @@
                         2 * ((options.marker ?
                             options.marker.radius :
                             10) || 10)), fillColor, shapeTexture = textureHandles[(shapeOptions && shapeOptions.symbol) ||
-                        s.series.symbol] || textureHandles.circle, color;
+                        s.series.symbol] || textureHandles.circle, scolor = [];
                     if (s.segments.length === 0 ||
                         (s.segmentslength &&
                             s.segments[0].from === s.segments[0].to)) {
@@ -1588,15 +1589,15 @@
                     if (s.series.fillOpacity && options.fillOpacity) {
                         fillColor = new Color(fillColor).setOpacity(pick(options.fillOpacity, 1.0)).get();
                     }
-                    color = H.color(fillColor).rgba;
+                    scolor = color(fillColor).rgba;
                     if (!settings.useAlpha) {
-                        color[3] = 1.0;
+                        scolor[3] = 1.0;
                     }
                     // This is very much temporary
                     if (s.drawMode === 'lines' &&
                         settings.useAlpha &&
-                        color[3] < 1) {
-                        color[3] /= 10;
+                        scolor[3] < 1) {
+                        scolor[3] /= 10;
                     }
                     // Blending
                     if (options.boostBlending === 'add') {
@@ -1625,7 +1626,7 @@
                         cbuffer.bind();
                     }
                     // Set series specific uniforms
-                    shader.setColor(color);
+                    shader.setColor(scolor);
                     setXAxis(s.series.xAxis);
                     setYAxis(s.series.yAxis);
                     setThreshold(hasThreshold, translatedThreshold);
@@ -1863,7 +1864,7 @@
                 vbuffer.destroy();
                 shader.destroy();
                 if (gl) {
-                    objEach(textureHandles, function (key) {
+                    objectEach(textureHandles, function (key) {
                         if (textureHandles[key].handle) {
                             gl.deleteTexture(textureHandles[key].handle);
                         }
@@ -1898,10 +1899,10 @@
 
         return GLRenderer;
     });
-    _registerModule(_modules, 'modules/boost/boost-attach.js', [_modules['parts/Globals.js'], _modules['modules/boost/wgl-renderer.js']], function (H, GLRenderer) {
+    _registerModule(_modules, 'modules/boost/boost-attach.js', [_modules['parts/Globals.js'], _modules['modules/boost/wgl-renderer.js'], _modules['parts/Utilities.js']], function (H, GLRenderer, U) {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -1910,6 +1911,7 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
+        var error = U.error;
         var win = H.win, doc = win.document, mainCanvas = doc.createElement('canvas');
         /**
          * Create a canvas + context and attach it to the target
@@ -2027,7 +2029,7 @@
                     // The OGL renderer couldn't be inited.
                     // This likely means a shader error as we wouldn't get to this point
                     // if there was no WebGL support.
-                    H.error('[highcharts boost] - unable to init WebGL renderer');
+                    error('[highcharts boost] - unable to init WebGL renderer');
                 }
                 // target.ogl.clear();
                 target.ogl.setOptions(chart.options.boost || {});
@@ -2044,7 +2046,7 @@
     _registerModule(_modules, 'modules/boost/boost-utils.js', [_modules['parts/Globals.js'], _modules['modules/boost/boostable-map.js'], _modules['modules/boost/boost-attach.js']], function (H, boostableMap, createAndAttachRenderer) {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -2302,7 +2304,7 @@
     _registerModule(_modules, 'modules/boost/boost-init.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['modules/boost/boost-utils.js'], _modules['modules/boost/boost-attach.js']], function (H, U, butils, createAndAttachRenderer) {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -2311,8 +2313,8 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var extend = U.extend, wrap = U.wrap;
-        var addEvent = H.addEvent, fireEvent = H.fireEvent, Series = H.Series, seriesTypes = H.seriesTypes, noop = function () { }, eachAsync = butils.eachAsync, pointDrawHandler = butils.pointDrawHandler, allocateIfNotSeriesBoosting = butils.allocateIfNotSeriesBoosting, renderIfNotSeriesBoosting = butils.renderIfNotSeriesBoosting, shouldForceChartSeriesBoosting = butils.shouldForceChartSeriesBoosting, index;
+        var addEvent = U.addEvent, extend = U.extend, fireEvent = U.fireEvent, wrap = U.wrap;
+        var Series = H.Series, seriesTypes = H.seriesTypes, noop = function () { }, eachAsync = butils.eachAsync, pointDrawHandler = butils.pointDrawHandler, allocateIfNotSeriesBoosting = butils.allocateIfNotSeriesBoosting, renderIfNotSeriesBoosting = butils.renderIfNotSeriesBoosting, shouldForceChartSeriesBoosting = butils.shouldForceChartSeriesBoosting, index;
         /* eslint-disable valid-jsdoc */
         /**
          * Initialize the boot module.
@@ -2365,7 +2367,6 @@
                     }
                     // If we are zooming out from SVG mode, destroy the graphics
                     if (this.points || this.graph) {
-                        this.animate = null;
                         this.destroyGraphics();
                     }
                     // If we're rendering per. series we should create the marker groups
@@ -2589,10 +2590,10 @@
 
         return init;
     });
-    _registerModule(_modules, 'modules/boost/boost-overrides.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['modules/boost/boost-utils.js'], _modules['modules/boost/boostables.js'], _modules['modules/boost/boostable-map.js']], function (H, U, butils, boostable, boostableMap) {
+    _registerModule(_modules, 'modules/boost/boost-overrides.js', [_modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js'], _modules['modules/boost/boost-utils.js'], _modules['modules/boost/boostables.js'], _modules['modules/boost/boostable-map.js']], function (H, Point, U, butils, boostable, boostableMap) {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -2601,8 +2602,8 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var isNumber = U.isNumber, wrap = U.wrap;
-        var boostEnabled = butils.boostEnabled, shouldForceChartSeriesBoosting = butils.shouldForceChartSeriesBoosting, Chart = H.Chart, Series = H.Series, Point = H.Point, seriesTypes = H.seriesTypes, addEvent = H.addEvent, pick = H.pick, plotOptions = H.getOptions().plotOptions;
+        var addEvent = U.addEvent, error = U.error, isNumber = U.isNumber, pick = U.pick, wrap = U.wrap;
+        var boostEnabled = butils.boostEnabled, shouldForceChartSeriesBoosting = butils.shouldForceChartSeriesBoosting, Chart = H.Chart, Series = H.Series, seriesTypes = H.seriesTypes, plotOptions = H.getOptions().plotOptions;
         /**
          * Returns true if the chart is in series boost mode.
          *
@@ -2658,7 +2659,7 @@
          *        A stripped-down point object
          *
          * @return {Highcharts.Point}
-         *         A Point object as per http://api.highcharts.com/highcharts#Point
+         *         A Point object as per https://api.highcharts.com/highcharts#Point
          */
         Series.prototype.getPoint = function (boostPoint) {
             var point = boostPoint, xData = (this.xData || this.options.xData || this.processedXData ||
@@ -2675,6 +2676,7 @@
                 point.plotX = boostPoint.plotX;
                 point.plotY = boostPoint.plotY;
                 point.index = boostPoint.i;
+                point.isInside = this.isPointInside(boostPoint);
             }
             return point;
         };
@@ -2825,7 +2827,7 @@
                     // Force turbo-mode:
                     firstPoint = this.getFirstValidPoint(this.options.data);
                     if (!isNumber(firstPoint) && !H.isArray(firstPoint)) {
-                        H.error(12, false, this.chart);
+                        error(12, false, this.chart);
                     }
                     this.enterBoost();
                 }
@@ -2865,9 +2867,6 @@
             this.allowDG = false;
             this.directTouch = false;
             this.stickyTracking = true;
-            // Once we've been in boost mode, we don't want animation when returning to
-            // vanilla mode.
-            this.animate = null;
             // Hide series label if any
             if (this.labelBySeries) {
                 this.labelBySeries = this.labelBySeries.destroy();
@@ -2948,10 +2947,10 @@
         });
 
     });
-    _registerModule(_modules, 'modules/boost/named-colors.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/boost/named-colors.js', [_modules['parts/Color.js']], function (Color) {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -2960,7 +2959,6 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var Color = H.Color;
         // Register color names since GL can't render those directly.
         // TODO: When supporting modern syntax, make this a const and a named export
         var defaultHTMLColorMap = {
@@ -3108,14 +3106,14 @@
             yellow: '#ffff00',
             yellowgreen: '#9acd32'
         };
-        Color.prototype.names = defaultHTMLColorMap;
+        Color.names = defaultHTMLColorMap;
 
         return defaultHTMLColorMap;
     });
-    _registerModule(_modules, 'modules/boost/boost.js', [_modules['parts/Globals.js'], _modules['modules/boost/boost-utils.js'], _modules['modules/boost/boost-init.js']], function (H, butils, init) {
+    _registerModule(_modules, 'modules/boost/boost.js', [_modules['parts/Globals.js'], _modules['modules/boost/boost-utils.js'], _modules['modules/boost/boost-init.js'], _modules['parts/Utilities.js']], function (H, butils, init, U) {
         /* *
          *
-         *  Copyright (c) 2019-2019 Highsoft AS
+         *  Copyright (c) 2019-2020 Highsoft AS
          *
          *  Boost module: stripped-down renderer for higher performance
          *
@@ -3124,6 +3122,7 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
+        var error = U.error;
         // These need to be fixed when we support named imports
         var hasWebGLSupport = butils.hasWebGLSupport;
         if (!hasWebGLSupport()) {
@@ -3132,7 +3131,7 @@
                 H.initCanvasBoost();
             }
             else {
-                H.error(26);
+                error(26);
             }
         }
         else {

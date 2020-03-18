@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v8.0.0 (2019-12-10)
+ * @license Highstock JS v8.0.4 (2020-03-10)
  *
  * Indicator series type for Highstock
  *
@@ -28,17 +28,17 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'mixins/indicator-required.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'mixins/indicator-required.js', [_modules['parts/Utilities.js']], function (U) {
         /**
          *
-         *  (c) 2010-2019 Daniel Studencki
+         *  (c) 2010-2020 Daniel Studencki
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var error = H.error;
+        var error = U.error;
         /* eslint-disable no-invalid-this, valid-jsdoc */
         var requiredIndicatorMixin = {
             /**
@@ -93,8 +93,8 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var correctFloat = U.correctFloat;
-        var EMA = H.seriesTypes.ema, error = H.error, requiredIndicator = requiredIndicatorMixin;
+        var correctFloat = U.correctFloat, error = U.error, seriesType = U.seriesType;
+        var EMA = H.seriesTypes.ema, requiredIndicator = requiredIndicatorMixin;
         /**
          * The PPO series type.
          *
@@ -104,7 +104,7 @@
          *
          * @augments Highcharts.Series
          */
-        H.seriesType('ppo', 'ema', 
+        seriesType('ppo', 'ema', 
         /**
          * Percentage Price Oscillator. This series requires the
          * `linkedTo` option to be set and should be loaded after the

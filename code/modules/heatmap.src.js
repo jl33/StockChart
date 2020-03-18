@@ -1,5 +1,5 @@
 /**
- * @license Highmaps JS v8.0.0 (2019-12-10)
+ * @license Highmaps JS v8.0.4 (2020-03-10)
  *
  * (c) 2009-2019 Torstein Honsi
  *
@@ -29,7 +29,7 @@
     _registerModule(_modules, 'parts-map/ColorSeriesMixin.js', [_modules['parts/Globals.js']], function (H) {
         /* *
          *
-         *  (c) 2010-2019 Torstein Honsi
+         *  (c) 2010-2020 Torstein Honsi
          *
          *  License: www.highcharts.com/license
          *
@@ -81,7 +81,7 @@
             translateColors: function () {
                 var series = this, points = this.data.length ? this.data : this.points, nullColor = this.options.nullColor, colorAxis = this.colorAxis, colorKey = this.colorKey;
                 points.forEach(function (point) {
-                    var value = point[colorKey], color;
+                    var value = point.getNestedProperty(colorKey), color;
                     color = point.options.color ||
                         (point.isNull ?
                             nullColor :
@@ -97,10 +97,10 @@
         };
 
     });
-    _registerModule(_modules, 'parts-map/ColorAxis.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'parts-map/ColorAxis.js', [_modules['parts/Globals.js'], _modules['parts/Color.js'], _modules['parts/Point.js'], _modules['parts/Legend.js'], _modules['mixins/legend-symbol.js'], _modules['parts/Utilities.js']], function (H, Color, Point, Legend, LegendSymbolMixin, U) {
         /* *
          *
-         *  (c) 2010-2019 Torstein Honsi
+         *  (c) 2010-2020 Torstein Honsi
          *
          *  License: www.highcharts.com/license
          *
@@ -112,8 +112,10 @@
          *
          * @typedef {"linear"|"logarithmic"} Highcharts.ColorAxisTypeValue
          */
-        var erase = U.erase, extend = U.extend, isNumber = U.isNumber, pick = U.pick, splat = U.splat;
-        var addEvent = H.addEvent, Axis = H.Axis, Chart = H.Chart, Series = H.Series, Point = H.Point, color = H.color, ColorAxis, Legend = H.Legend, LegendSymbolMixin = H.LegendSymbolMixin, colorPointMixin = H.colorPointMixin, colorSeriesMixin = H.colorSeriesMixin, noop = H.noop, merge = H.merge;
+        ''; // detach doclet above
+        var color = Color.parse;
+        var addEvent = U.addEvent, erase = U.erase, extend = U.extend, isNumber = U.isNumber, merge = U.merge, pick = U.pick, splat = U.splat;
+        var Axis = H.Axis, Chart = H.Chart, Series = H.Series, ColorAxis, colorPointMixin = H.colorPointMixin, colorSeriesMixin = H.colorSeriesMixin, noop = H.noop;
         extend(Series.prototype, colorSeriesMixin);
         extend(Point.prototype, colorPointMixin);
         Chart.prototype.collectionsWithUpdate.push('colorAxis');
@@ -929,7 +931,7 @@
             drawCrosshair: function (e, point) {
                 var plotX = point && point.plotX, plotY = point && point.plotY, crossPos, axisPos = this.pos, axisLen = this.len;
                 if (point) {
-                    crossPos = this.toPixels(point[point.series.colorKey]);
+                    crossPos = this.toPixels(point.getNestedProperty(point.series.colorKey));
                     if (crossPos < axisPos) {
                         crossPos = axisPos - 2;
                     }
@@ -1212,10 +1214,10 @@
         });
 
     });
-    _registerModule(_modules, 'parts-map/ColorMapSeriesMixin.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'parts-map/ColorMapSeriesMixin.js', [_modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (H, Point, U) {
         /* *
          *
-         *  (c) 2010-2019 Torstein Honsi
+         *  (c) 2010-2020 Torstein Honsi
          *
          *  License: www.highcharts.com/license
          *
@@ -1253,7 +1255,7 @@
              * @return {void}
              */
             setState: function (state) {
-                H.Point.prototype.setState.call(this, state);
+                Point.prototype.setState.call(this, state);
                 if (this.graphic) {
                     this.graphic.attr({
                         zIndex: state === 'hover' ? 1 : 0
@@ -1292,10 +1294,10 @@
         };
 
     });
-    _registerModule(_modules, 'parts-map/HeatmapSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'parts-map/HeatmapSeries.js', [_modules['parts/Globals.js'], _modules['mixins/legend-symbol.js'], _modules['parts/Utilities.js']], function (H, LegendSymbolMixin, U) {
         /* *
          *
-         *  (c) 2010-2019 Torstein Honsi
+         *  (c) 2010-2020 Torstein Honsi
          *
          *  License: www.highcharts.com/license
          *
@@ -1314,8 +1316,8 @@
         * @name Highcharts.PointOptionsObject#value
         * @type {number|null|undefined}
         */
-        var clamp = U.clamp, extend = U.extend, pick = U.pick;
-        var colorMapPointMixin = H.colorMapPointMixin, colorMapSeriesMixin = H.colorMapSeriesMixin, LegendSymbolMixin = H.LegendSymbolMixin, merge = H.merge, noop = H.noop, fireEvent = H.fireEvent, Series = H.Series, seriesType = H.seriesType, seriesTypes = H.seriesTypes;
+        var clamp = U.clamp, extend = U.extend, fireEvent = U.fireEvent, merge = U.merge, pick = U.pick, seriesType = U.seriesType;
+        var colorMapPointMixin = H.colorMapPointMixin, colorMapSeriesMixin = H.colorMapSeriesMixin, noop = H.noop, Series = H.Series, seriesTypes = H.seriesTypes;
         /**
          * @private
          * @class
@@ -1473,12 +1475,21 @@
              * @return {void}
              */
             translate: function () {
-                var series = this, options = series.options, xAxis = series.xAxis, yAxis = series.yAxis, seriesPointPadding = options.pointPadding || 0, pointPlacement = series.pointPlacementToXValue(); // #7860
+                var series = this;
                 series.generatePoints();
-                series.points.forEach(function (point) {
-                    var xPad = (options.colsize || 1) / 2, yPad = (options.rowsize || 1) / 2, x1 = clamp(Math.round(xAxis.len -
-                        xAxis.translate(point.x - xPad, 0, 1, 0, 1, -pointPlacement)), -xAxis.len, 2 * xAxis.len), x2 = clamp(Math.round(xAxis.len -
-                        xAxis.translate(point.x + xPad, 0, 1, 0, 1, -pointPlacement)), -xAxis.len, 2 * xAxis.len), y1 = clamp(Math.round(yAxis.translate(point.y - yPad, 0, 1, 0, 1)), -yAxis.len, 2 * yAxis.len), y2 = clamp(Math.round(yAxis.translate(point.y + yPad, 0, 1, 0, 1)), -yAxis.len, 2 * yAxis.len), pointPadding = pick(point.pointPadding, seriesPointPadding);
+                var _a = series.options, _b = _a.colsize, colsize = _b === void 0 ? 1 : _b, _c = _a.pointPadding, seriesPointPadding = _c === void 0 ? 0 : _c, _d = _a.rowsize, rowsize = _d === void 0 ? 1 : _d, points = series.points, xAxis = series.xAxis, yAxis = series.yAxis;
+                var xPad = colsize / 2;
+                var yPad = rowsize / 2;
+                // Translate point values functionality
+                var pointPlacement = series.pointPlacementToXValue(); // #7860
+                var translateX = function (value) { return Math.round(clamp(xAxis.translate(value, false, false, false, true, pointPlacement), 0, xAxis.len)); };
+                var translateY = function (value) { return Math.round(clamp(yAxis.translate(value, false, true, false, true), 0, yAxis.len)); };
+                points.forEach(function (point) {
+                    var x1 = translateX(point.x - xPad);
+                    var x2 = translateX(point.x + xPad);
+                    var y1 = translateY(point.y - yPad);
+                    var y2 = translateY(point.y + yPad);
+                    var pointPadding = pick(point.pointPadding, seriesPointPadding);
                     // Set plotX and plotY for use in K-D-Tree and more
                     point.plotX = point.clientX = (x1 + x2) / 2;
                     point.plotY = (y1 + y2) / 2;

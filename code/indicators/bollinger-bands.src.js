@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v8.0.0 (2019-12-10)
+ * @license Highstock JS v8.0.4 (2020-03-10)
  *
  * Indicator series type for Highstock
  *
@@ -31,15 +31,15 @@
     _registerModule(_modules, 'mixins/multipe-lines.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /**
          *
-         *  (c) 2010-2019 Wojciech Chmiel
+         *  (c) 2010-2020 Wojciech Chmiel
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var defined = U.defined;
-        var each = H.each, merge = H.merge, error = H.error, SMA = H.seriesTypes.sma;
+        var defined = U.defined, error = U.error, merge = U.merge;
+        var each = H.each, SMA = H.seriesTypes.sma;
         /**
          * Mixin useful for all indicators that have more than one line.
          * Merge it with your implementation where you will provide
@@ -211,8 +211,8 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var isArray = U.isArray;
-        var merge = H.merge, SMA = H.seriesTypes.sma;
+        var isArray = U.isArray, merge = U.merge, seriesType = U.seriesType;
+        var SMA = H.seriesTypes.sma;
         /* eslint-disable valid-jsdoc */
         // Utils:
         /**
@@ -238,7 +238,7 @@
          *
          * @augments Highcharts.Series
          */
-        H.seriesType('bb', 'sma', 
+        seriesType('bb', 'sma', 
         /**
          * Bollinger bands (BB). This series requires the `linkedTo` option to be
          * set and should be loaded after the `stock/indicators/indicators.js` file.
@@ -310,7 +310,7 @@
         /**
          * @lends Highcharts.Series#
          */
-        H.merge(multipleLinesMixin, {
+        merge(multipleLinesMixin, {
             pointArrayMap: ['top', 'middle', 'bottom'],
             pointValKey: 'middle',
             nameComponents: ['period', 'standardDeviation'],

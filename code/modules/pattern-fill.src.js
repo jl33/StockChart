@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v8.0.0 (2019-12-10)
+ * @license Highcharts JS v8.0.4 (2020-03-10)
  *
  * Module for adding patterns and images as point fills.
  *
@@ -29,12 +29,12 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/pattern-fill.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'modules/pattern-fill.src.js', [_modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (H, Point, U) {
         /* *
          *
          *  Module for using patterns or images as point fills.
          *
-         *  (c) 2010-2019 Highsoft AS
+         *  (c) 2010-2020 Highsoft AS
          *  Author: Torstein Hønsi, Øystein Moseng
          *
          *  License: www.highcharts.com/license
@@ -87,6 +87,11 @@
         * pattern, the `image` property is ignored.
         * @name Highcharts.PatternOptionsObject#path
         * @type {string|Highcharts.SVGAttributes}
+        */ /**
+        * SVG `patternTransform` to apply to the entire pattern.
+        * @name Highcharts.PatternOptionsObject#patternTransform
+        * @type {string}
+        * @see [patternTransform demo](https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/series/pattern-fill-transform)
         */ /**
         * Pattern color, used as default path stroke.
         * @name Highcharts.PatternOptionsObject#color
@@ -144,8 +149,8 @@
         * @name Highcharts.PatternObject#patternIndex
         * @type {number|undefined}
         */
-        var animObject = U.animObject, erase = U.erase, pick = U.pick, wrap = U.wrap;
-        var addEvent = H.addEvent, merge = H.merge;
+        ''; // detach doclets above
+        var addEvent = U.addEvent, animObject = U.animObject, erase = U.erase, merge = U.merge, pick = U.pick, removeEvent = U.removeEvent, wrap = U.wrap;
         // Add the predefined patterns
         H.patterns = (function () {
             var patterns = [], colors = H.getOptions().colors;
@@ -221,7 +226,7 @@
          *
          * @requires modules/pattern-fill
          */
-        H.Point.prototype.calculatePatternDimensions = function (pattern) {
+        Point.prototype.calculatePatternDimensions = function (pattern) {
             if (pattern.width && pattern.height) {
                 return;
             }
@@ -316,8 +321,8 @@
             }
             // Store ID in list to avoid duplicates
             this.defIds.push(id);
-            // Create pattern element
-            pattern = this.createElement('pattern').attr({
+            // Calculate pattern element attributes
+            var attrs = {
                 id: id,
                 patternUnits: 'userSpaceOnUse',
                 patternContentUnits: options.patternContentUnits || 'userSpaceOnUse',
@@ -325,7 +330,11 @@
                 height: height,
                 x: options._x || options.x || 0,
                 y: options._y || options.y || 0
-            }).add(this.defs);
+            };
+            if (options.patternTransform) {
+                attrs.patternTransform = options.patternTransform;
+            }
+            pattern = this.createElement('pattern').attr(attrs).add(this.defs);
             // Set id on the SVGRenderer object
             pattern.id = id;
             // Use an SVG path for the pattern
@@ -358,7 +367,7 @@
                         this.animate({
                             opacity: pick(options.opacity, 1)
                         }, animationOptions);
-                        H.removeEvent(this.element, 'load');
+                        removeEvent(this.element, 'load');
                     }).attr({ opacity: 0 }).add(pattern);
                 }
                 else {
@@ -425,7 +434,7 @@
             }
         });
         // Merge series color options to points
-        addEvent(H.Point, 'afterInit', function () {
+        addEvent(Point, 'afterInit', function () {
             var point = this, colorOptions = point.options.color;
             // Only do this if we have defined a specific color on this point. Otherwise
             // we will end up trying to re-add the series color for each point.
@@ -442,7 +451,7 @@
             }
         });
         // Add functionality to SVG renderer to handle patterns as complex colors
-        H.addEvent(H.SVGRenderer, 'complexColor', function (args) {
+        addEvent(H.SVGRenderer, 'complexColor', function (args) {
             var color = args.args[0], prop = args.args[1], element = args.args[2], chartIndex = (this.chartIndex || 0);
             var pattern = color.pattern, value = '#343434';
             // Handle patternIndex
@@ -469,7 +478,7 @@
                 // If we don't have a width/height yet, handle it. Try faking a point
                 // and running the algorithm again.
                 if (pattern._width === 'defer' || pattern._height === 'defer') {
-                    H.Point.prototype.calculatePatternDimensions.call({ graphic: { element: element } }, pattern);
+                    Point.prototype.calculatePatternDimensions.call({ graphic: { element: element } }, pattern);
                 }
                 // If we don't have an explicit ID, compute a hash from the
                 // definition and use that as the ID. This ensures that points with
@@ -502,7 +511,7 @@
         });
         // When animation is used, we have to recalculate pattern dimensions after
         // resize, as the bounding boxes are not available until then.
-        H.addEvent(H.Chart, 'endResize', function () {
+        addEvent(H.Chart, 'endResize', function () {
             if ((this.renderer && this.renderer.defIds || []).filter(function (id) {
                 return (id &&
                     id.indexOf &&
@@ -528,8 +537,8 @@
         });
         // Add a garbage collector to delete old patterns with autogenerated hashes that
         // are no longer being referenced.
-        H.addEvent(H.Chart, 'redraw', function () {
-            var usedIds = [], renderer = this.renderer, 
+        addEvent(H.Chart, 'redraw', function () {
+            var usedIds = {}, renderer = this.renderer, 
             // Get the autocomputed patterns - these are the ones we might delete
             patterns = (renderer.defIds || []).filter(function (pattern) {
                 return (pattern.indexOf &&
@@ -543,14 +552,13 @@
                         node.getAttribute('color') ||
                         node.getAttribute('stroke');
                     if (id) {
-                        usedIds.push(id
-                            .substring(id.indexOf('url(') + 5)
-                            .replace(')', ''));
+                        var sanitizedId = id.replace(renderer.url, '').replace('url(#', '').replace(')', '');
+                        usedIds[sanitizedId] = true;
                     }
                 });
                 // Loop through the patterns that exist and see if they are used
                 patterns.forEach(function (id) {
-                    if (usedIds.indexOf(id) === -1) {
+                    if (!usedIds[id]) {
                         // Remove id from used id list
                         erase(renderer.defIds, id);
                         // Remove pattern element

@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v8.0.0 (2019-12-10)
+ * @license Highcharts JS v8.0.4 (2020-03-10)
  *
  * Item series type for Highcharts
  *
@@ -31,7 +31,7 @@
     _registerModule(_modules, 'modules/item-series.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
-         *  (c) 2019 Torstein Honsi
+         *  (c) 2020 Torstein Honsi
          *
          *  Item series type for Highcharts
          *
@@ -40,8 +40,8 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var defined = U.defined, extend = U.extend, isNumber = U.isNumber, objectEach = U.objectEach, pick = U.pick;
-        var fireEvent = H.fireEvent, merge = H.merge, piePoint = H.seriesTypes.pie.prototype.pointClass.prototype;
+        var defined = U.defined, extend = U.extend, isNumber = U.isNumber, merge = U.merge, objectEach = U.objectEach, pick = U.pick, seriesType = U.seriesType;
+        var fireEvent = H.fireEvent, piePoint = H.seriesTypes.pie.prototype.pointClass.prototype;
         /**
          * The item series type.
          *
@@ -53,7 +53,7 @@
          *
          * @augments Highcharts.seriesTypes.pie
          */
-        H.seriesType('item', 
+        seriesType('item', 
         // Inherits pie as the most tested non-cartesian series with individual
         // point legend, tooltips etc. Only downside is we need to re-enable
         // marker options.
@@ -147,6 +147,7 @@
         }, 
         // Prototype members
         {
+            markerAttribs: void 0,
             translate: function () {
                 if (!this.slots) {
                     this.slots = [];
@@ -399,7 +400,6 @@
                     this.group.animate({
                         opacity: 1
                     }, this.options.animation);
-                    this.animate = null;
                 }
             }
         }, 
@@ -415,7 +415,7 @@
          * it is inherited from [chart.type](#chart.type).
          *
          * @extends   series,plotOptions.item
-         * @excluding dataParser, dataURL, stack, xAxis, yAxis
+         * @excluding dataParser, dataURL, stack, xAxis, yAxis, dataSorting
          * @product   highcharts
          * @requires  modules/item-series
          * @apioption series.item

@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v8.0.0 (2019-12-10)
+ * @license Highcharts JS v8.0.4 (2020-03-10)
  *
  * (c) 2009-2019 Torstein Honsi
  *
@@ -26,10 +26,10 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/draggable-points.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'modules/draggable-points.src.js', [_modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (H, Point, U) {
         /* *
          *
-         *  (c) 2009-2019 Highsoft AS
+         *  (c) 2009-2020 Highsoft AS
          *
          *  Authors: Øystein Moseng, Torstein Hønsi, Jon A. Nygård
          *
@@ -194,8 +194,9 @@
         * @name Highcharts.PointDropEventObject#type
         * @type {"drop"}
         */
-        var clamp = U.clamp, objectEach = U.objectEach, pick = U.pick;
-        var addEvent = H.addEvent, merge = H.merge, seriesTypes = H.seriesTypes;
+        ''; // detaches doclets above
+        var addEvent = U.addEvent, clamp = U.clamp, merge = U.merge, objectEach = U.objectEach, pick = U.pick;
+        var seriesTypes = H.seriesTypes;
         /**
          * Flip a side property, used with resizeRect. If input side is "left", return
          * "right" etc.
@@ -764,15 +765,14 @@
                 var series = point.series, xAxis = series.xAxis, yAxis = series.yAxis, inverted = series.chart.inverted, 
                 // Using toPixels handles axis.reversed, but doesn't take
                 // chart.inverted into account.
-                newX = xAxis.toPixels(point[xProp], true), newY = yAxis.toPixels(point.y, true);
+                newX = xAxis.toPixels(point[xProp], true), newY = yAxis.toPixels(point.y, true), offsetY = series.columnMetrics ? series.columnMetrics.offset :
+                    -point.shapeArgs.height / 2;
                 // Handle chart inverted
                 if (inverted) {
                     newX = xAxis.len - newX;
-                    newY = yAxis.len - newY - point.shapeArgs.height / 2;
+                    newY = yAxis.len - newY;
                 }
-                else {
-                    newY -= point.shapeArgs.height / 2;
-                }
+                newY += offsetY; // (#12872)
                 return {
                     x: Math.round(newX),
                     y: Math.round(newY)
@@ -1599,7 +1599,7 @@
          */
         function updatePoints(chart, animate) {
             var newPoints = chart.dragDropData.newPoints, animOptions = animate === false ? false : merge({
-                duration: 400 // 400 is the default in H.animate
+                duration: 400 // 400 is the default in animate
             }, chart.options.chart.animation);
             chart.isDragDropAnimating = true;
             // Update the points
@@ -1747,7 +1747,7 @@
          * @return {Highcharts.Dictionary<number>}
          *         An object with updated data values.
          */
-        H.Point.prototype.getDropValues = function (origin, newPos, updateProps) {
+        Point.prototype.getDropValues = function (origin, newPos, updateProps) {
             var point = this, series = point.series, options = merge(series.options.dragDrop, point.options.dragDrop), result = {}, updateSingleProp, pointOrigin = origin.points[point.id];
             // Find out if we only have one prop to update
             for (var key in updateProps) {
@@ -1898,7 +1898,7 @@
          * @function Highcharts.Point#showDragHandles
          * @return {void}
          */
-        H.Point.prototype.showDragHandles = function () {
+        Point.prototype.showDragHandles = function () {
             var point = this, series = point.series, chart = series.chart, renderer = chart.renderer, options = merge(series.options.dragDrop, point.options.dragDrop);
             // Go through each updateProp and see if we are supposed to create a handle
             // for it.
@@ -2036,17 +2036,15 @@
          * @return {void}
          */
         function mouseOver(point) {
-            var series = point.series, chart = series && series.chart, dragDropData = chart && chart.dragDropData;
+            var series = point.series, chart = series && series.chart, dragDropData = chart && chart.dragDropData, is3d = chart && chart.is3d && chart.is3d();
             if (chart &&
                 !(dragDropData &&
                     dragDropData.isDragging && // Ignore if dragging a point
                     dragDropData.draggedPastSensitivity) &&
                 !chart.isDragDropAnimating && // Ignore if animating
                 series.options.dragDrop && // No need to compute handles without this
-                !(chart.options &&
-                    chart.options.chart &&
-                    chart.options.chart.options3d // No 3D support
-                )) {
+                !is3d // No 3D support
+            ) {
                 // Hide the handles if they exist on another point already
                 if (chart.dragHandles) {
                     chart.hideDragHandles();
@@ -2168,7 +2166,7 @@
          * @return {void}
          */
         function mouseDown(e, chart) {
-            var dragPoint = chart.hoverPoint, dragDropOptions = H.merge(dragPoint && dragPoint.series.options.dragDrop, dragPoint && dragPoint.options.dragDrop), draggableX = dragDropOptions.draggableX || false, draggableY = dragDropOptions.draggableY || false;
+            var dragPoint = chart.hoverPoint, dragDropOptions = merge(dragPoint && dragPoint.series.options.dragDrop, dragPoint && dragPoint.options.dragDrop), draggableX = dragDropOptions.draggableX || false, draggableY = dragDropOptions.draggableY || false;
             // Reset cancel click
             chart.cancelClick = false;
             // Ignore if:
@@ -2199,14 +2197,14 @@
         // series are finicky since the markers are not individual points. This logic
         // should preferably be improved in the future. Notice that the mouseOut event
         // below must have a shorter timeout to ensure event order.
-        addEvent(H.Point, 'mouseOver', function () {
+        addEvent(Point, 'mouseOver', function () {
             var point = this;
             setTimeout(function () {
                 mouseOver(point);
             }, 12);
         });
         // Point mouseleave event. See above function for explanation of the timeout.
-        addEvent(H.Point, 'mouseOut', function () {
+        addEvent(Point, 'mouseOut', function () {
             var point = this;
             setTimeout(function () {
                 if (point.series) {
@@ -2215,7 +2213,7 @@
             }, 10);
         });
         // Hide drag handles on a point if it is removed
-        addEvent(H.Point, 'remove', function () {
+        addEvent(Point, 'remove', function () {
             var chart = this.series.chart, dragHandles = chart.dragHandles;
             if (dragHandles && dragHandles.point === this.id) {
                 chart.hideDragHandles();

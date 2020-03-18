@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v8.0.0 (2019-12-10)
+ * @license Highstock JS v8.0.4 (2020-03-10)
  *
  * Indicator series type for Highstock
  *
@@ -28,10 +28,10 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'indicators/vwap.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'indicators/vwap.src.js', [_modules['parts/Utilities.js']], function (U) {
         /* *
          *
-         *  (c) 2010-2019 Paweł Dalek
+         *  (c) 2010-2020 Paweł Dalek
          *
          *  Volume Weighted Average Price (VWAP) indicator for Highstock
          *
@@ -40,8 +40,7 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var isArray = U.isArray;
-        var seriesType = H.seriesType;
+        var error = U.error, isArray = U.isArray, seriesType = U.seriesType;
         /**
          * The Volume Weighted Average Price (VWAP) series type.
          *
@@ -98,7 +97,7 @@
                 var indicator = this, chart = series.chart, xValues = series.xData, yValues = series.yData, period = params.period, isOHLC = true, volumeSeries;
                 // Checks if volume series exists
                 if (!(volumeSeries = (chart.get(params.volumeSeriesID)))) {
-                    H.error('Series ' +
+                    error('Series ' +
                         params.volumeSeriesID +
                         ' not found! Check `volumeSeriesID`.', true, chart);
                     return;

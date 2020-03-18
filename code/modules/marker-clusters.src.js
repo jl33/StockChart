@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v8.0.0 (2019-12-10)
+ * @license Highcharts JS v8.0.4 (2020-03-10)
  *
  * Marker clusters module for Highcharts
  *
@@ -28,12 +28,12 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/marker-clusters.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'modules/marker-clusters.src.js', [_modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (H, Point, U) {
         /* *
          *
          *  Marker clusters module.
          *
-         *  (c) 2010-2019 Torstein Honsi
+         *  (c) 2010-2020 Torstein Honsi
          *
          *  Author: Wojciech Chmiel
          *
@@ -69,8 +69,10 @@
          * @param {Highcharts.PointClickEventObject} event
          *          Event arguments.
          */
+        ''; // detach doclets from following code
+        var addEvent = U.addEvent, animObject = U.animObject, defined = U.defined, error = U.error, isArray = U.isArray, isFunction = U.isFunction, isObject = U.isObject, isNumber = U.isNumber, merge = U.merge, objectEach = U.objectEach, relativeLength = U.relativeLength, syncTimeout = U.syncTimeout;
         /* eslint-disable no-invalid-this */
-        var Series = H.Series, Scatter = H.seriesTypes.scatter, Point = H.Point, SvgRenderer = H.SVGRenderer, addEvent = H.addEvent, merge = H.merge, defined = U.defined, isArray = U.isArray, isObject = U.isObject, isFunction = H.isFunction, isNumber = U.isNumber, relativeLength = H.relativeLength, error = H.error, objectEach = U.objectEach, syncTimeout = U.syncTimeout, animObject = H.animObject, baseGeneratePoints = Series.prototype.generatePoints, stateIdCounter = 0, 
+        var Series = H.Series, Scatter = H.seriesTypes.scatter, SvgRenderer = H.SVGRenderer, baseGeneratePoints = Series.prototype.generatePoints, stateIdCounter = 0, 
         // Points that ids are included in the oldPointsStateId array
         // are hidden before animation. Other ones are destroyed.
         oldPointsStateId = [];
@@ -97,6 +99,8 @@
          * @product      highcharts highmaps
          * @since 8.0.0
          * @optionparent plotOptions.scatter.cluster
+         *
+         * @private
          */
         var clusterDefaultOptions = {
             /**
@@ -339,7 +343,7 @@
              */
             /**
              * Options for the cluster data labels.
-             * @type    {Highcharts.DataLabelsOptionsObject}
+             * @type    {Highcharts.DataLabelsOptions}
              */
             dataLabels: {
                 /** @internal */
@@ -1519,7 +1523,7 @@
                 });
             }
         });
-        addEvent(H.Point, 'drillToCluster', function (event) {
+        addEvent(Point, 'drillToCluster', function (event) {
             var point = event.point || event.target, series = point.series, clusterOptions = series.options.cluster, onDrillToCluster = ((clusterOptions || {}).events || {}).drillToCluster;
             if (isFunction(onDrillToCluster)) {
                 onDrillToCluster.call(this, event);

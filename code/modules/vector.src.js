@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v8.0.0 (2019-12-10)
+ * @license Highcharts JS v8.0.4 (2020-03-10)
  *
  * Vector plot series module
  *
@@ -33,15 +33,14 @@
          *
          *  Vector plot series module
          *
-         *  (c) 2010-2019 Torstein Honsi
+         *  (c) 2010-2020 Torstein Honsi
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var animObject = U.animObject, arrayMax = U.arrayMax, pick = U.pick;
-        var seriesType = H.seriesType;
+        var animObject = U.animObject, arrayMax = U.arrayMax, pick = U.pick, seriesType = U.seriesType;
         /**
          * The vector series class.
          *
@@ -273,7 +272,6 @@
                     this.markerGroup.animate({
                         opacity: 1
                     }, animObject(this.options.animation));
-                    this.animate = null;
                 }
             }
             /* eslint-enable valid-jsdoc */

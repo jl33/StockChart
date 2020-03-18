@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v8.0.0 (2019-12-10)
+ * @license Highcharts JS v8.0.4 (2020-03-10)
  *
  * Client side exporting module
  *
@@ -31,7 +31,7 @@
     _registerModule(_modules, 'mixins/download-url.js', [_modules['parts/Globals.js']], function (Highcharts) {
         /* *
          *
-         *  (c) 2015-2019 Oystein Moseng
+         *  (c) 2015-2020 Oystein Moseng
          *
          *  License: www.highcharts.com/license
          *
@@ -671,7 +671,7 @@
         };
         // Extend the default options to use the local exporter logic
         merge(true, Highcharts.getOptions().exporting, {
-            libURL: 'https://code.highcharts.com/8.0.0/lib/',
+            libURL: 'https://code.highcharts.com/8.0.4/lib/',
             // When offline-exporting is loaded, redefine the menu item definitions
             // related to download.
             menuItemDefinitions: {

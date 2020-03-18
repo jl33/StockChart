@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v8.0.0 (2019-12-10)
+ * @license Highcharts JS v8.0.4 (2020-03-10)
  *
  * Force directed graph module
  *
@@ -28,14 +28,13 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'mixins/nodes.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'mixins/nodes.js', [_modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (H, Point, U) {
         /* *
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var defined = U.defined, extend = U.extend, pick = U.pick;
-        var Point = H.Point;
+        var defined = U.defined, extend = U.extend, find = U.find, pick = U.pick;
         H.NodesMixin = {
             /* eslint-disable valid-jsdoc */
             /**
@@ -48,7 +47,7 @@
                  * @private
                  */
                 function findById(nodes, id) {
-                    return H.find(nodes, function (node) {
+                    return find(nodes, function (node) {
                         return node.id === id;
                     });
                 }
@@ -188,13 +187,13 @@
                     [this.fromNode, this.toNode];
                 if (state !== 'select') {
                     others.forEach(function (linkOrNode) {
-                        if (linkOrNode.series) {
+                        if (linkOrNode && linkOrNode.series) {
                             Point.prototype.setState.apply(linkOrNode, args);
                             if (!linkOrNode.isNode) {
                                 if (linkOrNode.fromNode.graphic) {
                                     Point.prototype.setState.apply(linkOrNode.fromNode, args);
                                 }
-                                if (linkOrNode.toNode.graphic) {
+                                if (linkOrNode.toNode && linkOrNode.toNode.graphic) {
                                     Point.prototype.setState.apply(linkOrNode.toNode, args);
                                 }
                             }
@@ -212,7 +211,7 @@
          *
          *  Networkgraph series
          *
-         *  (c) 2010-2019 Paweł Fus
+         *  (c) 2010-2020 Paweł Fus
          *
          *  License: www.highcharts.com/license
          *
@@ -575,7 +574,7 @@
          *
          *  Networkgraph series
          *
-         *  (c) 2010-2019 Paweł Fus
+         *  (c) 2010-2020 Paweł Fus
          *
          *  License: www.highcharts.com/license
          *
@@ -929,15 +928,15 @@
          *
          *  Networkgraph series
          *
-         *  (c) 2010-2019 Paweł Fus
+         *  (c) 2010-2020 Paweł Fus
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var clamp = U.clamp, defined = U.defined, extend = U.extend, pick = U.pick, setAnimation = U.setAnimation;
-        var addEvent = H.addEvent, Chart = H.Chart;
+        var addEvent = U.addEvent, clamp = U.clamp, defined = U.defined, extend = U.extend, isFunction = U.isFunction, pick = U.pick, setAnimation = U.setAnimation;
+        var Chart = H.Chart;
         /* eslint-disable no-invalid-this, valid-jsdoc */
         H.layouts = {
             'reingold-fruchterman': function () {
@@ -1088,7 +1087,7 @@
             },
             initPositions: function () {
                 var initialPositions = this.options.initialPositions;
-                if (H.isFunction(initialPositions)) {
+                if (isFunction(initialPositions)) {
                     initialPositions.call(this);
                     this.nodes.forEach(function (node) {
                         if (!defined(node.prevX)) {
@@ -1426,19 +1425,20 @@
         });
 
     });
-    _registerModule(_modules, 'modules/networkgraph/draggable-nodes.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/networkgraph/draggable-nodes.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  Networkgraph series
          *
-         *  (c) 2010-2019 Paweł Fus
+         *  (c) 2010-2020 Paweł Fus
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var Chart = H.Chart, addEvent = H.addEvent;
+        var addEvent = U.addEvent;
+        var Chart = H.Chart;
         /* eslint-disable no-invalid-this, valid-jsdoc */
         H.dragNodesMixin = {
             /**
@@ -1576,12 +1576,12 @@
         });
 
     });
-    _registerModule(_modules, 'modules/networkgraph/networkgraph.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'modules/networkgraph/networkgraph.src.js', [_modules['parts/Globals.js'], _modules['parts/Point.js'], _modules['parts/Utilities.js']], function (H, Point, U) {
         /* *
          *
          *  Networkgraph series
          *
-         *  (c) 2010-2019 Paweł Fus
+         *  (c) 2010-2020 Paweł Fus
          *
          *  License: www.highcharts.com/license
          *
@@ -1593,7 +1593,7 @@
          *
          * @callback Highcharts.SeriesNetworkgraphDataLabelsFormatterCallbackFunction
          *
-         * @param {Highcharts.SeriesNetworkgraphDataLabelsFormatterContextObject|Highcharts.DataLabelsFormatterContextObject} this
+         * @param {Highcharts.SeriesNetworkgraphDataLabelsFormatterContextObject|Highcharts.PointLabelObject} this
          *        Data label context to format
          *
          * @return {string}
@@ -1603,7 +1603,7 @@
          * Context for the formatter function.
          *
          * @interface Highcharts.SeriesNetworkgraphDataLabelsFormatterContextObject
-         * @extends Highcharts.DataLabelsFormatterContextObject
+         * @extends Highcharts.PointLabelObject
          * @since 7.0.0
          */ /**
         * The color of the node.
@@ -1623,8 +1623,9 @@
         * @type {string}
         * @since 7.0.0
         */
-        var defined = U.defined, pick = U.pick;
-        var addEvent = H.addEvent, seriesType = H.seriesType, seriesTypes = H.seriesTypes, Point = H.Point, Series = H.Series, dragNodesMixin = H.dragNodesMixin;
+        ''; // detach doclets above
+        var addEvent = U.addEvent, css = U.css, defined = U.defined, pick = U.pick, seriesType = U.seriesType;
+        var seriesTypes = H.seriesTypes, Series = H.Series, dragNodesMixin = H.dragNodesMixin;
         /**
          * @private
          * @class
@@ -1647,7 +1648,7 @@
          *               getExtremesFromAll, label, linecap, negativeColor,
          *               pointInterval, pointIntervalUnit, pointPlacement,
          *               pointStart, softThreshold, stack, stacking, step,
-         *               threshold, xAxis, yAxis, zoneAxis
+         *               threshold, xAxis, yAxis, zoneAxis, dataSorting
          * @requires     modules/networkgraph
          * @optionparent plotOptions.networkgraph
          */
@@ -2074,6 +2075,14 @@
                 this.indexateNodes();
             },
             /**
+             * In networkgraph, series.points refers to links,
+             * but series.nodes refers to actual points.
+             * @private
+             */
+            getPointsCollection: function () {
+                return this.nodes || [];
+            },
+            /**
              * Set index for each node. Required for proper `node.update()`.
              * Note that links are indexated out of the box in `generatePoints()`.
              *
@@ -2204,8 +2213,8 @@
             // Return the presentational attributes.
             pointAttribs: function (point, state) {
                 // By default, only `selected` state is passed on
-                var pointState = state || point.state || 'normal', attribs = Series.prototype.pointAttribs.call(this, point, pointState), stateOptions = this.options.states[pointState];
-                if (!point.isNode) {
+                var pointState = state || point && point.state || 'normal', attribs = Series.prototype.pointAttribs.call(this, point, pointState), stateOptions = this.options.states[pointState];
+                if (point && !point.isNode) {
                     attribs = point.getLinkAttributes();
                     // For link, get prefixed names:
                     if (stateOptions) {
@@ -2279,10 +2288,10 @@
                 if (this.series.options.draggable &&
                     !this.series.chart.styledMode) {
                     addEvent(this, 'mouseOver', function () {
-                        H.css(this.series.chart.container, { cursor: 'move' });
+                        css(this.series.chart.container, { cursor: 'move' });
                     });
                     addEvent(this, 'mouseOut', function () {
-                        H.css(this.series.chart.container, { cursor: 'default' });
+                        css(this.series.chart.container, { cursor: 'default' });
                     });
                 }
                 return this;
@@ -2512,7 +2521,7 @@
          *            connectNulls, dragDrop, getExtremesFromAll, label, linecap,
          *            negativeColor, pointInterval, pointIntervalUnit,
          *            pointPlacement, pointStart, softThreshold, stack, stacking,
-         *            step, threshold, xAxis, yAxis, zoneAxis
+         *            step, threshold, xAxis, yAxis, zoneAxis, dataSorting
          * @product   highcharts
          * @requires  modules/networkgraph
          * @apioption series.networkgraph

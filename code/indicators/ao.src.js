@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v8.0.0 (2019-12-10)
+ * @license Highstock JS v8.0.4 (2020-03-10)
  *
  * Indicator series type for Highstock
  *
@@ -36,7 +36,7 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var correctFloat = U.correctFloat, isArray = U.isArray;
+        var correctFloat = U.correctFloat, isArray = U.isArray, seriesType = U.seriesType;
         var noop = H.noop;
         /**
          * The AO series type
@@ -47,7 +47,7 @@
          *
          * @augments Highcharts.Series
          */
-        H.seriesType('ao', 'sma', 
+        seriesType('ao', 'sma', 
         /**
          * Awesome Oscillator. This series requires the `linkedTo` option to
          * be set and should be loaded after the `stock/indicators/indicators.js`

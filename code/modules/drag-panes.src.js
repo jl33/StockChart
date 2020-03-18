@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v8.0.0 (2019-12-10)
+ * @license Highstock JS v8.0.4 (2020-03-10)
  *
  * Drag-panes module
  *
@@ -43,8 +43,8 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var clamp = U.clamp, isNumber = U.isNumber, objectEach = U.objectEach, relativeLength = U.relativeLength, wrap = U.wrap;
-        var hasTouch = H.hasTouch, merge = H.merge, addEvent = H.addEvent, Axis = H.Axis, Pointer = H.Pointer, 
+        var addEvent = U.addEvent, clamp = U.clamp, isNumber = U.isNumber, merge = U.merge, objectEach = U.objectEach, relativeLength = U.relativeLength, wrap = U.wrap;
+        var hasTouch = H.hasTouch, Axis = H.Axis, Pointer = H.Pointer, 
         // Default options for AxisResizer.
         resizerOptions = {
             /**

@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v8.0.0 (2019-12-10)
+ * @license Highcharts JS v8.0.4 (2020-03-10)
  * Organization chart series type
  *
  * (c) 2019-2019 Torstein Honsi
@@ -32,14 +32,14 @@
          *
          *  Organization chart module
          *
-         *  (c) 2018-2019 Torstein Honsi
+         *  (c) 2018-2020 Torstein Honsi
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var pick = U.pick, wrap = U.wrap;
+        var css = U.css, pick = U.pick, seriesType = U.seriesType, wrap = U.wrap;
         /**
          * Layout value for the child nodes in an organization chart. If `hanging`, this
          * node's children will hang below their parent, allowing a tighter packing of
@@ -55,7 +55,7 @@
          *
          * @augments Highcharts.seriesTypes.sankey
          */
-        H.seriesType('organization', 'sankey', 
+        seriesType('organization', 'sankey', 
         /**
          * An organization chart is a diagram that shows the structure of an
          * organization and the relationships and relative ranks of its parts and
@@ -71,7 +71,7 @@
          *               Centered layout
          *
          * @extends      plotOptions.sankey
-         * @excluding    allowPointSelect, curveFactor
+         * @excluding    allowPointSelect, curveFactor, dataSorting
          * @since        7.1.0
          * @product      highcharts
          * @requires     modules/organization
@@ -387,12 +387,12 @@
                     height -= padjust;
                     width -= padjust;
                     // Set the size of the surrounding div emulating `g`
-                    H.css(dataLabel.text.element.parentNode, {
+                    css(dataLabel.text.element.parentNode, {
                         width: width + 'px',
                         height: height + 'px'
                     });
                     // Set properties for the span emulating `text`
-                    H.css(dataLabel.text.element, {
+                    css(dataLabel.text.element, {
                         left: 0,
                         top: 0,
                         width: '100%',
@@ -416,6 +416,7 @@
          * not specified, it is inherited from [chart.type](#chart.type).
          *
          * @extends   series,plotOptions.organization
+         * @exclude   dataSorting
          * @product   highcharts
          * @requires  modules/organization
          * @apioption series.organization

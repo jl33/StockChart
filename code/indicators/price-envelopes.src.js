@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v8.0.0 (2019-12-10)
+ * @license Highstock JS v8.0.4 (2020-03-10)
  *
  * Indicator series type for Highstock
  *
@@ -36,8 +36,8 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var isArray = U.isArray;
-        var merge = H.merge, SMA = H.seriesTypes.sma;
+        var isArray = U.isArray, merge = U.merge, seriesType = U.seriesType;
+        var SMA = H.seriesTypes.sma;
         /**
          * The Price Envelopes series type.
          *
@@ -47,7 +47,7 @@
          *
          * @augments Highcharts.Series
          */
-        H.seriesType('priceenvelopes', 'sma', 
+        seriesType('priceenvelopes', 'sma', 
         /**
          * Price envelopes indicator based on [SMA](#plotOptions.sma) calculations.
          * This series requires the `linkedTo` option to be set and should be loaded

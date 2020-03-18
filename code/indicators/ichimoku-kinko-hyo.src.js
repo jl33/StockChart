@@ -1,5 +1,5 @@
 /**
- * @license Highstock JS v8.0.0 (2019-12-10)
+ * @license Highstock JS v8.0.4 (2020-03-10)
  *
  * Indicator series type for Highstock
  *
@@ -28,7 +28,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'indicators/ichimoku-kinko-hyo.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+    _registerModule(_modules, 'indicators/ichimoku-kinko-hyo.src.js', [_modules['parts/Globals.js'], _modules['parts/Color.js'], _modules['parts/Utilities.js']], function (H, Color, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -37,8 +37,9 @@
          *
          * */
         /* eslint-enable @typescript-eslint/interface-name-prefix */
-        var defined = U.defined, isArray = U.isArray, objectEach = U.objectEach;
-        var UNDEFINED, seriesType = H.seriesType, merge = H.merge, color = H.color, SMA = H.seriesTypes.sma;
+        var color = Color.parse;
+        var defined = U.defined, isArray = U.isArray, merge = U.merge, objectEach = U.objectEach, seriesType = U.seriesType;
+        var UNDEFINED, SMA = H.seriesTypes.sma;
         /* eslint-disable require-jsdoc */
         // Utils:
         function maxHigh(arr) {
