@@ -192,15 +192,15 @@ dbFileElm.onchange = function () {
 	
 	var f ; //= dbFileElm.files[0];
 	for(var i; i<=dbFileElm.files.length; i++){
-		if (dbFileElm.files[i]=="mystock.db")
+		console.log(dbFileElm.files[i]);
+		if (dbFileElm.files[i].name=="mystock.db")
 		{
+			console.log("get my db!");
 			f = dbFileElm.files[i];
 			break;
 		}
 	}
-	console.log(dbFileElm.files[0]);
-	console.log(dbFileElm.files[1]);
-	console.log(dbFileElm.files[2]);
+
 	var r = new FileReader();
 	var lstr = "", qr = "";
 	if (par_FilterList == 1) {
@@ -306,8 +306,10 @@ t1.onblur = stSelElm.onblur = function () {
 stSelElm.onchange = function () {
 	var f ; //= dbFileElm.files[0];
 	for(var i; i<=dbFileElm.files.length; i++){
-		if (dbFileElm.files[i]=="mystock.db")
+		console.log(dbFileElm.files[i]);
+		if (dbFileElm.files[i].name=="mystock.db")
 		{
+			console.log("get my db!!");
 			f = dbFileElm.files[i];
 			break;
 		}
