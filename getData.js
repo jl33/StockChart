@@ -191,6 +191,8 @@ function noerror() {
 dbFileElm.onchange = function () {
 	var f = dbFileElm.files[0];
 	console.log(dbFileElm.files[0]);
+	console.log(dbFileElm.files[1]);
+	console.log(dbFileElm.files[2]);
 	var r = new FileReader();
 	var lstr = "", qr = "";
 	if (par_FilterList == 1) {
