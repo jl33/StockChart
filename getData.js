@@ -197,7 +197,7 @@ dbFileElm.onchange = function () {
 		{
 			console.log("get my db!");
 			f = dbFileElm.files[i];
-			break;
+			// break;
 		}
 	}
 
