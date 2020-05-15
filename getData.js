@@ -190,14 +190,14 @@ function noerror() {
 //#region dbFileElm.onchange: read database & make <option>
 dbFileElm.onchange = function () {
 	
-	var f ; //= dbFileElm.files[0];
+	var f= dbFileElm.files ; //= dbFileElm.files[0];
 	for(var i; i<=dbFileElm.files.length; i++){
 		console.log(dbFileElm.files[i]);
 		if (dbFileElm.files[i].name=="mystock.db")
 		{
 			console.log("get my db!");
 			f = dbFileElm.files[i];
-			// break;
+			break;
 		}
 	}
 
