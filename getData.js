@@ -190,7 +190,7 @@ function noerror() {
 //#region dbFileElm.onchange: read database & make <option>
 dbFileElm.onchange = function () {
 	// var f = dbFileElm.files[0];
-	var f = function () {
+	var getfile = function () {
 		if ('files' in dbFileElm) {
 			for (var i = 0; i < dbFileElm.files.length; i++) {
 				console.log(dbFileElm.files[i]);
@@ -210,7 +210,8 @@ dbFileElm.onchange = function () {
 			}
 		}
 	}
-
+	console.log(getfile instanceof Blob);
+	var f = getfile;
 	var r = new FileReader();
 	var lstr = "", qr = "";
 	if (par_FilterList == 1) {
