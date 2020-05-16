@@ -193,16 +193,15 @@ dbFileElm.onchange = function () {
 	var getfile = function () {
 		if ('files' in dbFileElm) {
 			for (var i = 0; i < dbFileElm.files.length; i++) {
-				console.log(dbFileElm.files[i]);
 				var file = dbFileElm.files[i];
 				if ('name' in file) {
-					if (file.name === "mystock.db") {
+					if (file.name === "stock_wm.db") {
 						console.log("got my db(name)!");
 						return file;
 					}
 				}
 				else {
-					if (file.fileName === "mystock.db") {
+					if (file.fileName === "stock_wm.db") {
 						console.log("got my db(fileName)!");
 						return file;
 					}
@@ -210,6 +209,7 @@ dbFileElm.onchange = function () {
 			}
 		}
 	}
+	console.log(getfile());
 	console.log(getfile() instanceof Blob);
 	var f = getfile();
 	var r = new FileReader();
@@ -315,19 +315,18 @@ t1.onblur = stSelElm.onblur = function () {
 //#region
 //#region stSelElm.onchange
 stSelElm.onchange = function () {
-	var getfile = function () {
+	var getfile = function (n) {
 		if ('files' in dbFileElm) {
 			for (var i = 0; i < dbFileElm.files.length; i++) {
-				console.log(dbFileElm.files[i]);
 				var file = dbFileElm.files[i];
 				if ('name' in file) {
-					if (file.name === "mystock.db") {
+					if (file.name === n) {
 						console.log("got my db(name)->select elem!");
 						return file;
 					}
 				}
 				else {
-					if (file.fileName === "mystock.db") {
+					if (file.fileName === n) {
 						console.log("got my db(fileName)->select elem!");
 						return file;
 					}
@@ -335,8 +334,8 @@ stSelElm.onchange = function () {
 			}
 		}
 	}
-	console.log(getfile() instanceof Blob);
-	var f = getfile();
+	var fdqy = getfile("stock_dqy.db");
+	var fwm = getfile("stock_wm.db");
 	// var f = dbFileElm.files[0];
 	var r = new FileReader();
 	var r2 = new FileReader();
@@ -438,12 +437,12 @@ stSelElm.onchange = function () {
 		}
 	}
 
-	r.readAsArrayBuffer(f);
-	r2.readAsArrayBuffer(f);
-	r3.readAsArrayBuffer(f);
-	r4.readAsArrayBuffer(f);
-	r5.readAsArrayBuffer(f);
-	r6.readAsArrayBuffer(f);
+	r.readAsArrayBuffer(fdqy);
+	r2.readAsArrayBuffer(fwm);
+	r3.readAsArrayBuffer(fdqy);
+	r4.readAsArrayBuffer(fwm);
+	r5.readAsArrayBuffer(fdqy);
+	r6.readAsArrayBuffer(fwm);
 	var op = stSelElm.options[stSelElm.selectedIndex].text;
 	nameElm.innerText = op.substring(0, op.indexOf("("));
 	typeElm.innerText = op.substring(op.indexOf("(") + 1, op.indexOf(")"));
