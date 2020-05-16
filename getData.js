@@ -191,13 +191,22 @@ function noerror() {
 dbFileElm.onchange = function () {
 	// var f = dbFileElm.files[0];
 	var f = function () {
-		for(var i=0; i < dbFileElm.files.length; i++){
-			console.log(dbFileElm.files[i]);
-			if (dbFileElm.files[i].name=="mystock.db")
-			{
-				console.log("get my db!");
-				return dbFileElm.files[i];
-				break;
+		if ('files' in dbFileElm) {
+			for (var i = 0; i < dbFileElm.files.length; i++) {
+				console.log(dbFileElm.files[i]);
+				var file = dbFileElm.files[i];
+				if ('name' in file) {
+					if (file.name == "mystock.db") {
+						console.log("got my db!");
+						return file;
+					}
+				}
+				else {
+					if (file.fileName == "mystock.db") {
+						console.log("got my db!");
+						return file;
+					}
+				}
 			}
 		}
 	}
@@ -246,18 +255,18 @@ dbFileElm.onchange = function () {
 }
 //#endregion
 function showStockFont(_b) {
-            if (!_b) {
-                document.getElementById('stockName').classList.remove('transparentFont');
-                document.getElementById('stockName').classList.add('wholeTransparentFont');
-                document.getElementById('stockType').classList.remove('transparentFont');
-                document.getElementById('stockType').classList.add('wholeTransparentFont');
-            } else {
-                document.getElementById('stockName').classList.remove('wholeTransparentFont');
-                document.getElementById('stockName').classList.add('transparentFont');
-                document.getElementById('stockType').classList.remove('wholeTransparentFont');
-                document.getElementById('stockType').classList.add('transparentFont');
-            }
-        }
+	if (!_b) {
+		document.getElementById('stockName').classList.remove('transparentFont');
+		document.getElementById('stockName').classList.add('wholeTransparentFont');
+		document.getElementById('stockType').classList.remove('transparentFont');
+		document.getElementById('stockType').classList.add('wholeTransparentFont');
+	} else {
+		document.getElementById('stockName').classList.remove('wholeTransparentFont');
+		document.getElementById('stockName').classList.add('transparentFont');
+		document.getElementById('stockType').classList.remove('wholeTransparentFont');
+		document.getElementById('stockType').classList.add('transparentFont');
+	}
+}
 stSelElm.onkeypress = function (e) {
 	var keynum;
 	keynum = e.which || e.keyCode;
@@ -306,15 +315,14 @@ t1.onblur = stSelElm.onblur = function () {
 //#region stSelElm.onchange
 stSelElm.onchange = function () {
 	var f = function () {
-		for(var i=0; i < dbFileElm.files.length; i++){
+		for (var i = 0; i < dbFileElm.files.length; i++) {
 			console.log(dbFileElm.files[i]);
-			if (dbFileElm.files[i].name=="mystock.db")
-			{
+			if (dbFileElm.files[i].name == "mystock.db") {
 				console.log("get my db!!");
 				return dbFileElm.files[i];
 				break;
 			}
-		}	
+		}
 	}
 	// var f = dbFileElm.files[0];
 	var r = new FileReader();
@@ -487,7 +495,7 @@ function setChartData(w, sqlst) {
 				_D_sell.push([newDate, item[25]]);
 				_D_divR.push([newDate, item[26]]);
 				if (!(item[24] === '' || item[24] === null)) {
-				// } else {
+					// } else {
 					fg.x = newDate;
 					fg.title = item[24];
 					fg.text = item[24];
@@ -627,9 +635,9 @@ function setChartDataY(w, sqlsty) {
 					newYear = item[0] + '-10';
 					newDate = new Date(newYear).getTime();
 					//Y2------------------------
-					if (lastQendPrice){
+					if (lastQendPrice) {
 						_Y_OHLC_wQ.push([newDate, lastQendPrice, item[32], item[33], item[2]]);
-					}else{
+					} else {
 						_Y_OHLC_wQ.push([newDate, item[31], item[32], item[33], item[2]]);
 					}
 					lastQendPrice = null;
@@ -1165,9 +1173,9 @@ function mapChart() {
 			data: _D_Vol,
 			color: 'rgba(43, 138, 254, 0.3)',
 			borderWidth: 0.3,
-            pointPadding: 0,
-            groupPadding: 0,			
-            borderColor: 'rgba(43, 138, 254, 1)',
+			pointPadding: 0,
+			groupPadding: 0,
+			borderColor: 'rgba(43, 138, 254, 1)',
 			yAxis: 0,
 			id: '_volumn',
 			tooltip: {
@@ -1218,7 +1226,7 @@ function mapChart() {
 					}
 					return s;
 				}
-			}			
+			}
 		}, {
 			name: '⇦20日均量',
 			type: 'column',
@@ -1242,7 +1250,7 @@ function mapChart() {
 					}
 					return s;
 				}
-			}			
+			}
 		}, {
 			name: '⇦股淨比',
 			data: stockPBR,
@@ -1295,8 +1303,8 @@ function mapChart() {
 			name: '主力5日集中度⇨',
 			data: _D_main5Day,
 			type: 'area',
-			color: 'rgba(255,157,111,1)', 
-			fillColor: 'rgba(255,157,111,0.3)',				
+			color: 'rgba(255,157,111,1)',
+			fillColor: 'rgba(255,157,111,0.3)',
 			yAxis: 5,
 			tooltip: {
 				valueSuffix: '%'
@@ -1344,8 +1352,8 @@ function mapChart() {
 			name: '買賣券商差⇨',
 			data: _D_mainAgent,
 			type: 'area',
-			color: 'rgba(166,166,210,1)', 
-			fillColor: 'rgba(166,166,210,0.3)',				
+			color: 'rgba(166,166,210,1)',
+			fillColor: 'rgba(166,166,210,0.3)',
 			yAxis: 7,
 			tooltip: {
 				valueSuffix: '家',
@@ -1358,8 +1366,8 @@ function mapChart() {
 			name: '主力買超⇨',
 			data: _D_mainBuy,
 			type: 'area',
-			color: 'rgba(102,179,255,1)', 
-			fillColor: 'rgba(102,179,255,0.3)',				
+			color: 'rgba(102,179,255,1)',
+			fillColor: 'rgba(102,179,255,0.3)',
 			yAxis: 9,
 			zIndex: -1,
 			tooltip: {
@@ -1435,7 +1443,7 @@ function mapChartW() {
 		},
 		credits: {
 			enabled: false
-		},		
+		},
 		boost: {
 			useGPUTranslations: true,
 			allowForce: true,
@@ -1602,7 +1610,7 @@ function mapChartW() {
 			data: _W_FI_SC_1m,
 			type: 'area',
 			yAxis: 1,
-			color: 'rgba(201,38,195,1)', 
+			color: 'rgba(201,38,195,1)',
 			fillColor: 'rgba(201,38,195,0.2)',
 			lineWidth: 1.2,
 			tooltip: {
@@ -1685,7 +1693,7 @@ function mapChartW() {
 			data: _W_SI_SC_1m,
 			type: 'area',
 			yAxis: 3,
-			color: 'rgba(201,38,195,1)', 
+			color: 'rgba(201,38,195,1)',
 			fillColor: 'rgba(201,38,195,0.2)',
 			lineWidth: 1.2,
 			tooltip: {
@@ -1743,7 +1751,7 @@ function mapChartW() {
 function mapChartM() {
 	//#region var ~
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = -460;	
+		_leftYLabOffset = -460;
 	//#endregion
 	//#region chart~
 	_chart_M = Highcharts.stockChart('containerM', {
@@ -1758,7 +1766,7 @@ function mapChartM() {
 		},
 		credits: {
 			enabled: false
-		},		
+		},
 		boost: {
 			useGPUTranslations: true,
 			allowForce: true,
@@ -1830,12 +1838,12 @@ function mapChartM() {
 					forced: true,
 					units: [[
 						'month',
-						[1,3,6]
+						[1, 3, 6]
 					], [
 						'year',
 						[1]
 					]]
-				}				
+				}
 			}
 		},
 		legend: {
@@ -1923,7 +1931,7 @@ function mapChartM() {
 			title: {
 				text: 'MACD值',
 			},
-			offset:0,
+			offset: 0,
 			top: '45%',
 			height: '30%',
 			startOnTick: false,
@@ -2036,9 +2044,9 @@ function mapChartM() {
 			data: _M_Vol,
 			color: 'rgba(43, 138, 254, 0.3)',
 			borderWidth: 0.3,
-            pointPadding: 0,
-            groupPadding: 0,			
-            borderColor: 'rgba(43, 138, 254, 1)',
+			pointPadding: 0,
+			groupPadding: 0,
+			borderColor: 'rgba(43, 138, 254, 1)',
 			yAxis: 2,
 			id: '_volumn',
 			tooltip: {
@@ -2057,8 +2065,8 @@ function mapChartM() {
 			name: '單月年增率⇨',
 			data: _M_inPerMYoY,
 			type: 'area',
-			color: 'rgba(255,149,202,1)', 
-			fillColor: 'rgba(255,149,202,0.3)',				
+			color: 'rgba(255,149,202,1)',
+			fillColor: 'rgba(255,149,202,0.3)',
 			yAxis: 5,
 			tooltip: {
 				valueSuffix: '%',
@@ -2070,8 +2078,8 @@ function mapChartM() {
 			name: '累月年增率⇨',
 			data: _M_inAllMYoY,
 			type: 'area',
-			color: 'rgba(255,230,111,1)', 
-			fillColor: 'rgba(255,230,111,0.3)',				
+			color: 'rgba(255,230,111,1)',
+			fillColor: 'rgba(255,230,111,0.3)',
 			yAxis: 5,
 			tooltip: {
 				valueSuffix: '%',
@@ -2118,7 +2126,7 @@ function mapChartM() {
 				enabled: false
 			}
 		});
-	}	
+	}
 }
 
 function mapChartQ() {
@@ -2145,7 +2153,7 @@ function mapChartQ() {
 		},
 		credits: {
 			enabled: false
-		},		
+		},
 		boost: {
 			useGPUTranslations: true,
 			allowForce: true,
@@ -2184,12 +2192,12 @@ function mapChartQ() {
 					forced: true,
 					units: [[
 						'month',
-						[3,6,9]
+						[3, 6, 9]
 					], [
 						'year',
 						[1]
 					]]
-				}			
+				}
 			}
 		},
 		legend: {
@@ -2240,7 +2248,7 @@ function mapChartQ() {
 			offset: 0,
 			height: '100%',
 			startOnTick: false,
-		},{
+		}, {
 			labels: {
 				align: 'left',
 			},
@@ -2284,8 +2292,8 @@ function mapChartQ() {
 			data: _Q_debtNetRatio,
 			type: 'area',
 			yAxis: 0,
-			color: 'rgba(93,160,227,1)', 
-			fillColor: 'rgba(93,160,227,0.2)',			
+			color: 'rgba(93,160,227,1)',
+			fillColor: 'rgba(93,160,227,0.2)',
 			tooltip: {
 				valueSuffix: '%'
 			},
@@ -2352,7 +2360,7 @@ function mapChartY() {
 		},
 		credits: {
 			enabled: false
-		},		
+		},
 		boost: {
 			useGPUTranslations: true,
 			allowForce: true,
@@ -2400,9 +2408,9 @@ function mapChartY() {
 						[3]
 					], [
 						'year',
-						[1,2,5]
+						[1, 2, 5]
 					]]
-				}					
+				}
 			}
 		},
 		legend: {
@@ -2552,282 +2560,282 @@ function mapChartY() {
 		//#region series~
 		series: [
 			{
-			name: '⇦收盤價',
-			data: _Y_OHLC_wQ, //_M_endPrice,
-			type: 'candlestick',
-			//id: '_priceM',
-			yAxis: 0,
-			tooltip: {
-				valueSuffix: '元'
+				name: '⇦收盤價',
+				data: _Y_OHLC_wQ, //_M_endPrice,
+				type: 'candlestick',
+				//id: '_priceM',
+				yAxis: 0,
+				tooltip: {
+					valueSuffix: '元'
+				},
+				credits: {
+					enabled: false
+				}
 			},
-			credits: {
-				enabled: false
-			}
-		}, 
-		{
-			name: '營業毛利⇨',
-			data: _Y_operMargin,
-			color: '#007500',
-			connectNulls: true,
-			yAxis: 1,
-			tooltip: {
-				valueSuffix: '%',
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '營業利益⇨',
-			data: _Y_operProfitMargin,
-			color: '#2E37B9',
-			connectNulls: true,
-			dashStyle: 'DashDot',
-			yAxis: 1,
-			tooltip: {
-				valueSuffix: '%',
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '業外損益⇨',
-			data: _Y_lossOutside,
-			type: 'column',
-			zIndex: -1,
-			yAxis: 1,
-			color: '#ff9797',
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '稅後淨利⇨',
-			data: _Y_afterTaxRate,
-			type: 'column',
-			zIndex: -1,
-			yAxis: 1,
-			color: '#ceffce',
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '股東權益ROE⇨',
-			data: _Y_ROE,
-			yAxis: 1,
-			id: '_oper_data',
-			color: '#ff8040',
-			connectNulls: true,
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '資產報酬ROA⇨',
-			data: _Y_ROA,
-			dashStyle: 'shortdot',
-			yAxis: 1,
-			color: '#272727',
-			connectNulls: true,
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '⇦5年投資淨利比',
-			data: _Y_inr,
-			type: 'area',
-			zIndex: -1,
-			color: 'rgba(181,181,181,1)', 
-			fillColor: 'rgba(181,181,181,0.3)',				
-			yAxis: 2,
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '營業活動⇨',
-			data: _Y_bizAct,
-			color: '#007500',
-			dashStyle: 'Dash',
-			yAxis: 3,
-			id: '_biz_data',
-			tooltip: {
-				valueSuffix: '億元',
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '投資活動⇨',
-			data: _Y_investAct,
-			color: '#5DA3DF',
-			dashStyle: 'ShortDashDot',
-			yAxis: 3,
-			tooltip: {
-				valueSuffix: '億元',
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '融資活動⇨',
-			data: _Y_finAct,
-			yAxis: 3,
-			color: '#33D55E',
-			tooltip: {
-				valueSuffix: '億元'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '淨現金流⇨',
-			data: _Y_netCashFlow,
-			type: 'area',
-			yAxis: 3,
-			color: 'rgba(255,128,64,1)', 
-			fillColor: 'rgba(255,128,64,0.3)',				
-			tooltip: {
-				valueSuffix: '億元'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '自由金流⇨',
-			data: _Y_freeCashFlow,
-			yAxis: 3,
-			color: '#F04141',
-			tooltip: {
-				valueSuffix: '億元'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '期末餘額⇨',
-			data: _Y_endBalance,
-			dashStyle: 'shortdot',
-			yAxis: 3,
-			color: '#272727',
-			tooltip: {
-				valueSuffix: '億元'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			type: 'flags',
-			name: '季',
-			data: _Y_range,
-			color: '#000000',
-			fillColor: 'rgba(220,0,0,0.2)',
-			yAxis: 4,
-			showInLegend: false,
-			onSeries: '_Y_div',
-			shape: 'circlepin'
-		}, {
-			name: '⇦稅後EPS',
-			data: _Y_afterTaxEPS,
-			id: '_Y_div',
-			color: '#4a4aff',
-			connectNulls: true,
-			yAxis: 4,
-			tooltip: {
-				valueSuffix: '元'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '稅後淨利⇨',
-			type: 'column',
-			data: _Y2_netTaxProfit,
-			id: '_tax_net',
-			yAxis: 5,
-			color: '#00db00',
-			zIndex: -1,
-			tooltip: {
-				valueSuffix: '億元'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '股本⇨',
-			type: 'column',
-			data: _Y_shareCap,
-			yAxis: 5,
-			color: '#ff8f59',
-			zIndex: -1,
-			tooltip: {
-				valueSuffix: '億元'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '⇦現金流量',
-			data: _Y_cashFlow,
-			connectNulls: true,
-			yAxis: 6,
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '負債總額⇨',
-			data: _Y_liabilityPay,
-			type: 'area',
-			yAxis: 7,
-			zIndex: -1,
-			color: 'rgba(83,222,155,1)', 
-			fillColor: 'rgba(83,222,155,0.2)',				
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '現金佔資產⇨',
-			data: _Y_cashRate,
-			yAxis: 7,
-			color: '#FD4C4C',
-			connectNulls: true,
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '應收帳款⇨',
-			data: _Y_receivableGet,
-			dashStyle: 'ShortDot',
-			connectNulls: true,
-			yAxis: 7,
-			color: '#3D406E',
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}]
+			{
+				name: '營業毛利⇨',
+				data: _Y_operMargin,
+				color: '#007500',
+				connectNulls: true,
+				yAxis: 1,
+				tooltip: {
+					valueSuffix: '%',
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '營業利益⇨',
+				data: _Y_operProfitMargin,
+				color: '#2E37B9',
+				connectNulls: true,
+				dashStyle: 'DashDot',
+				yAxis: 1,
+				tooltip: {
+					valueSuffix: '%',
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '業外損益⇨',
+				data: _Y_lossOutside,
+				type: 'column',
+				zIndex: -1,
+				yAxis: 1,
+				color: '#ff9797',
+				tooltip: {
+					valueSuffix: '%'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '稅後淨利⇨',
+				data: _Y_afterTaxRate,
+				type: 'column',
+				zIndex: -1,
+				yAxis: 1,
+				color: '#ceffce',
+				tooltip: {
+					valueSuffix: '%'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '股東權益ROE⇨',
+				data: _Y_ROE,
+				yAxis: 1,
+				id: '_oper_data',
+				color: '#ff8040',
+				connectNulls: true,
+				tooltip: {
+					valueSuffix: '%'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '資產報酬ROA⇨',
+				data: _Y_ROA,
+				dashStyle: 'shortdot',
+				yAxis: 1,
+				color: '#272727',
+				connectNulls: true,
+				tooltip: {
+					valueSuffix: '%'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '⇦5年投資淨利比',
+				data: _Y_inr,
+				type: 'area',
+				zIndex: -1,
+				color: 'rgba(181,181,181,1)',
+				fillColor: 'rgba(181,181,181,0.3)',
+				yAxis: 2,
+				tooltip: {
+					valueSuffix: '%'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '營業活動⇨',
+				data: _Y_bizAct,
+				color: '#007500',
+				dashStyle: 'Dash',
+				yAxis: 3,
+				id: '_biz_data',
+				tooltip: {
+					valueSuffix: '億元',
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '投資活動⇨',
+				data: _Y_investAct,
+				color: '#5DA3DF',
+				dashStyle: 'ShortDashDot',
+				yAxis: 3,
+				tooltip: {
+					valueSuffix: '億元',
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '融資活動⇨',
+				data: _Y_finAct,
+				yAxis: 3,
+				color: '#33D55E',
+				tooltip: {
+					valueSuffix: '億元'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '淨現金流⇨',
+				data: _Y_netCashFlow,
+				type: 'area',
+				yAxis: 3,
+				color: 'rgba(255,128,64,1)',
+				fillColor: 'rgba(255,128,64,0.3)',
+				tooltip: {
+					valueSuffix: '億元'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '自由金流⇨',
+				data: _Y_freeCashFlow,
+				yAxis: 3,
+				color: '#F04141',
+				tooltip: {
+					valueSuffix: '億元'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '期末餘額⇨',
+				data: _Y_endBalance,
+				dashStyle: 'shortdot',
+				yAxis: 3,
+				color: '#272727',
+				tooltip: {
+					valueSuffix: '億元'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				type: 'flags',
+				name: '季',
+				data: _Y_range,
+				color: '#000000',
+				fillColor: 'rgba(220,0,0,0.2)',
+				yAxis: 4,
+				showInLegend: false,
+				onSeries: '_Y_div',
+				shape: 'circlepin'
+			}, {
+				name: '⇦稅後EPS',
+				data: _Y_afterTaxEPS,
+				id: '_Y_div',
+				color: '#4a4aff',
+				connectNulls: true,
+				yAxis: 4,
+				tooltip: {
+					valueSuffix: '元'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '稅後淨利⇨',
+				type: 'column',
+				data: _Y2_netTaxProfit,
+				id: '_tax_net',
+				yAxis: 5,
+				color: '#00db00',
+				zIndex: -1,
+				tooltip: {
+					valueSuffix: '億元'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '股本⇨',
+				type: 'column',
+				data: _Y_shareCap,
+				yAxis: 5,
+				color: '#ff8f59',
+				zIndex: -1,
+				tooltip: {
+					valueSuffix: '億元'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '⇦現金流量',
+				data: _Y_cashFlow,
+				connectNulls: true,
+				yAxis: 6,
+				tooltip: {
+					valueSuffix: '%'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '負債總額⇨',
+				data: _Y_liabilityPay,
+				type: 'area',
+				yAxis: 7,
+				zIndex: -1,
+				color: 'rgba(83,222,155,1)',
+				fillColor: 'rgba(83,222,155,0.2)',
+				tooltip: {
+					valueSuffix: '%'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '現金佔資產⇨',
+				data: _Y_cashRate,
+				yAxis: 7,
+				color: '#FD4C4C',
+				connectNulls: true,
+				tooltip: {
+					valueSuffix: '%'
+				},
+				credits: {
+					enabled: false
+				}
+			}, {
+				name: '應收帳款⇨',
+				data: _Y_receivableGet,
+				dashStyle: 'ShortDot',
+				connectNulls: true,
+				yAxis: 7,
+				color: '#3D406E',
+				tooltip: {
+					valueSuffix: '%'
+				},
+				credits: {
+					enabled: false
+				}
+			}]
 		//#endregion
 	});
 	//#endregion
@@ -3073,8 +3081,8 @@ function mapChartY2() {
 			type: 'area',
 			data: _Y_stockDividendRate,
 			yAxis: 3,
-			color: 'rgba(220,181,255,1)', 
-			fillColor: 'rgba(220,181,255,0.3)',				
+			color: 'rgba(220,181,255,1)',
+			fillColor: 'rgba(220,181,255,0.3)',
 			zIndex: -1,
 			marker: {
 				enabled: true,
@@ -3091,8 +3099,8 @@ function mapChartY2() {
 			type: 'area',
 			data: _Y_cashDividendRate,
 			yAxis: 3,
-			color: 'rgba(255,237,151,1)', 
-			fillColor: 'rgba(255,237,151,0.2)',				
+			color: 'rgba(255,237,151,1)',
+			fillColor: 'rgba(255,237,151,0.2)',
 			zIndex: -1,
 			marker: {
 				enabled: true,
