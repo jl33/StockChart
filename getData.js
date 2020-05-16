@@ -197,13 +197,13 @@ dbFileElm.onchange = function () {
 				var file = dbFileElm.files[i];
 				if ('name' in file) {
 					if (file.name === "mystock.db") {
-						console.log("got my db!");
+						console.log("got my db(name)!");
 						return file;
 					}
 				}
 				else {
 					if (file.fileName === "mystock.db") {
-						console.log("got my db!");
+						console.log("got my db(fileName)!");
 						return file;
 					}
 				}
@@ -315,16 +315,28 @@ t1.onblur = stSelElm.onblur = function () {
 //#region
 //#region stSelElm.onchange
 stSelElm.onchange = function () {
-	var f = function () {
-		for (var i = 0; i < dbFileElm.files.length; i++) {
-			console.log(dbFileElm.files[i]);
-			if (dbFileElm.files[i].name == "mystock.db") {
-				console.log("get my db!!");
-				return dbFileElm.files[i];
-				break;
+	var getfile = function () {
+		if ('files' in dbFileElm) {
+			for (var i = 0; i < dbFileElm.files.length; i++) {
+				console.log(dbFileElm.files[i]);
+				var file = dbFileElm.files[i];
+				if ('name' in file) {
+					if (file.name === "mystock.db") {
+						console.log("got my db(name)->select elem!");
+						return file;
+					}
+				}
+				else {
+					if (file.fileName === "mystock.db") {
+						console.log("got my db(fileName)->select elem!");
+						return file;
+					}
+				}
 			}
 		}
 	}
+	console.log(getfile() instanceof Blob);
+	var f = getfile();
 	// var f = dbFileElm.files[0];
 	var r = new FileReader();
 	var r2 = new FileReader();
