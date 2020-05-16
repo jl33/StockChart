@@ -196,13 +196,13 @@ dbFileElm.onchange = function () {
 				console.log(dbFileElm.files[i]);
 				var file = dbFileElm.files[i];
 				if ('name' in file) {
-					if (file.name == "mystock.db") {
+					if (file.name === "mystock.db") {
 						console.log("got my db!");
 						return file;
 					}
 				}
 				else {
-					if (file.fileName == "mystock.db") {
+					if (file.fileName === "mystock.db") {
 						console.log("got my db!");
 						return file;
 					}
@@ -210,8 +210,8 @@ dbFileElm.onchange = function () {
 			}
 		}
 	}
-	console.log(getfile instanceof Blob);
-	var f = getfile;
+	console.log(getfile() instanceof Blob);
+	var f = getfile();
 	var r = new FileReader();
 	var lstr = "", qr = "";
 	if (par_FilterList == 1) {
