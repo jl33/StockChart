@@ -334,7 +334,8 @@ stSelElm.onchange = function () {
 			}
 		}
 	}
-	var fdqy = getfile("stock_dqy.db");
+	var fdqy = getfile("stock_dy.db");
+	var fq = getfile("stock_q.db");
 	var fwm = getfile("stock_wm.db");
 	// var f = dbFileElm.files[0];
 	var r = new FileReader();
@@ -414,7 +415,7 @@ stSelElm.onchange = function () {
 	r5.onload = function () {
 		worker5.onmessage = function () {
 			noerror();
-			setChartDataQ(worker5, "SELECT range,fastRatio,currentRatio,debtNetRatio,shareholderEqtyRatio,totalLiabRatio,ContractLiabRatio as ContractLiability FROM vStockQuarter WHERE stockNum='" + v + "';");
+			setChartDataQ(worker5, "SELECT range,fastRatio,currentRatio,debtNetRatio,shareholderEqtyRatio,totalLiabRatio,ContrLiabRatio as ContractLiability FROM StockQuarter WHERE stockNum='" + v + "';");
 		};
 		try {
 			worker5.postMessage({ action: 'open', buffer: r5.result }, [r5.result]);
@@ -437,11 +438,11 @@ stSelElm.onchange = function () {
 		}
 	}
 
-	r.readAsArrayBuffer(fdqy);
+	r.readAsArrayBuffer(fdy);
 	r2.readAsArrayBuffer(fwm);
-	r3.readAsArrayBuffer(fdqy);
+	r3.readAsArrayBuffer(fdy);
 	r4.readAsArrayBuffer(fwm);
-	r5.readAsArrayBuffer(fdqy);
+	r5.readAsArrayBuffer(fq);
 	r6.readAsArrayBuffer(fwm);
 	var op = stSelElm.options[stSelElm.selectedIndex].text;
 	nameElm.innerText = op.substring(0, op.indexOf("("));
