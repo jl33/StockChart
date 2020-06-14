@@ -334,7 +334,7 @@ stSelElm.onchange = function () {
 			}
 		}
 	}
-	var fdqy = getfile("stock_dy.db");
+	var fdy = getfile("stock_dy.db");
 	var fq = getfile("stock_q.db");
 	var fwm = getfile("stock_wm.db");
 	// var f = dbFileElm.files[0];
