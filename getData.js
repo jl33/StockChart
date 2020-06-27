@@ -648,7 +648,9 @@ function setChartDataY(w, sqlsty) {
 					newYear = item[0] + '-10';
 					newDate = new Date(newYear).getTime();
 					//Y2------------------------
-					if (lastQendPrice) {
+					if (stockYObj[stockYObj.length - 1] === item){
+						_Y_OHLC_wQ.push([newDate,null,null,null,null]);
+					} else if (lastQendPrice) {
 						_Y_OHLC_wQ.push([newDate, lastQendPrice, item[32], item[33], item[2]]);
 					} else {
 						_Y_OHLC_wQ.push([newDate, item[31], item[32], item[33], item[2]]);
