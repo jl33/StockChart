@@ -31,9 +31,9 @@ var stockQObj = [];
 var stockWObj = [];
 var _D_Vol = [];
 var _D_fitVal = [];
-var _D_mainBuy = [];
-var _D_mainAgent = [];
-var _D_main5Day = [];
+var _D_buyForeignInvestment = [];
+var _D_buyDealer = [];
+var _D_buyInvestmentTrust = [];
 var _D_main20Day = [];
 var _D2_range = [];
 var _D_k5 = [];
@@ -249,9 +249,9 @@ stSelElm.onchange = function () {
 			_dayOHLC.push([newDate, row.open === null ? row.price : row.open, row.high === null ? row.price : row.high, row.low === null ? row.price : row.low, row.price]);
 			_D_fitVal.push([newDate, row.fitVal]);
 			_D_Vol.push([newDate, row.Volume]);
-			_D_mainBuy.push([newDate, row.mainBuy]);
-			_D_mainAgent.push([newDate, row.mainAgent]);
-			_D_main5Day.push([newDate, row.main5Day]);
+			_D_buyForeignInvestment.push([newDate, row.mainBuy]);
+			_D_buyDealer.push([newDate, row.mainAgent]);
+			_D_buyInvestmentTrust.push([newDate, row.main5Day]);
 			_D_main20Day.push([newDate, row.main20Day]);
 			_D_k5.push([newDate, row.K5]); 
 			_D_k10.push([newDate, row.K10]);
@@ -915,7 +915,7 @@ function mapChart() {
 			}
 		}, {
 			name: '主力5日集中度⇨',
-			data: _D_main5Day,
+			data: _D_buyInvestmentTrust,
 			type: 'area',
 			color: '#ff9d6f',
 			yAxis: 4,
@@ -986,7 +986,7 @@ function mapChart() {
 			}
 		}, {
 			name: '買賣券商差⇨',
-			data: _D_mainAgent,
+			data: _D_buyDealer,
 			type: 'area',
 			color: '#a6a6d2',
 			yAxis: 6,
@@ -998,7 +998,7 @@ function mapChart() {
 			}
 		}, {
 			name: '主力買超⇨',
-			data: _D_mainBuy,
+			data: _D_buyForeignInvestment,
 			type: 'area',
 			color: '#66b3ff',
 			yAxis: 8,
@@ -2545,9 +2545,9 @@ function clearArrayNDestroyChart() {
 	_dayOHLC = [];
 	_D_Vol = [];
 	_D_fitVal = [];
-	_D_mainBuy = [];
-	_D_mainAgent = [];
-	_D_main5Day = [];
+	_D_buyForeignInvestment = [];
+	_D_buyDealer = [];
+	_D_buyInvestmentTrust = [];
 	_D_main20Day = [];
 	_D2_range = [];
 	_D_k5 = [];

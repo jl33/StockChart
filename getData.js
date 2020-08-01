@@ -40,9 +40,9 @@ var _dayOHLC = [];
 var stockMObj = [];
 var stockQObj = [];
 var _D_Vol = [];
-var _D_mainBuy = [];
-var _D_mainAgent = [];
-var _D_main5Day = [];
+var _D_buyForeignInvestment = [];
+var _D_buyDealer = [];
+var _D_buyInvestmentTrust = [];
 var _D_main20Day = [];
 var _D_k_start = [];
 var _D_k5 = [];
@@ -349,8 +349,8 @@ stSelElm.onchange = function () {
 	r.onload = function () {
 		worker.onmessage = function () {
 			noerror();
-			var _sd = "SELECT date,PBRVal,PBRHigh,PBRLow,PERVal,price,Volume,mainBuy,";
-			_sd = _sd + "mainAgent,main5Day,main20Day,open,high,low,K5,K10,K20,K60,K120,";
+			var _sd = "SELECT date,PBRVal,PBRHigh,PBRLow,PERVal,price,Volume,buyLawF,";
+			_sd = _sd + "buyDealer,buyInvTrust,main20Day,open,high,low,K5,K10,K20,K60,K120,";
 			_sd = _sd + "K240,K,D,V5,V20,note,";
 			_sd = _sd + "voucherSell,dailyDividendRate ";
 			_sd = _sd + " FROM StockValue ";
@@ -491,9 +491,9 @@ function setChartData(w, sqlst) {
 				// _D_fitLow.push([newDate, item[26]]);
 				// _D_fitHigh.push([newDate, item[27]]);
 				_D_Vol.push([newDate, item[6]]);
-				_D_mainBuy.push([newDate, item[7]]);
-				_D_mainAgent.push([newDate, item[8]]);
-				_D_main5Day.push([newDate, item[9]]);
+				_D_buyForeignInvestment.push([newDate, item[7]]);
+				_D_buyDealer.push([newDate, item[8]]);
+				_D_buyInvestmentTrust.push([newDate, item[9]]);
 				_D_main20Day.push([newDate, item[10]]);
 				_D_k5.push([newDate, item[14]]);
 				_D_k10.push([newDate, item[15]]);
@@ -654,7 +654,7 @@ function setChartDataY(w, sqlsty) {
 						_Y_OHLC_wQ.push([newDate, lastQendPrice, item[32], item[33], item[2]]);
 					} else {
 						_Y_OHLC_wQ.push([newDate, item[31], item[32], item[33], item[2]]);
-					}
+					}  
 					lastQendPrice = null;
 					_Y_endPrice.push([newDate, item[31], item[32], item[33], item[2]]);
 					_Y_avgPrice.push([newDate, item[3]]);
@@ -1006,7 +1006,7 @@ function mapChart() {
 			startOnTick: false,
 		}, {
 			title: {
-				text: '主力集中度'
+				text: '投信佔比'
 			},
 			top: '58%',
 			height: '13%',
@@ -1047,7 +1047,7 @@ function mapChart() {
 			}]
 		}, {
 			title: {
-				text: '買賣券商差',
+				text: '自營商佔比',
 			},
 			offset: 0,
 			margin: 0,
@@ -1071,7 +1071,7 @@ function mapChart() {
 			startOnTick: false,
 		}, {
 			title: {
-				text: '主力買超'
+				text: '外資佔比'
 			},
 			top: '86%',
 			height: '14%',
@@ -1315,8 +1315,8 @@ function mapChart() {
 				enabled: false
 			}
 		}, {
-			name: '主力5日集中度⇨',
-			data: _D_main5Day,
+			name: '投信成交佔比⇨',
+			data: _D_buyInvestmentTrust,
 			type: 'area',
 			color: 'rgba(255,157,111,1)',
 			fillColor: 'rgba(255,157,111,0.3)',
@@ -1327,15 +1327,15 @@ function mapChart() {
 			credits: {
 				enabled: false
 			}
-		}, {
-			name: '主力20日集中度⇨',
-			data: _D_main20Day,
-			dashStyle: 'shortdot',
-			color: '#64a600',
-			yAxis: 5,
-			tooltip: {
-				valueSuffix: '%'
-			}
+		//}, {
+		//	name: '主力20日集中度⇨',
+		//	data: _D_main20Day,
+		//	dashStyle: 'shortdot',
+		//	color: '#64a600',
+		//	yAxis: 5,
+		//	tooltip: {
+		//		valueSuffix: '%'
+		//	}
 		}, {
 			name: '⇦K',
 			data: _D_K,
@@ -1364,8 +1364,8 @@ function mapChart() {
 				enabled: false
 			}
 		}, {
-			name: '買賣券商差⇨',
-			data: _D_mainAgent,
+			name: '自營商成交佔比⇨',
+			data: _D_buyDealer,
 			type: 'area',
 			color: 'rgba(166,166,210,1)',
 			fillColor: 'rgba(166,166,210,0.3)',
@@ -1378,8 +1378,8 @@ function mapChart() {
 				enabled: false
 			}
 		}, {
-			name: '主力買超⇨',
-			data: _D_mainBuy,
+			name: '外資成交佔比⇨',
+			data: _D_buyForeignInvestment,
 			type: 'area',
 			color: 'rgba(102,179,255,1)',
 			fillColor: 'rgba(102,179,255,0.3)',
@@ -3147,9 +3147,9 @@ function clearArrayNDestroyChart() {
 	// _D_fitVal = [];
 	// _D_fitLow = [];
 	// _D_fitHigh = [];
-	_D_mainBuy = [];
-	_D_mainAgent = [];
-	_D_main5Day = [];
+	_D_buyForeignInvestment = [];
+	_D_buyDealer = [];
+	_D_buyInvestmentTrust = [];
 	_D_main20Day = [];
 	// _D2_range = [];
 	_D_k5 = [];
