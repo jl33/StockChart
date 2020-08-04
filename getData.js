@@ -1322,7 +1322,8 @@ function mapChart() {
 			fillColor: 'rgba(255,157,111,0.3)',
 			yAxis: 5,
 			tooltip: {
-				valueSuffix: '%'
+				valueSuffix: '張',
+				valueDecimals: 0
 			},
 			credits: {
 				enabled: false
@@ -1371,7 +1372,7 @@ function mapChart() {
 			fillColor: 'rgba(166,166,210,0.3)',
 			yAxis: 7,
 			tooltip: {
-				valueSuffix: '家',
+				valueSuffix: '張',
 				valueDecimals: 0
 			},
 			credits: {
