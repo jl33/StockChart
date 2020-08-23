@@ -949,7 +949,7 @@ function mapChart() {
 				text: '成交量',
 				x: _leftYLabTitlePos
 			},
-			offset: 0,
+			offset: yAxis.width,
 			margin: 0,
 			startOnTick: false,
 			top: '25%',
