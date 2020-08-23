@@ -949,7 +949,7 @@ function mapChart() {
 			title: {
 				text: '成交量',
 				x: _leftYLabTitlePos,
-				y: 10
+				y: 0
 			},
 			//offset: _leftYLabOffset,
 			margin: 0,
@@ -974,11 +974,12 @@ function mapChart() {
 			},
 			title: {
 				text: '股淨比',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
 			top: '45%',
 			height: '13%',
-			offset: _leftYLabOffset,
+			// offset: _leftYLabOffset,
 			lineWidth: 1,
 			margin: 0,
 			startOnTick: false,
@@ -998,11 +999,12 @@ function mapChart() {
 			},
 			title: {
 				text: '借券賣出餘額',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
 			top: '58%',
 			height: '13%',
-			offset: _leftYLabOffset,
+			// offset: _leftYLabOffset,
 			lineWidth: 1,
 			margin: 0,
 			startOnTick: false,
@@ -1022,9 +1024,10 @@ function mapChart() {
 			},
 			title: {
 				text: 'KD值',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
-			offset: _leftYLabOffset,
+			// offset: _leftYLabOffset,
 			margin: 0,
 			top: '71%',
 			height: '15%',
@@ -1064,9 +1067,10 @@ function mapChart() {
 			},
 			title: {
 				text: 'MACD值',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
-			offset: _leftYLabOffset,
+			// offset: _leftYLabOffset,
 			margin: 0,
 			top: '86%',
 			height: '14%',
