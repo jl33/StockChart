@@ -799,7 +799,7 @@ Highcharts.setOptions({
 function mapChart() {
 	//#region base var
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = -460;
+		_leftYLabOffset = 100 - document.getElementById('containerD').width; //-460;
 	//#endregion
 	//#region  chart~
 	_chart_D = Highcharts.stockChart('containerD', {
@@ -947,7 +947,6 @@ function mapChart() {
 			},
 			title: {
 				text: '成交量',
-				rotation: 0,
 				x: _leftYLabTitlePos
 			},
 			offset: _leftYLabOffset,
