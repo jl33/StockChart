@@ -1450,7 +1450,7 @@ function mapChart() {
 function mapChartW() {
 	//#region var ~
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = -460;
+		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
 	//#endregion
 	//#region chart~
 	_chart_W = Highcharts.stockChart('containerW', {
@@ -1556,7 +1556,8 @@ function mapChartW() {
 			},
 			title: {
 				text: '外持股比',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
 			offset: _leftYLabOffset,
 			margin: 0,
@@ -1577,7 +1578,8 @@ function mapChartW() {
 			},
 			title: {
 				text: '千張大戶比',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
 			offset: _leftYLabOffset,
 			margin: 0,
@@ -1773,7 +1775,7 @@ function mapChartW() {
 function mapChartM() {
 	//#region var ~
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = -460;
+		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
 	//#endregion
 	//#region chart~
 	_chart_M = Highcharts.stockChart('containerM', {
@@ -1918,7 +1920,8 @@ function mapChartM() {
 			},
 			title: {
 				text: '持股比',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
 			offset: _leftYLabOffset,
 			margin: 0,
@@ -1942,7 +1945,8 @@ function mapChartM() {
 			},
 			title: {
 				text: '成交量',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
 			offset: _leftYLabOffset,
 			margin: 0,
@@ -1964,7 +1968,8 @@ function mapChartM() {
 			},
 			title: {
 				text: '比率',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
 			offset: _leftYLabOffset,
 			margin: 0,
@@ -2160,7 +2165,7 @@ function mapChartQ() {
 	};
 	//#region var ~
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = -460;
+		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
 	//#endregion
 	//#region chart~
 	_chart_Q = Highcharts.stockChart('containerQ', {
@@ -2276,7 +2281,8 @@ function mapChartQ() {
 			},
 			title: {
 				text: '佔股本比',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
 			offset: _leftYLabOffset,
 			margin: 0,
@@ -2367,7 +2373,7 @@ function mapChartQ() {
 function mapChartY() {
 	//#region var ~
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = -460;
+		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
 	//#endregion
 	//#region chart~
 	_chart_Y = Highcharts.stockChart('containerY', {
@@ -2487,7 +2493,8 @@ function mapChartY() {
 			},
 			title: {
 				text: '股價',
-				x: _leftYLabTitlePos
+				x: _leftYLabTitlePos,
+				y: 0
 			},
 			height: '25%',
 			offset: _leftYLabOffset,
@@ -2512,7 +2519,8 @@ function mapChartY() {
 			},
 			title: {
 				text: '投淨比',
-				x: _leftYLabTitlePos
+				x: _leftYLabTitlePos,
+				y: 0
 			},
 			top: '40%',
 			height: '30%',
@@ -2534,7 +2542,8 @@ function mapChartY() {
 			},
 			title: {
 				text: 'EPS',
-				x: _leftYLabTitlePos
+				x: _leftYLabTitlePos,
+				y: 0
 			},
 			top: '70%',
 			height: '15%',
@@ -2560,7 +2569,8 @@ function mapChartY() {
 			},
 			title: {
 				text: '現金流量',
-				x: _leftYLabTitlePos
+				x: _leftYLabTitlePos,
+				y: 0
 			},
 			top: '85%',
 			height: '15%',
@@ -2866,7 +2876,7 @@ function mapChartY() {
 function mapChartY2() {
 	//#region var ~
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = -460;
+		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
 	//#endregion
 	//#region chart~
 	_chart_Y2 = Highcharts.stockChart('containerY2', {
@@ -2975,7 +2985,8 @@ function mapChartY2() {
 			},
 			title: {
 				text: '盈餘分配率',
-				x: _leftYLabTitlePos + 10
+				x: _leftYLabTitlePos + 10,
+				y: 0
 			},
 			height: '30%',
 			offset: _leftYLabOffset,
@@ -3006,7 +3017,8 @@ function mapChartY2() {
 			},
 			title: {
 				text: '股價',
-				x: _leftYLabTitlePos
+				x: _leftYLabTitlePos,
+				y: 0
 			},
 			top: '25%',
 			height: '75%',
