@@ -800,7 +800,7 @@ function mapChart() {
 	//#region base var
 	console.log(document.getElementById('containerD').clientWidth);
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
+		_leftYLabOffset = -500; //170 - document.getElementById('containerD').clientWidth; //-460;
 	//#endregion
 	//#region  chart~
 	_chart_D = Highcharts.stockChart('containerD', {
@@ -948,9 +948,10 @@ function mapChart() {
 			},
 			title: {
 				text: '成交量',
-				x: _leftYLabTitlePos
+				x: _leftYLabTitlePos,
+				y: 10
 			},
-			offset: _leftYLabOffset,
+			//offset: _leftYLabOffset,
 			margin: 0,
 			startOnTick: false,
 			top: '25%',
