@@ -800,7 +800,7 @@ function mapChart() {
 	//#region base var
 	console.log(document.getElementById('containerD').clientWidth);
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = -500; //170 - document.getElementById('containerD').clientWidth; //-460;
+		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
 	//#endregion
 	//#region  chart~
 	_chart_D = Highcharts.stockChart('containerD', {
@@ -951,7 +951,7 @@ function mapChart() {
 				x: _leftYLabTitlePos,
 				y: 0
 			},
-			//offset: _leftYLabOffset,
+			offset: _leftYLabOffset,
 			margin: 0,
 			startOnTick: false,
 			top: '25%',
@@ -979,7 +979,7 @@ function mapChart() {
 			},
 			top: '45%',
 			height: '13%',
-			// offset: _leftYLabOffset,
+			offset: _leftYLabOffset,
 			lineWidth: 1,
 			margin: 0,
 			startOnTick: false,
@@ -1004,7 +1004,7 @@ function mapChart() {
 			},
 			top: '58%',
 			height: '13%',
-			// offset: _leftYLabOffset,
+			offset: _leftYLabOffset,
 			lineWidth: 1,
 			margin: 0,
 			startOnTick: false,
@@ -1027,7 +1027,7 @@ function mapChart() {
 				x: _leftYLabTitlePos + 10,
 				y: 0
 			},
-			// offset: _leftYLabOffset,
+			offset: _leftYLabOffset,
 			margin: 0,
 			top: '71%',
 			height: '15%',
@@ -1070,7 +1070,7 @@ function mapChart() {
 				x: _leftYLabTitlePos + 10,
 				y: 0
 			},
-			// offset: _leftYLabOffset,
+			offset: _leftYLabOffset,
 			margin: 0,
 			top: '86%',
 			height: '14%',
