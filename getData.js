@@ -800,7 +800,7 @@ function mapChart() {
 	//#region base var
 	console.log(document.getElementById('containerD').clientWidth);
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = 100 - document.getElementById('containerD').clientWidth; //-460;
+		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
 	//#endregion
 	//#region  chart~
 	_chart_D = Highcharts.stockChart('containerD', {
