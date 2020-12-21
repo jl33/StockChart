@@ -1002,6 +1002,7 @@ function mapChart() {
 				x: _leftYLabTitlePos + 10,
 				y: 0
 			},
+			reversed: true,
 			top: '58%',
 			height: '13%',
 			offset: _leftYLabOffset,
