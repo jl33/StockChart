@@ -44,7 +44,7 @@ var _D_buyForeignInvestment = [];
 var _D_buyDealer = [];
 var _D_buyInvestmentTrust = [];
 var _D_main20Day = [];
-var _D_k_start = [];
+var _K_LineMarkList = [];
 var _D_k5 = [];
 var _D_k10 = [];
 var _D_k20 = [];
@@ -55,7 +55,7 @@ var _D_K = [];
 var _D_D = [];
 var _D_v5 = [];
 var _D_v20 = [];
-var _D_flag = [];
+var _D_MemoList = [];
 var _D_sell = [];
 var _D_divR = [];
 
@@ -77,7 +77,7 @@ var _M_y5 = [];
 var _M_y10 = [];
 var _M_Vol = [];
 
-var _Y_range = [];
+var _Y_quarterNoteList = [];
 var _Y_range_noQ = [];
 var _Y4_range = [];
 var _Y5_range = [];
@@ -281,6 +281,7 @@ stSelElm.onkeypress = function (e) {
 		return;
 	}
 }
+//#region t1=key-in stock textbox-------
 t1.onkeypress = function (e) {
 	var keynum;
 	keynum = e.which || e.keyCode;
@@ -312,6 +313,8 @@ t1.onblur = stSelElm.onblur = function () {
 	var f = this;
 	f.style.backgroundColor = 'rgba(255,255,255,0.4)';
 }
+//#endregion
+
 //#region
 //#region stSelElm.onchange
 stSelElm.onchange = function () {
@@ -346,6 +349,7 @@ stSelElm.onchange = function () {
 	var r6 = new FileReader();
 	var v = stSelElm.value;
 
+	//#region query daily data--------------------------------
 	r.onload = function () {
 		worker.onmessage = function () {
 			noerror();
@@ -364,7 +368,9 @@ stSelElm.onchange = function () {
 			worker.postMessage({ action: 'open', buffer: r.result });
 		}
 	}
+	//#endregion
 
+	//#region query month data------------------------------
 	r2.onload = function () {
 		worker2.onmessage = function () {
 			noerror();
@@ -377,7 +383,9 @@ stSelElm.onchange = function () {
 			worker2.postMessage({ action: 'open', buffer: r2.result });
 		}
 	}
+	//#endregion
 
+	//#region query year data------------------------
 	r3.onload = function () {
 		worker3.onmessage = function () {
 			noerror();
@@ -398,7 +406,9 @@ stSelElm.onchange = function () {
 			worker3.postMessage({ action: 'open', buffer: r3.result });
 		}
 	}
+	//#endregion
 
+	//#region query stock info---------------------------------
 	r4.onload = function () {
 		worker4.onmessage = function () {
 			noerror();
@@ -411,7 +421,9 @@ stSelElm.onchange = function () {
 			worker4.postMessage({ action: 'open', buffer: r4.result });
 		}
 	}
+	//#endregion
 
+	//#region query quarter data-----------------------------
 	r5.onload = function () {
 		worker5.onmessage = function () {
 			noerror();
@@ -424,7 +436,9 @@ stSelElm.onchange = function () {
 			worker5.postMessage({ action: 'open', buffer: r5.result });
 		}
 	}
+	//#endregion
 
+	//#region query week data------------------------------------
 	r6.onload = function () {
 		worker6.onmessage = function () {
 			noerror();
@@ -437,6 +451,7 @@ stSelElm.onchange = function () {
 			worker6.postMessage({ action: 'open', buffer: r6.result });
 		}
 	}
+	//#endregion
 
 	r.readAsArrayBuffer(fdy);
 	r2.readAsArrayBuffer(fwm);
@@ -472,17 +487,17 @@ function setChartData(w, sqlst) {
 	if (_chart_D) { _chart_D.showLoading(); }
 	w.onmessage = function (event) {
 		var results = event.data.results, newYear = '',
-			fg = { x: null, title: "", text: "" }, tfg, revA, revI, cntI,
-			fgK = { x: null, text: "", color: "", fillColor: "" }, tfgK;
+			memoFlag = { x: null, title: "", text: "" }, tfg, revA, dataDays, reverseDataDays,
+			kLineTrianglePoint = { x: null, text: "", color: "", fillColor: "" }, tfgK;
 		for (var i = 0; i < results.length; i++) {
 			stockObj = results[i].values;
-			revI = 0;
-			cntI = 0;
+			dataDays = 0;
+			reverseDataDays = 0;
 
 			stockObj.forEach(function (item) {
 				newYear = item[0];
 				newDate = new Date(newYear).getTime();
-				revI++;
+				dataDays++;
 				stockPBR.push([newDate, item[1]]);
 				stockPBRLo.push([newDate, item[3], item[2]]);
 				stockPER.push([newDate, item[4]]);
@@ -509,75 +524,75 @@ function setChartData(w, sqlst) {
 				_D_divR.push([newDate, item[26]]);
 				if (!(item[24] === '' || item[24] === null)) {
 					// } else {
-					fg.x = newDate;
-					fg.title = item[24];
-					fg.text = item[24];
-					tfg = Object.assign({}, fg);
-					_D_flag.push(tfg);
+					memoFlag.x = newDate;
+					memoFlag.title = item[24];
+					memoFlag.text = item[24];
+					tfg = Object.assign({}, memoFlag);
+					_D_MemoList.push(tfg);
 				}
 			});
 		}
 
-		for (let i = revI; i > 0; i--) {
-			cntI++;
-			switch (cntI - 1) {
+		for (let i = dataDays; i > 0; i--) {
+			reverseDataDays++;
+			switch (reverseDataDays - 1) {
 				case 5:
-					fgK.x = _dayOHLC[i][0];
+					kLineTrianglePoint.x = _dayOHLC[i][0];
 					// fgK.title = "5d";
-					fgK.text = "5d";
-					fgK.color = "#ff0000";
-					fgK.fillColor = "#ff0000";
-					tfgK = Object.assign({}, fgK);
-					_D_k_start.push(tfgK);
+					kLineTrianglePoint.text = "5d";
+					kLineTrianglePoint.color = "#ff0000";
+					kLineTrianglePoint.fillColor = "#ff0000";
+					tfgK = Object.assign({}, kLineTrianglePoint);
+					_K_LineMarkList.push(tfgK);
 					break;
 				case 10:
-					fgK.x = _dayOHLC[i][0];
+					kLineTrianglePoint.x = _dayOHLC[i][0];
 					// fgK.title = "10d";
-					fgK.text = "10d";
-					fgK.color = "#c6a300";
-					fgK.fillColor = "#c6a300";
-					tfgK = Object.assign({}, fgK);
-					_D_k_start.push(tfgK);
+					kLineTrianglePoint.text = "10d";
+					kLineTrianglePoint.color = "#c6a300";
+					kLineTrianglePoint.fillColor = "#c6a300";
+					tfgK = Object.assign({}, kLineTrianglePoint);
+					_K_LineMarkList.push(tfgK);
 					break;
 				case 20:
-					fgK.x = _dayOHLC[i][0];
+					kLineTrianglePoint.x = _dayOHLC[i][0];
 					// fgK.title = "20d";
-					fgK.text = "20d";
-					fgK.color = "#00ec00";
-					fgK.fillColor = "#00ec00";
-					tfgK = Object.assign({}, fgK);
-					_D_k_start.push(tfgK);
+					kLineTrianglePoint.text = "20d";
+					kLineTrianglePoint.color = "#00ec00";
+					kLineTrianglePoint.fillColor = "#00ec00";
+					tfgK = Object.assign({}, kLineTrianglePoint);
+					_K_LineMarkList.push(tfgK);
 					break;
 				case 60:
-					fgK.x = _dayOHLC[i][0];
+					kLineTrianglePoint.x = _dayOHLC[i][0];
 					// fgK.title = "60d";
-					fgK.text = "60d";
-					fgK.color = "#2828ff";
-					fgK.fillColor = "#2828ff";
-					tfgK = Object.assign({}, fgK);
-					_D_k_start.push(tfgK);
+					kLineTrianglePoint.text = "60d";
+					kLineTrianglePoint.color = "#2828ff";
+					kLineTrianglePoint.fillColor = "#2828ff";
+					tfgK = Object.assign({}, kLineTrianglePoint);
+					_K_LineMarkList.push(tfgK);
 					break;
 				case 120:
-					fgK.x = _dayOHLC[i][0];
+					kLineTrianglePoint.x = _dayOHLC[i][0];
 					// fgK.title = "120d";
-					fgK.text = "120d";
-					fgK.color = "#b15bff";
-					fgK.fillColor = "#b15bff";
-					tfgK = Object.assign({}, fgK);
-					_D_k_start.push(tfgK);
+					kLineTrianglePoint.text = "120d";
+					kLineTrianglePoint.color = "#b15bff";
+					kLineTrianglePoint.fillColor = "#b15bff";
+					tfgK = Object.assign({}, kLineTrianglePoint);
+					_K_LineMarkList.push(tfgK);
 					break;
 				case 240:
-					fgK.x = _dayOHLC[i][0];
+					kLineTrianglePoint.x = _dayOHLC[i][0];
 					// fgK.title = "240d";
-					fgK.text = "240d";
-					fgK.color = "#9d9d9d";
-					fgK.fillColor = "#9d9d9d";
-					tfgK = Object.assign({}, fgK);
-					_D_k_start.push(tfgK);
+					kLineTrianglePoint.text = "240d";
+					kLineTrianglePoint.color = "#9d9d9d";
+					kLineTrianglePoint.fillColor = "#9d9d9d";
+					tfgK = Object.assign({}, kLineTrianglePoint);
+					_K_LineMarkList.push(tfgK);
 					break;
 			}
 		}
-		_D_k_start = _D_k_start.reverse();
+		_K_LineMarkList = _K_LineMarkList.reverse();
 		mapChart();
 		clearArrayNDestroyChart();
 		_chart_D.hideLoading();
@@ -639,7 +654,7 @@ function setChartDataY(w, sqlsty) {
 	if (_chart_Y) { _chart_Y.showLoading(); }
 	if (_chart_Y2) { _chart_Y2.showLoading(); }
 	w.onmessage = function (event) {
-		var results = event.data.results, newYear = '', fg = { x: null, title: "", text: "" }, tfg;
+		var results = event.data.results, newYear = '', quarterNote = { x: null, title: "", text: "" }, tfg;
 		for (var i = 0; i < results.length; i++) {
 			stockYObj = results[i].values;
 			stockYObj.forEach(function (item) {
@@ -667,11 +682,11 @@ function setChartDataY(w, sqlsty) {
 					//Y2------------------------
 				} else {
 					newYear = item[0].replace('Q1', '-01').replace('Q2', '-04').replace('Q3', '-07')
-					fg.x = new Date(newYear).getTime();
-					fg.title = item[0].substring(4);
-					fg.text = item[0];
-					tfg = Object.assign({}, fg);
-					_Y_range.push(tfg);
+					quarterNote.x = new Date(newYear).getTime();
+					quarterNote.title = item[0].substring(4);
+					quarterNote.text = item[0];
+					tfg = Object.assign({}, quarterNote);
+					_Y_quarterNoteList.push(tfg);
 					newDate = new Date(newYear).getTime();
 					_Y_OHLC_wQ.push([newDate, item[31], item[32], item[33], item[2]]);
 					//set last quarter end price
@@ -973,9 +988,9 @@ function mapChart() {
 				align: 'left',
 			},
 			title: {
-				text: '股淨比',
+				text: '股淨比/溢價',
 				x: _leftYLabTitlePos + 10,
-				y: 0
+				y: 0			
 			},
 			top: '45%',
 			height: '13%',
@@ -1274,7 +1289,7 @@ function mapChart() {
 				}
 			}
 		}, {
-			name: '⇦股淨比',
+			name: '⇦股淨比/溢價',
 			data: stockPBR,
 			color: '#f00078',
 			id: '_ex_flag',
@@ -1294,7 +1309,7 @@ function mapChart() {
 			name: '日',
 			color: '#000000',
 			fillColor: 'rgba(220,0,0,0.2)',
-			data: _D_flag,
+			data: _D_MemoList,
 			yAxis: 2,
 			showInLegend: false,
 			onSeries: '_div_flag',
@@ -1433,10 +1448,10 @@ function mapChart() {
 		});
 	}
 
-	if (_D_k_start.length > 0) {
+	if (_K_LineMarkList.length > 0) {
 		_chart_D.addSeries({
 			type: 'flags',
-			data: _D_k_start,
+			data: _K_LineMarkList,
 			onSeries: '_ar_range',
 			shape: 'triangle',
 			height: 3,
@@ -2771,7 +2786,7 @@ function mapChartY() {
 			}, {
 				type: 'flags',
 				name: '季',
-				data: _Y_range,
+				data: _Y_quarterNoteList,
 				color: '#000000',
 				fillColor: 'rgba(220,0,0,0.2)',
 				yAxis: 4,
@@ -3183,8 +3198,8 @@ function clearArrayNDestroyChart() {
 	// _D_macd = [];
 	_D_v5 = [];
 	_D_v20 = [];
-	_D_flag = [];
-	_D_k_start = [];
+	_D_MemoList = [];
+	_K_LineMarkList = [];
 	_D_sell = [];
 	_D_divR = [];
 }
@@ -3207,7 +3222,7 @@ function clearArrayNDestroyChartM() {
 	_M_Vol = [];
 }
 function clearArrayNDestroyChartY() {
-	_Y_range = [];
+	_Y_quarterNoteList = [];
 	_Y_range_noQ = [];
 	_Y4_range = [];
 	_Y5_range = [];
