@@ -1291,7 +1291,9 @@ function mapChart() {
 		}, {
 			name: '⇦股淨比/溢價',
 			data: stockPBR,
+			type: 'area',
 			color: '#f00078',
+			fillColor: 'rgba(255,157,111,0.3)',
 			id: '_ex_flag',
 			yAxis: 2,
 			zIndex: 1,
