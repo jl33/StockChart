@@ -15,6 +15,7 @@
             from {
                 opacity: 0.99
             }
+
             to {
                 opacity: 1
             }
@@ -24,6 +25,7 @@
             from {
                 opacity: 0.99
             }
+
             to {
                 opacity: 1
             }
@@ -153,7 +155,7 @@
         .spanRange {
             margin-top: 0.1em;
             margin-bottom: 0.1em;
-            font-size:2em;
+            font-size: 2em;
             color: rgba(0, 0, 0, 0.19);
             /* background-color: white; */
             z-index: -1;
@@ -163,7 +165,7 @@
             text-align: center; */
         }
 
-        .tdStyle{
+        .tdStyle {
             margin-top: 0px;
             margin-bottom: 0px;
             margin-left: 0px;
@@ -216,7 +218,7 @@
 <body style="margin-left: 0px;margin-right: 0px;margin-top: 0px;margin-bottom: 0px;">
     <script src="jquery-3.3.1.min.js"></script>
     <script src="code/highstock.js"></script>
-    <script src="code/modules/drag-panes.js"></script>  
+    <script src="code/modules/drag-panes.js"></script>
     <script src="code/highcharts-more.js"></script>
     <script src="code/indicators/indicators.js"></script>
     <script src="code/indicators/ema.js"></script>
@@ -233,7 +235,8 @@
             <p class="tooltip" style="margin-top:0px;margin-bottom:0px;">
                 <span id="popDesc" class="tooltiptext"></span>股票代碼(Alt+F2)
             </p>
-            <input type="text" id="t1" maxlength="6" style="text-align: right; width:50px;border-color: rgba(0,0,0,0.1);background-color: rgba(255,255,255,0);">
+            <input type="text" id="t1" maxlength="6"
+                style="text-align: right; width:50px;border-color: rgba(0,0,0,0.1);background-color: rgba(255,255,255,0);">
             <select id="stockSel" class="transparentBackcolor">
             </select>
         </div>
@@ -248,11 +251,11 @@
         <tr style="margin-left: 0px;margin-right: 0px;">
             <td class="tdStyle">
                 <div id="containerD" class="chartStyle chartHBig"></div>
-                <div id="containerY" class="chartStyle chartBig"></div>                
+                <div id="containerY" class="chartStyle chartBig"></div>
             </td>
             <td class="tdStyle">
                 <div id="containerM" class="chartStyle chartSmall"></div>
-                <div id="containerY2" class="chartStyle chartMini"></div>    
+                <div id="containerY2" class="chartStyle chartMini"></div>
                 <div id="containerW" class="chartStyle chartSmall"></div>
                 <div id="containerQ" class="chartStyle chartTiny"></div>
             </td>

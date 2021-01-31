@@ -663,13 +663,13 @@ function setChartDataY(w, sqlsty) {
 					newYear = item[0] + '-10';
 					newDate = new Date(newYear).getTime();
 					//Y2------------------------
-					if (stockYObj[stockYObj.length - 1] === item){
-						_Y_OHLC_wQ.push([newDate,null,null,null,null]);
+					if (stockYObj[stockYObj.length - 1] === item) {
+						_Y_OHLC_wQ.push([newDate, null, null, null, null]);
 					} else if (lastQendPrice) {
 						_Y_OHLC_wQ.push([newDate, lastQendPrice, item[32], item[33], item[2]]);
 					} else {
 						_Y_OHLC_wQ.push([newDate, item[31], item[32], item[33], item[2]]);
-					}  
+					}
 					lastQendPrice = null;
 					_Y_endPrice.push([newDate, item[31], item[32], item[33], item[2]]);
 					_Y_avgPrice.push([newDate, item[3]]);
@@ -988,9 +988,9 @@ function mapChart() {
 				align: 'left',
 			},
 			title: {
-				text: '股淨比/溢價',
+				text: '股淨比/折溢價',
 				x: _leftYLabTitlePos + 10,
-				y: 0			
+				y: 0
 			},
 			top: '45%',
 			height: '13%',
@@ -1352,15 +1352,15 @@ function mapChart() {
 			credits: {
 				enabled: false
 			}
-		//}, {
-		//	name: '主力20日集中度⇨',
-		//	data: _D_main20Day,
-		//	dashStyle: 'shortdot',
-		//	color: '#64a600',
-		//	yAxis: 5,
-		//	tooltip: {
-		//		valueSuffix: '%'
-		//	}
+			//}, {
+			//	name: '主力20日集中度⇨',
+			//	data: _D_main20Day,
+			//	dashStyle: 'shortdot',
+			//	color: '#64a600',
+			//	yAxis: 5,
+			//	tooltip: {
+			//		valueSuffix: '%'
+			//	}
 		}, {
 			name: '⇦K',
 			data: _D_K,
@@ -2604,6 +2604,15 @@ function mapChartY() {
 			offset: 0,
 			startOnTick: false,
 			opposite: true
+		}, {
+			title: {
+				text: 'season'
+			},
+			top: '60%',
+			height: '15%',
+			offset: 0,
+			startOnTick: false,
+			opposite: true
 		}],
 		//#endregion
 
@@ -2791,7 +2800,7 @@ function mapChartY() {
 				data: _Y_quarterNoteList,
 				color: '#000000',
 				fillColor: 'rgba(220,0,0,0.2)',
-				yAxis: 4,
+				yAxis: 8,
 				showInLegend: false,
 				onSeries: '_Y_div',
 				shape: 'circlepin'
