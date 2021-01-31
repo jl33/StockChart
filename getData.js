@@ -1289,7 +1289,7 @@ function mapChart() {
 				}
 			}
 		}, {
-			name: '⇦股淨比/溢價',
+			name: '⇦股淨比/折溢價',
 			data: stockPBR,
 			type: 'area',
 			color: '#f00078',
@@ -2606,7 +2606,7 @@ function mapChartY() {
 			opposite: true
 		}, {
 			title: {
-				text: 'season'
+				text: '季'
 			},
 			top: '60%',
 			height: '15%',
@@ -2802,7 +2802,7 @@ function mapChartY() {
 				fillColor: 'rgba(220,0,0,0.2)',
 				yAxis: 8,
 				showInLegend: false,
-				onSeries: '_Y_div',
+				// onSeries: '_Y_div',
 				shape: 'circlepin'
 			}, {
 				name: '⇦稅後EPS',
