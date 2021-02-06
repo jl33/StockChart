@@ -944,7 +944,7 @@ function mapChart() {
 			symbolPadding: 1,
 			margin: 0,
 			x: 0,
-			y: 100,
+			y: 85,
 			width: 80
 		},
 		navigator: {
