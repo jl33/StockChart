@@ -463,6 +463,8 @@ stSelElm.onchange = function () {
 	r5.readAsArrayBuffer(fq);
 	r6.readAsArrayBuffer(fwm);
 	var op = stSelElm.options[stSelElm.selectedIndex].text;
+	console.log("get select element options .....");
+	console.log(op);
 	nameElm.innerText = op.substring(0, op.indexOf("("));
 	typeElm.innerText = op.substring(op.indexOf("(") + 1, op.indexOf(")"));
 	showStockFont(true);
