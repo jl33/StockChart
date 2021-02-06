@@ -43,6 +43,9 @@ var _D_Vol = [];
 var _D_buyForeignInvestment = [];
 var _D_buyDealer = [];
 var _D_buyInvestmentTrust = [];
+var _D_buyLawFCombine = [];
+var _D_buyDealerCombine = [];
+var _D_buyInvesCombine = [];
 var _D_main20Day = [];
 var _K_LineMarkList = [];
 var _D_k5 = [];
@@ -356,7 +359,7 @@ stSelElm.onchange = function () {
 			var _sd = "SELECT date,PBRVal,PBRHigh,PBRLow,PERVal,price,Volume,buyLawF,";
 			_sd = _sd + "buyDealer,buyInvTrust,main20Day,open,high,low,K5,K10,K20,K60,K120,";
 			_sd = _sd + "K240,K,D,V5,V20,note,";
-			_sd = _sd + "voucherSell,dailyDividendRate ";
+			_sd = _sd + "voucherSell,dailyDividendRate,buyLawFCombine,buyDealerCombine,buyInvTrustCombine ";
 			_sd = _sd + " FROM StockValue ";
 			_sd = _sd + "WHERE stockNum='" + v + "' and date<=date('now','+14 day') and price > 0 Order By date;";
 			setChartData(worker, _sd);
@@ -502,13 +505,31 @@ function setChartData(w, sqlst) {
 				stockPBRLo.push([newDate, item[3], item[2]]);
 				stockPER.push([newDate, item[4]]);
 				_dayOHLC.push([newDate, item[11] === null ? item[5] : item[11], item[12] === null ? item[5] : item[12], item[13] === null ? item[5] : item[13], item[5]]);
-				// _D_fitVal.push([newDate, item[6]]);
-				// _D_fitLow.push([newDate, item[26]]);
-				// _D_fitHigh.push([newDate, item[27]]);
 				_D_Vol.push([newDate, item[6]]);
-				_D_buyForeignInvestment.push([newDate, item[7]]);
-				_D_buyDealer.push([newDate, item[8]]);
-				_D_buyInvestmentTrust.push([newDate, item[9]]);
+				if (item[27] === '' || item[27] === null){
+					_D_buyForeignInvestment.push([newDate, item[7]]);
+					_D_buyLawFCombine.push([newDate,item[7]]);
+				}else{
+					_D_buyForeignInvestment.push([newDate, item[7]]);
+					_D_buyLawFCombine.push([newDate,item[27]]);
+				}
+
+				if (item[28] === '' || item[28] === null){
+					_D_buyDealer.push([newDate, item[8]]);
+					_D_buyDealerCombine.push([newDate,item[8]]);
+				}else{
+					_D_buyDealer.push([newDate, item[8]]);
+					_D_buyDealerCombine.push([newDate,item[28]]);
+				}
+
+				if (item[29] === '' || item[29] === null){
+					_D_buyInvestmentTrust.push([newDate, item[9]]);
+					_D_buyInvesCombine.push([newDate,item[9]]);
+				}else{
+					_D_buyInvestmentTrust.push([newDate, item[9]]);
+					_D_buyInvesCombine.push([newDate,item[29]]);
+				}
+				
 				_D_main20Day.push([newDate, item[10]]);
 				_D_k5.push([newDate, item[14]]);
 				_D_k10.push([newDate, item[15]]);
@@ -1339,12 +1360,13 @@ function mapChart() {
 				enabled: false
 			}
 		}, {
-			name: '投信成交佔比⇨',
+			name: '投信買賣⇨',
 			data: _D_buyInvestmentTrust,
 			type: 'area',
-			color: 'rgba(255,157,111,1)',
+			color: 'rgba(255,157,111,0.3)',
 			fillColor: 'rgba(255,157,111,0.3)',
 			yAxis: 5,
+			zIndex: -1,
 			tooltip: {
 				valueSuffix: '張',
 				valueDecimals: 0
@@ -1352,15 +1374,21 @@ function mapChart() {
 			credits: {
 				enabled: false
 			}
-			//}, {
-			//	name: '主力20日集中度⇨',
-			//	data: _D_main20Day,
-			//	dashStyle: 'shortdot',
-			//	color: '#64a600',
-			//	yAxis: 5,
-			//	tooltip: {
-			//		valueSuffix: '%'
-			//	}
+		}, {
+			name: '投信買賣(含ETF)⇨',
+			data: _D_buyInvesCombine,
+			// type: 'area',
+			color: 'rgba(255,157,111,1)',
+			// fillColor: 'rgba(255,157,111,0.3)',
+			yAxis: 5,
+			zIndex: -2,
+			tooltip: {
+				valueSuffix: '張',
+				valueDecimals: 0
+			},
+			credits: {
+				enabled: false
+			}
 		}, {
 			name: '⇦K',
 			data: _D_K,
@@ -1389,12 +1417,13 @@ function mapChart() {
 				enabled: false
 			}
 		}, {
-			name: '自營商成交佔比⇨',
+			name: '自營商買賣⇨',
 			data: _D_buyDealer,
 			type: 'area',
-			color: 'rgba(166,166,210,1)',
+			color: 'rgba(166,166,210,0.3)',
 			fillColor: 'rgba(166,166,210,0.3)',
 			yAxis: 7,
+			zIndex: -2,
 			tooltip: {
 				valueSuffix: '張',
 				valueDecimals: 0
@@ -1403,11 +1432,41 @@ function mapChart() {
 				enabled: false
 			}
 		}, {
-			name: '外資成交佔比⇨',
+			name: '自營商買賣(含ETF)⇨',
+			data: _D_buyDealerCombine,
+			// type: 'area',
+			color: 'rgba(166,166,210,1)',
+			// fillColor: 'rgba(166,166,210,0.3)',
+			yAxis: 7,
+			zIndex: -1,
+			tooltip: {
+				valueSuffix: '張',
+				valueDecimals: 0
+			},
+			credits: {
+				enabled: false
+			}
+		}, {
+			name: '外資買賣⇨',
 			data: _D_buyForeignInvestment,
 			type: 'area',
-			color: 'rgba(102,179,255,1)',
+			color: 'rgba(102,179,255,0.3)',
 			fillColor: 'rgba(102,179,255,0.3)',
+			yAxis: 9,
+			zIndex: -2,
+			tooltip: {
+				valueSuffix: '張',
+				valueDecimals: 0
+			},
+			credits: {
+				enabled: false
+			}
+		}, {
+			name: '外資買賣(含ETF)⇨',
+			data: _D_buyLawFCombine,
+			// type: 'area',
+			color: 'rgba(102,179,255,1)',
+			// fillColor: 'rgba(102,179,255,0.3)',
 			yAxis: 9,
 			zIndex: -1,
 			tooltip: {
@@ -3190,9 +3249,9 @@ function clearArrayNDestroyChart() {
 	// stockPrice = [];
 	_dayOHLC = [];
 	_D_Vol = [];
-	// _D_fitVal = [];
-	// _D_fitLow = [];
-	// _D_fitHigh = [];
+	_D_buyLawFCombine = [];
+	_D_buyDealerCombine = [];
+	_D_buyInvesCombine = [];
 	_D_buyForeignInvestment = [];
 	_D_buyDealer = [];
 	_D_buyInvestmentTrust = [];
