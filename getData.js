@@ -466,7 +466,7 @@ stSelElm.onchange = function () {
 	console.log("get select element options .....");
 	console.log(op);
 	nameElm.innerText = op.substring(0, op.indexOf("("));
-	typeElm.innerText = op.substring(op.indexOf("(") + 1, op.indexOf(")"));
+	//typeElm.innerText = op.substring(op.indexOf("(") + 1, op.indexOf(")"));
 	showStockFont(true);
 
 }
@@ -481,6 +481,7 @@ function setPopDesc(w, sqlst) {
 			stockObj = results[i].values;
 			stockObj.forEach(function (item) {
 				popDescElm.innerHTML = item[1];
+				typeElm.innerText = item[1].substring(0, item[1].indexOf(","));
 			});
 		}
 	}
