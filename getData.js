@@ -246,7 +246,7 @@ dbFileElm.onchange = function () {
 				}
 				t1.focus();
 			}
-			worker.postMessage({ action: 'exec', sql: "SELECT stockNum,StockName,bizType FROM stockInfo Where enable=1 " + qr + " Order By bizType,bizDesc, otherOrder,stockNum;" });
+			worker.postMessage({ action: 'exec', sql: "SELECT stockNum,StockName,bizType FROM stockInfo Where enable=1 " + qr + " Order By bizType, otherOrder,stockNum;" });
 		};
 		try {
 			worker.postMessage({ action: 'open', buffer: r.result }, [r.result]);
