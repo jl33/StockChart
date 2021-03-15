@@ -199,21 +199,21 @@ dbFileElm.onchange = function () {
 				var file = dbFileElm.files[i];
 				if ('name' in file) {
 					if (file.name === "stock_wm.db") {
-						console.log("got my db(name)!");
+						// console.log("got my db(name)!");
 						return file;
 					}
 				}
 				else {
 					if (file.fileName === "stock_wm.db") {
-						console.log("got my db(fileName)!");
+						// console.log("got my db(fileName)!");
 						return file;
 					}
 				}
 			}
 		}
 	}
-	console.log(getfile());
-	console.log(getfile() instanceof Blob);
+	// console.log(getfile());
+	// console.log(getfile() instanceof Blob);
 	var f = getfile();
 	var r = new FileReader();
 	var lstr = "", qr = "";
@@ -327,13 +327,13 @@ stSelElm.onchange = function () {
 				var file = dbFileElm.files[i];
 				if ('name' in file) {
 					if (file.name === n) {
-						console.log("got my db(name)->select elem!");
+						// console.log("got my db(name)->select elem!");
 						return file;
 					}
 				}
 				else {
 					if (file.fileName === n) {
-						console.log("got my db(fileName)->select elem!");
+						// console.log("got my db(fileName)->select elem!");
 						return file;
 					}
 				}
@@ -842,7 +842,7 @@ Highcharts.setOptions({
 //#region render chart...
 function mapChart() {
 	//#region base var
-	console.log(document.getElementById('containerD').clientWidth);
+	// console.log(document.getElementById('containerD').clientWidth);
 	var _leftYLabTitlePos = -55,
 		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
 	//#endregion
