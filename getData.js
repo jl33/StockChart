@@ -464,10 +464,10 @@ stSelElm.onchange = function () {
 	r6.readAsArrayBuffer(fwm);
 	var op = stSelElm.options[stSelElm.selectedIndex].text;
 	nameElm.innerText = op.substring(0, op.indexOf("("));
-	if (! (op.includes("ETF"))){
+	if (!(op.includes("ETF"))) {
 		typeElm.innerText = op.substring(op.indexOf("(") + 1, op.indexOf(")"));
 	}
-	
+
 	showStockFont(true);
 }
 //#endregion
@@ -481,7 +481,7 @@ function setPopDesc(w, sqlst) {
 			stockObj = results[i].values;
 			stockObj.forEach(function (item) {
 				popDescElm.innerHTML = item[1];
-				if (item[0].startsWith("00") ){
+				if (item[0].startsWith("00")) {
 					typeElm.innerText = item[1].substring(0, item[1].indexOf(","));
 				}
 			});
@@ -511,30 +511,30 @@ function setChartData(w, sqlst) {
 				stockPER.push([newDate, item[4]]);
 				_dayOHLC.push([newDate, item[11] === null ? item[5] : item[11], item[12] === null ? item[5] : item[12], item[13] === null ? item[5] : item[13], item[5]]);
 				_D_Vol.push([newDate, item[6]]);
-				if (item[27] === '' || item[27] === null){
+				if (item[27] === '' || item[27] === null) {
 					_D_buyForeignInvestment.push([newDate, item[7]]);
-					_D_buyLawFCombine.push([newDate,item[7]]);
-				}else{
+					_D_buyLawFCombine.push([newDate, item[7]]);
+				} else {
 					_D_buyForeignInvestment.push([newDate, item[7]]);
-					_D_buyLawFCombine.push([newDate,item[27]]);
+					_D_buyLawFCombine.push([newDate, item[27]]);
 				}
 
-				if (item[28] === '' || item[28] === null){
+				if (item[28] === '' || item[28] === null) {
 					_D_buyDealer.push([newDate, item[8]]);
-					_D_buyDealerCombine.push([newDate,item[8]]);
-				}else{
+					_D_buyDealerCombine.push([newDate, item[8]]);
+				} else {
 					_D_buyDealer.push([newDate, item[8]]);
-					_D_buyDealerCombine.push([newDate,item[28]]);
+					_D_buyDealerCombine.push([newDate, item[28]]);
 				}
 
-				if (item[29] === '' || item[29] === null){
+				if (item[29] === '' || item[29] === null) {
 					_D_buyInvestmentTrust.push([newDate, item[9]]);
-					_D_buyInvesCombine.push([newDate,item[9]]);
-				}else{
+					_D_buyInvesCombine.push([newDate, item[9]]);
+				} else {
 					_D_buyInvestmentTrust.push([newDate, item[9]]);
-					_D_buyInvesCombine.push([newDate,item[29]]);
+					_D_buyInvesCombine.push([newDate, item[29]]);
 				}
-				
+
 				_D_main20Day.push([newDate, item[10]]);
 				_D_k5.push([newDate, item[14]]);
 				_D_k10.push([newDate, item[15]]);
@@ -794,24 +794,25 @@ function setChartDataW(w, sqlstm) {
 				console.log(d1);
 				console.log(ds);
 				console.log(newYear);
-
-				_W_shareholderGT1000.push([newYear, item[1]]);
-				_W_FI_SC_5d.push([newYear, item[2]]);
-				_W_FI_SC_1m.push([newYear, item[3]]);
-				_W_FI_SC_3m.push([newYear, item[4]]);
-				_W_FI_SC_1y.push([newYear, item[5]]);
-				_W_FI_SC_3y.push([newYear, item[6]]);
-				_W_TI_SC_5d.push([newYear, item[7]]);
-				_W_TI_SC_1m.push([newYear, item[8]]);
-				_W_TI_SC_3m.push([newYear, item[9]]);
-				_W_TI_SC_1y.push([newYear, item[10]]);
-				_W_TI_SC_3y.push([newYear, item[11]]);
-				_W_SI_SC_5d.push([newYear, item[12]]);
-				_W_SI_SC_1m.push([newYear, item[13]]);
-				_W_SI_SC_3m.push([newYear, item[14]]);
-				_W_SI_SC_1y.push([newYear, item[15]]);
-				_W_SI_SC_3y.push([newYear, item[16]]);
-				_W_F_Own_ratio.push([newYear, item[17]]);
+				if (!Number.isNaN(newYear)) {
+					_W_shareholderGT1000.push([newYear, item[1]]);
+					_W_FI_SC_5d.push([newYear, item[2]]);
+					_W_FI_SC_1m.push([newYear, item[3]]);
+					_W_FI_SC_3m.push([newYear, item[4]]);
+					_W_FI_SC_1y.push([newYear, item[5]]);
+					_W_FI_SC_3y.push([newYear, item[6]]);
+					_W_TI_SC_5d.push([newYear, item[7]]);
+					_W_TI_SC_1m.push([newYear, item[8]]);
+					_W_TI_SC_3m.push([newYear, item[9]]);
+					_W_TI_SC_1y.push([newYear, item[10]]);
+					_W_TI_SC_3y.push([newYear, item[11]]);
+					_W_SI_SC_5d.push([newYear, item[12]]);
+					_W_SI_SC_1m.push([newYear, item[13]]);
+					_W_SI_SC_3m.push([newYear, item[14]]);
+					_W_SI_SC_1y.push([newYear, item[15]]);
+					_W_SI_SC_3y.push([newYear, item[16]]);
+					_W_F_Own_ratio.push([newYear, item[17]]);
+				}
 			});
 		}
 		mapChartW();
