@@ -791,9 +791,9 @@ function setChartDataW(w, sqlstm) {
 				d1 = new Date('20' + item[0].substr(item[0].indexOf('W') - 2, 2), 0, 0);
 				ds = item[0].substr(item[0].indexOf('W') + 1, 2) * 7;
 				newYear = ds * oneDay + d1.getTime();
-				console.log(d1);
-				console.log(ds);
-				console.log(newYear);
+				// console.log(d1);
+				// console.log(ds);
+				// console.log(newYear);
 				if (!Number.isNaN(newYear)) {
 					_W_shareholderGT1000.push([newYear, item[1]]);
 					_W_FI_SC_5d.push([newYear, item[2]]);
