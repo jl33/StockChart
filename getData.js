@@ -1345,9 +1345,9 @@ function mapChart() {
 			yAxis: 2,
 			showInLegend: false,
 			width: 9,
-			style: { fontSize: '7px' },
+			style: { fontSize: '9px' },
 			onSeries: '_div_flag',
-			shape: 'flag'
+			shape: 'squarepin'
 		}, {
 			name: '本益比⇨',
 			data: stockPER,
