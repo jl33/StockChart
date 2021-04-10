@@ -1344,7 +1344,8 @@ function mapChart() {
 			data: _D_MemoList,
 			yAxis: 2,
 			showInLegend: false,
-			width: 9,
+			//width: 9,
+			color: 'white',
 			style: { fontSize: '9px' },
 			onSeries: '_div_flag',
 			shape: 'squarepin'
@@ -2872,6 +2873,7 @@ function mapChartY() {
 				fillColor: 'rgba(220,0,0,0.2)',
 				yAxis: 8,
 				showInLegend: false,
+				color: 'white',
 				width: 9,
 				style: { fontSize: '7px' },
 				// onSeries: '_Y_div',
