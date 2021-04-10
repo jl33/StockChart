@@ -1344,8 +1344,10 @@ function mapChart() {
 			data: _D_MemoList,
 			yAxis: 2,
 			showInLegend: false,
+			width: 9,
+			style: { fontSize: '7px' },
 			onSeries: '_div_flag',
-			shape: 'circlepin'
+			shape: 'flag'
 		}, {
 			name: '本益比⇨',
 			data: stockPER,
@@ -2870,8 +2872,10 @@ function mapChartY() {
 				fillColor: 'rgba(220,0,0,0.2)',
 				yAxis: 8,
 				showInLegend: false,
+				width: 9,
+				style: { fontSize: '7px' },
 				// onSeries: '_Y_div',
-				shape: 'circlepin'
+				shape: 'flag'
 			}, {
 				name: '⇦稅後EPS',
 				data: _Y_afterTaxEPS,
