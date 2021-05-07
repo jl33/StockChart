@@ -1,14 +1,14 @@
 /**
- * @license Highstock JS v8.0.4 (2020-03-10)
+ * @license Highstock JS v9.1.0 (2021-05-03)
  * @module highcharts/indicators/zigzag
  * @requires highcharts
  * @requires highcharts/modules/stock
  *
- * Indicator series type for Highstock
+ * Indicator series type for Highcharts Stock
  *
- * (c) 2010-2019 Kacper Madej
+ * (c) 2010-2021 Kacper Madej
  *
  * License: www.highcharts.com/license
  */
 'use strict';
-import '../../indicators/zigzag.src.js';
+import '../../Stock/Indicators/Zigzag/ZigzagIndicator.js';

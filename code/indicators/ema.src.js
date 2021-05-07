@@ -1,9 +1,9 @@
 /**
- * @license Highstock JS v8.0.4 (2020-03-10)
+ * @license Highstock JS v9.1.0 (2021-05-03)
  *
- * Indicator series type for Highstock
+ * Indicator series type for Highcharts Stock
  *
- * (c) 2010-2019 Sebastian Bochan
+ * (c) 2010-2021 Sebastian Bochan
  *
  * License: www.highcharts.com/license
  */
@@ -28,7 +28,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'indicators/ema.src.js', [_modules['parts/Utilities.js']], function (U) {
+    _registerModule(_modules, 'Stock/Indicators/EMA/EMAIndicator.js', [_modules['Core/Series/SeriesRegistry.js'], _modules['Core/Utilities.js']], function (SeriesRegistry, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -36,7 +36,31 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var correctFloat = U.correctFloat, isArray = U.isArray, seriesType = U.seriesType;
+        var __extends = (this && this.__extends) || (function () {
+                var extendStatics = function (d,
+            b) {
+                    extendStatics = Object.setPrototypeOf ||
+                        ({ __proto__: [] } instanceof Array && function (d,
+            b) { d.__proto__ = b; }) ||
+                        function (d,
+            b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+                return extendStatics(d, b);
+            };
+            return function (d, b) {
+                extendStatics(d, b);
+                function __() { this.constructor = d; }
+                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+            };
+        })();
+        var SMAIndicator = SeriesRegistry.seriesTypes.sma;
+        var correctFloat = U.correctFloat,
+            isArray = U.isArray,
+            merge = U.merge;
+        /* *
+         *
+         *  Class
+         *
+         * */
         /**
          * The EMA series type.
          *
@@ -46,60 +70,63 @@
          *
          * @augments Highcharts.Series
          */
-        seriesType('ema', 'sma', 
-        /**
-         * Exponential moving average indicator (EMA). This series requires the
-         * `linkedTo` option to be set.
-         *
-         * @sample stock/indicators/ema
-         *         Exponential moving average indicator
-         *
-         * @extends      plotOptions.sma
-         * @since        6.0.0
-         * @product      highstock
-         * @requires     stock/indicators/indicators
-         * @requires     stock/indicators/ema
-         * @optionparent plotOptions.ema
-         */
-        {
-            params: {
-                /**
-                 * The point index which indicator calculations will base. For
-                 * example using OHLC data, index=2 means the indicator will be
-                 * calculated using Low values.
+        var EMAIndicator = /** @class */ (function (_super) {
+                __extends(EMAIndicator, _super);
+            function EMAIndicator() {
+                var _this = _super !== null && _super.apply(this,
+                    arguments) || this;
+                /* *
                  *
-                 * By default index value used to be set to 0. Since Highstock 7
-                 * by default index is set to 3 which means that the ema
-                 * indicator will be calculated using Close values.
-                 */
-                index: 3,
-                period: 9 // @merge 14 in v6.2
+                 *  Properties
+                 *
+                 * */
+                _this.data = void 0;
+                _this.options = void 0;
+                _this.points = void 0;
+                return _this;
             }
-        }, 
-        /**
-         * @lends Highcharts.Series#
-         */
-        {
-            accumulatePeriodPoints: function (period, index, yVal) {
-                var sum = 0, i = 0, y = 0;
+            /* *
+             *
+             *  Functions
+             *
+             * */
+            EMAIndicator.prototype.accumulatePeriodPoints = function (period, index, yVal) {
+                var sum = 0,
+                    i = 0,
+                    y = 0;
                 while (i < period) {
                     y = index < 0 ? yVal[i] : yVal[i][index];
                     sum = sum + y;
                     i++;
                 }
                 return sum;
-            },
-            calculateEma: function (xVal, yVal, i, EMApercent, calEMA, index, SMA) {
-                var x = xVal[i - 1], yValue = index < 0 ?
-                    yVal[i - 1] :
-                    yVal[i - 1][index], y;
+            };
+            EMAIndicator.prototype.calculateEma = function (xVal, yVal, i, EMApercent, calEMA, index, SMA) {
+                var x = xVal[i - 1],
+                    yValue = index < 0 ?
+                        yVal[i - 1] :
+                        yVal[i - 1][index],
+                    y;
                 y = typeof calEMA === 'undefined' ?
                     SMA : correctFloat((yValue * EMApercent) +
                     (calEMA * (1 - EMApercent)));
                 return [x, y];
-            },
-            getValues: function (series, params) {
-                var period = params.period, xVal = series.xData, yVal = series.yData, yValLen = yVal ? yVal.length : 0, EMApercent = 2 / (period + 1), sum = 0, EMA = [], xData = [], yData = [], index = -1, SMA = 0, calEMA, EMAPoint, i;
+            };
+            EMAIndicator.prototype.getValues = function (series, params) {
+                var period = params.period,
+                    xVal = series.xData,
+                    yVal = series.yData,
+                    yValLen = yVal ? yVal.length : 0,
+                    EMApercent = 2 / (period + 1),
+                    sum = 0,
+                    EMA = [],
+                    xData = [],
+                    yData = [],
+                    index = -1,
+                    SMA = 0,
+                    calEMA,
+                    EMAPoint,
+                    i;
                 // Check period, if bigger than points length, skip
                 if (yValLen < period) {
                     return;
@@ -125,8 +152,45 @@
                     xData: xData,
                     yData: yData
                 };
-            }
-        });
+            };
+            /**
+             * Exponential moving average indicator (EMA). This series requires the
+             * `linkedTo` option to be set.
+             *
+             * @sample stock/indicators/ema
+             *         Exponential moving average indicator
+             *
+             * @extends      plotOptions.sma
+             * @since        6.0.0
+             * @product      highstock
+             * @requires     stock/indicators/indicators
+             * @requires     stock/indicators/ema
+             * @optionparent plotOptions.ema
+             */
+            EMAIndicator.defaultOptions = merge(SMAIndicator.defaultOptions, {
+                params: {
+                    /**
+                     * The point index which indicator calculations will base. For
+                     * example using OHLC data, index=2 means the indicator will be
+                     * calculated using Low values.
+                     *
+                     * By default index value used to be set to 0. Since
+                     * Highcharts Stock 7 by default index is set to 3
+                     * which means that the ema indicator will be
+                     * calculated using Close values.
+                     */
+                    index: 3,
+                    period: 9 // @merge 14 in v6.2
+                }
+            });
+            return EMAIndicator;
+        }(SMAIndicator));
+        SeriesRegistry.registerSeriesType('ema', EMAIndicator);
+        /* *
+         *
+         *  Default Export
+         *
+         * */
         /**
          * A `EMA` series. If the [type](#series.ema.type) option is not
          * specified, it is inherited from [chart.type](#chart.type).
@@ -141,6 +205,7 @@
          */
         ''; // adds doclet above to the transpiled file
 
+        return EMAIndicator;
     });
     _registerModule(_modules, 'masters/indicators/ema.src.js', [], function () {
 

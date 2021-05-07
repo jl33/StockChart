@@ -1,9 +1,9 @@
 /**
- * @license Highstock JS v8.0.4 (2020-03-10)
+ * @license Highstock JS v9.1.0 (2021-05-03)
  *
- * Indicator series type for Highstock
+ * Indicator series type for Highcharts Stock
  *
- * (c) 2010-2019 Kacper Madej
+ * (c) 2010-2021 Kacper Madej
  *
  * License: www.highcharts.com/license
  */
@@ -28,24 +28,43 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'indicators/wma.src.js', [_modules['parts/Utilities.js']], function (U) {
+    _registerModule(_modules, 'Stock/Indicators/WMA/WMAIndicator.js', [_modules['Core/Series/SeriesRegistry.js'], _modules['Core/Utilities.js']], function (SeriesRegistry, U) {
         /* *
          *
-         *  (c) 2010-2020 Kacper Madej
+         *  (c) 2010-2021 Kacper Madej
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var isArray = U.isArray, seriesType = U.seriesType;
+        var __extends = (this && this.__extends) || (function () {
+                var extendStatics = function (d,
+            b) {
+                    extendStatics = Object.setPrototypeOf ||
+                        ({ __proto__: [] } instanceof Array && function (d,
+            b) { d.__proto__ = b; }) ||
+                        function (d,
+            b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+                return extendStatics(d, b);
+            };
+            return function (d, b) {
+                extendStatics(d, b);
+                function __() { this.constructor = d; }
+                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+            };
+        })();
+        var SMAIndicator = SeriesRegistry.seriesTypes.sma;
+        var isArray = U.isArray,
+            merge = U.merge;
         /* eslint-disable valid-jsdoc */
         // Utils:
         /**
          * @private
          */
         function accumulateAverage(points, xVal, yVal, i, index) {
-            var xValue = xVal[i], yValue = index < 0 ? yVal[i] : yVal[i][index];
+            var xValue = xVal[i],
+                yValue = index < 0 ? yVal[i] : yVal[i][index];
             points.push([xValue, yValue]);
         }
         /**
@@ -65,7 +84,10 @@
          * @private
          */
         function populateAverage(points, xVal, yVal, i) {
-            var pLen = points.length, wmaY = weightedSumArray(points, pLen), wmaX = xVal[i - 1];
+            var pLen = points.length,
+                wmaY = weightedSumArray(points,
+                pLen),
+                wmaX = xVal[i - 1];
             points.shift(); // remove point until range < period
             return [wmaX, wmaY];
         }
@@ -79,33 +101,31 @@
          *
          * @augments Highcharts.Series
          */
-        seriesType('wma', 'sma', 
-        /**
-         * Weighted moving average indicator (WMA). This series requires `linkedTo`
-         * option to be set.
-         *
-         * @sample stock/indicators/wma
-         *         Weighted moving average indicator
-         *
-         * @extends      plotOptions.sma
-         * @since        6.0.0
-         * @product      highstock
-         * @requires     stock/indicators/indicators
-         * @requires     stock/indicators/wma
-         * @optionparent plotOptions.wma
-         */
-        {
-            params: {
-                index: 3,
-                period: 9
+        var WMAIndicator = /** @class */ (function (_super) {
+                __extends(WMAIndicator, _super);
+            function WMAIndicator() {
+                var _this = _super !== null && _super.apply(this,
+                    arguments) || this;
+                _this.data = void 0;
+                _this.options = void 0;
+                _this.points = void 0;
+                return _this;
             }
-        }, 
-        /**
-         * @lends Highcharts.Series#
-         */
-        {
-            getValues: function (series, params) {
-                var period = params.period, xVal = series.xData, yVal = series.yData, yValLen = yVal ? yVal.length : 0, range = 1, xValue = xVal[0], yValue = yVal[0], WMA = [], xData = [], yData = [], index = -1, i, points, WMAPoint;
+            WMAIndicator.prototype.getValues = function (series, params) {
+                var period = params.period,
+                    xVal = series.xData,
+                    yVal = series.yData,
+                    yValLen = yVal ? yVal.length : 0,
+                    range = 1,
+                    xValue = xVal[0],
+                    yValue = yVal[0],
+                    WMA = [],
+                    xData = [],
+                    yData = [],
+                    index = -1,
+                    i,
+                    points,
+                    WMAPoint;
                 if (xVal.length < period) {
                     return;
                 }
@@ -138,8 +158,35 @@
                     xData: xData,
                     yData: yData
                 };
-            }
-        });
+            };
+            /**
+             * Weighted moving average indicator (WMA). This series requires `linkedTo`
+             * option to be set.
+             *
+             * @sample stock/indicators/wma
+             *         Weighted moving average indicator
+             *
+             * @extends      plotOptions.sma
+             * @since        6.0.0
+             * @product      highstock
+             * @requires     stock/indicators/indicators
+             * @requires     stock/indicators/wma
+             * @optionparent plotOptions.wma
+             */
+            WMAIndicator.defaultOptions = merge(SMAIndicator.defaultOptions, {
+                params: {
+                    index: 3,
+                    period: 9
+                }
+            });
+            return WMAIndicator;
+        }(SMAIndicator));
+        SeriesRegistry.registerSeriesType('wma', WMAIndicator);
+        /* *
+         *
+         *  Default Export
+         *
+         * */
         /**
          * A `WMA` series. If the [type](#series.wma.type) option is not specified, it
          * is inherited from [chart.type](#chart.type).
@@ -154,6 +201,7 @@
          */
         ''; // adds doclet above to the transpiled file
 
+        return WMAIndicator;
     });
     _registerModule(_modules, 'masters/indicators/wma.src.js', [], function () {
 

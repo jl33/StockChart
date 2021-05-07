@@ -1,13 +1,13 @@
 /**
- * @license Highcharts JS v8.0.4 (2020-03-10)
+ * @license Highcharts JS v9.1.0 (2021-05-03)
  * @module highcharts/modules/color-axis
  * @requires highcharts
  *
  * ColorAxis module
  *
- * (c) 2012-2019 Pawel Potaczek
+ * (c) 2012-2021 Pawel Potaczek
  *
  * License: www.highcharts.com/license
  */
 'use strict';
-import '../../parts-map/ColorAxis.js';
+import '../../Core/Axis/ColorAxis.js';

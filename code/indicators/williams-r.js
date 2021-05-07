@@ -1,13 +1,15 @@
 /*
- Highstock JS v8.0.4 (2020-03-10)
+ Highstock JS v9.1.0 (2021-05-03)
 
- Indicator series type for Highstock
+ Indicator series type for Highcharts Stock
 
- (c) 2010-2019 Wojciech Chmiel
+ (c) 2010-2021 Wojciech Chmiel
 
  License: www.highcharts.com/license
 */
-(function(a){"object"===typeof module&&module.exports?(a["default"]=a,module.exports=a):"function"===typeof define&&define.amd?define("highcharts/indicators/williams-r",["highcharts","highcharts/modules/stock"],function(e){a(e);a.Highcharts=e;return a}):a("undefined"!==typeof Highcharts?Highcharts:void 0)})(function(a){function e(a,b,l,c){a.hasOwnProperty(b)||(a[b]=c.apply(null,l))}a=a?a._modules:{};e(a,"mixins/reduce-array.js",[a["parts/Globals.js"]],function(a){var b=a.reduce;return{minInArray:function(a,
-c){return b(a,function(a,g){return Math.min(a,g[c])},Number.MAX_VALUE)},maxInArray:function(a,c){return b(a,function(a,g){return Math.max(a,g[c])},-Number.MAX_VALUE)},getArrayExtremes:function(a,c,q){return b(a,function(a,b){return[Math.min(a[0],b[c]),Math.max(a[1],b[q])]},[Number.MAX_VALUE,-Number.MAX_VALUE])}}});e(a,"indicators/williams-r.src.js",[a["parts/Utilities.js"],a["mixins/reduce-array.js"]],function(a,b){var e=a.isArray;a=a.seriesType;var c=b.getArrayExtremes;a("williamsr","sma",{params:{period:14}},
-{nameBase:"Williams %R",getValues:function(a,b){b=b.period;var k=a.xData,g=(a=a.yData)?a.length:0,m=[],n=[],p=[],d;if(!(k.length<b)&&e(a[0])&&4===a[0].length){for(d=b-1;d<g;d++){var f=a.slice(d-b+1,d+1);var h=c(f,2,1);f=h[0];h=h[1];var l=a[d][3];f=(h-l)/(h-f)*-100;k[d]&&(m.push([k[d],f]),n.push(k[d]),p.push(f))}return{values:m,xData:n,yData:p}}}});""});e(a,"masters/indicators/williams-r.src.js",[],function(){})});
+(function(a){"object"===typeof module&&module.exports?(a["default"]=a,module.exports=a):"function"===typeof define&&define.amd?define("highcharts/indicators/williams-r",["highcharts","highcharts/modules/stock"],function(b){a(b);a.Highcharts=b;return a}):a("undefined"!==typeof Highcharts?Highcharts:void 0)})(function(a){function b(a,c,e,g){a.hasOwnProperty(c)||(a[c]=g.apply(null,e))}a=a?a._modules:{};b(a,"Mixins/ReduceArray.js",[],function(){return{minInArray:function(a,c){return a.reduce(function(a,
+g){return Math.min(a,g[c])},Number.MAX_VALUE)},maxInArray:function(a,c){return a.reduce(function(a,g){return Math.max(a,g[c])},-Number.MAX_VALUE)},getArrayExtremes:function(a,c,e){return a.reduce(function(a,b){return[Math.min(a[0],b[c]),Math.max(a[1],b[e])]},[Number.MAX_VALUE,-Number.MAX_VALUE])}}});b(a,"Stock/Indicators/WilliamsR/WilliamsRIndicator.js",[a["Mixins/ReduceArray.js"],a["Core/Series/SeriesRegistry.js"],a["Core/Utilities.js"]],function(a,c,e){var b=this&&this.__extends||function(){var a=
+function(b,d){a=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(a,d){a.__proto__=d}||function(a,d){for(var b in d)d.hasOwnProperty(b)&&(a[b]=d[b])};return a(b,d)};return function(b,d){function c(){this.constructor=b}a(b,d);b.prototype=null===d?Object.create(d):(c.prototype=d.prototype,new c)}}(),n=a.getArrayExtremes,k=c.seriesTypes.sma;a=e.extend;var p=e.isArray,m=e.merge;e=function(a){function c(){var d=null!==a&&a.apply(this,arguments)||this;d.data=void 0;d.options=void 0;d.points=
+void 0;return d}b(c,a);c.prototype.getValues=function(a,b){b=b.period;var c=a.xData,d=(a=a.yData)?a.length:0,e=[],g=[],k=[],f;if(!(c.length<b)&&p(a[0])&&4===a[0].length){for(f=b-1;f<d;f++){var h=a.slice(f-b+1,f+1);var l=n(h,2,1);h=l[0];l=l[1];var m=a[f][3];h=(l-m)/(l-h)*-100;c[f]&&(e.push([c[f],h]),g.push(c[f]),k.push(h))}return{values:e,xData:g,yData:k}}};c.defaultOptions=m(k.defaultOptions,{params:{index:void 0,period:14}});return c}(k);a(e.prototype,{nameBase:"Williams %R"});c.registerSeriesType("williamsr",
+e);"";return e});b(a,"masters/indicators/williams-r.src.js",[],function(){})});
 //# sourceMappingURL=williams-r.js.map

@@ -1,14 +1,14 @@
 /**
- * @license Highstock JS v8.0.4 (2020-03-10)
+ * @license Highstock JS v9.1.0 (2021-05-03)
  * @module highcharts/indicators/trix
  * @requires highcharts
  * @requires highcharts/modules/stock
  *
- * Indicator series type for Highstock
+ * Indicator series type for Highcharts Stock
  *
- * (c) 2010-2019 Rafal Sebestjanski
+ * (c) 2010-2021 Rafal Sebestjanski
  *
  * License: www.highcharts.com/license
  */
 'use strict';
-import '../../indicators/trix.src.js';
+import '../../Stock/Indicators/TRIX/TRIXIndicator.js';

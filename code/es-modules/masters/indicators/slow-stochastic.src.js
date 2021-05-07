@@ -1,14 +1,14 @@
 /**
- * @license Highstock JS v8.0.4 (2020-03-10)
+ * @license Highstock JS v9.1.0 (2021-05-03)
  * @module highcharts/indicators/indicators
  * @requires highcharts
  * @requires highcharts/modules/stock
  *
- * Slow Stochastic series type for Highstock
+ * Slow Stochastic series type for Highcharts Stock
  *
- * (c) 2010-2019 Pawel Fus
+ * (c) 2010-2021 Pawel Fus
  *
  * License: www.highcharts.com/license
  */
 'use strict';
-import '../../indicators/slow-stochastic.src.js';
+import '../../Stock/Indicators/SlowStochastic/SlowStochasticIndicator.js';

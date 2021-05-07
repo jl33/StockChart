@@ -1,9 +1,9 @@
 /**
- * @license Highstock JS v8.0.4 (2020-03-10)
+ * @license Highstock JS v9.1.0 (2021-05-03)
  *
- * Indicator series type for Highstock
+ * Indicator series type for Highcharts Stock
  *
- * (c) 2010-2019 Wojciech Chmiel
+ * (c) 2010-2021 Wojciech Chmiel
  *
  * License: www.highcharts.com/license
  */
@@ -28,10 +28,10 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'mixins/indicator-required.js', [_modules['parts/Utilities.js']], function (U) {
+    _registerModule(_modules, 'Mixins/IndicatorRequired.js', [_modules['Core/Utilities.js']], function (U) {
         /**
          *
-         *  (c) 2010-2020 Daniel Studencki
+         *  (c) 2010-2021 Daniel Studencki
          *
          *  License: www.highcharts.com/license
          *
@@ -41,26 +41,31 @@
         var error = U.error;
         /* eslint-disable no-invalid-this, valid-jsdoc */
         var requiredIndicatorMixin = {
-            /**
-             * Check whether given indicator is loaded, else throw error.
-             * @private
-             * @param {Highcharts.Indicator} indicator
-             *        Indicator constructor function.
-             * @param {string} requiredIndicator
-             *        Required indicator type.
-             * @param {string} type
-             *        Type of indicator where function was called (parent).
-             * @param {Highcharts.IndicatorCallbackFunction} callback
-             *        Callback which is triggered if the given indicator is loaded.
-             *        Takes indicator as an argument.
-             * @param {string} errMessage
-             *        Error message that will be logged in console.
-             * @return {boolean}
-             *         Returns false when there is no required indicator loaded.
-             */
-            isParentLoaded: function (indicator, requiredIndicator, type, callback, errMessage) {
-                if (indicator) {
-                    return callback ? callback(indicator) : true;
+                /**
+                 * Check whether given indicator is loaded,
+            else throw error.
+                 * @private
+                 * @param {Highcharts.Indicator} indicator
+                 *        Indicator constructor function.
+                 * @param {string} requiredIndicator
+                 *        Required indicator type.
+                 * @param {string} type
+                 *        Type of indicator where function was called (parent).
+                 * @param {Highcharts.IndicatorCallbackFunction} callback
+                 *        Callback which is triggered if the given indicator is loaded.
+                 *        Takes indicator as an argument.
+                 * @param {string} errMessage
+                 *        Error message that will be logged in console.
+                 * @return {boolean}
+                 *         Returns false when there is no required indicator loaded.
+                 */
+                isParentLoaded: function (indicator,
+            requiredIndicator,
+            type,
+            callback,
+            errMessage) {
+                    if (indicator) {
+                        return callback ? callback(indicator) : true;
                 }
                 error(errMessage || this.generateMessage(type, requiredIndicator));
                 return false;
@@ -85,7 +90,7 @@
 
         return requiredIndicatorMixin;
     });
-    _registerModule(_modules, 'indicators/apo.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/indicator-required.js']], function (H, U, requiredIndicatorMixin) {
+    _registerModule(_modules, 'Stock/Indicators/APO/APOIndicator.js', [_modules['Mixins/IndicatorRequired.js'], _modules['Core/Series/SeriesRegistry.js'], _modules['Core/Utilities.js']], function (RequiredIndicatorMixin, SeriesRegistry, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -93,8 +98,31 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var error = U.error, seriesType = U.seriesType;
-        var EMA = H.seriesTypes.ema, requiredIndicator = requiredIndicatorMixin;
+        var __extends = (this && this.__extends) || (function () {
+                var extendStatics = function (d,
+            b) {
+                    extendStatics = Object.setPrototypeOf ||
+                        ({ __proto__: [] } instanceof Array && function (d,
+            b) { d.__proto__ = b; }) ||
+                        function (d,
+            b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+                return extendStatics(d, b);
+            };
+            return function (d, b) {
+                extendStatics(d, b);
+                function __() { this.constructor = d; }
+                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+            };
+        })();
+        var EMAIndicator = SeriesRegistry.seriesTypes.ema;
+        var extend = U.extend,
+            merge = U.merge,
+            error = U.error;
+        /* *
+         *
+         *  Class
+         *
+         * */
         /**
          * The APO series type.
          *
@@ -104,76 +132,51 @@
          *
          * @augments Highcharts.Series
          */
-        seriesType('apo', 'ema', 
-        /**
-         * Absolute Price Oscillator. This series requires the `linkedTo` option to
-         * be set and should be loaded after the `stock/indicators/indicators.js`
-         * and `stock/indicators/ema.js`.
-         *
-         * @sample {highstock} stock/indicators/apo
-         *         Absolute Price Oscillator
-         *
-         * @extends      plotOptions.ema
-         * @since        7.0.0
-         * @product      highstock
-         * @excluding    allAreas, colorAxis, joinBy, keys, navigatorOptions,
-         *               pointInterval, pointIntervalUnit, pointPlacement,
-         *               pointRange, pointStart, showInNavigator, stacking
-         * @requires     stock/indicators/indicators
-         * @requires     stock/indicators/ema
-         * @requires     stock/indicators/apo
-         * @optionparent plotOptions.apo
-         */
-        {
-            /**
-             * Paramters used in calculation of Absolute Price Oscillator
-             * series points.
-             *
-             * @excluding period
-             */
-            params: {
-                /**
-                 * Periods for Absolute Price Oscillator calculations.
-                 *
-                 * @type    {Array<number>}
-                 * @default [10, 20]
-                 * @since   7.0.0
-                 */
-                periods: [10, 20]
+        var APOIndicator = /** @class */ (function (_super) {
+                __extends(APOIndicator, _super);
+            function APOIndicator() {
+                var _this = _super !== null && _super.apply(this,
+                    arguments) || this;
+                /* *
+                *
+                *  Properties
+                *
+                * */
+                _this.data = void 0;
+                _this.options = void 0;
+                _this.points = void 0;
+                return _this;
             }
-        }, 
-        /**
-         * @lends Highcharts.Series.prototype
-         */
-        {
-            nameBase: 'APO',
-            nameComponents: ['periods'],
-            init: function () {
-                var args = arguments, ctx = this;
-                requiredIndicator.isParentLoaded(EMA, 'ema', ctx.type, function (indicator) {
-                    indicator.prototype.init.apply(ctx, args);
-                    return;
-                });
-            },
-            getValues: function (series, params) {
-                var periods = params.periods, index = params.index, 
-                // 0- date, 1- Absolute price oscillator
-                APO = [], xData = [], yData = [], periodsOffset, 
-                // Shorter Period EMA
-                SPE, 
-                // Longer Period EMA
-                LPE, oscillator, i;
+            /* *
+            *
+            *  Functions
+            *
+            * */
+            APOIndicator.prototype.getValues = function (series, params) {
+                var periods = params.periods,
+                    index = params.index, 
+                    // 0- date, 1- Absolute price oscillator
+                    APO = [],
+                    xData = [],
+                    yData = [],
+                    periodsOffset, 
+                    // Shorter Period EMA
+                    SPE, 
+                    // Longer Period EMA
+                    LPE,
+                    oscillator,
+                    i;
                 // Check if periods are correct
                 if (periods.length !== 2 || periods[1] <= periods[0]) {
                     error('Error: "APO requires two periods. Notice, first period ' +
                         'should be lower than the second one."');
                     return;
                 }
-                SPE = EMA.prototype.getValues.call(this, series, {
+                SPE = EMAIndicator.prototype.getValues.call(this, series, {
                     index: index,
                     period: periods[0]
                 });
-                LPE = EMA.prototype.getValues.call(this, series, {
+                LPE = EMAIndicator.prototype.getValues.call(this, series, {
                     index: index,
                     period: periods[1]
                 });
@@ -194,8 +197,65 @@
                     xData: xData,
                     yData: yData
                 };
-            }
+            };
+            APOIndicator.prototype.init = function () {
+                var args = arguments,
+                    ctx = this;
+                RequiredIndicatorMixin.isParentLoaded(EMAIndicator, 'ema', ctx.type, function (indicator) {
+                    indicator.prototype.init.apply(ctx, args);
+                    return;
+                });
+            };
+            /**
+             * Absolute Price Oscillator. This series requires the `linkedTo` option to
+             * be set and should be loaded after the `stock/indicators/indicators.js`
+             * and `stock/indicators/ema.js`.
+             *
+             * @sample {highstock} stock/indicators/apo
+             *         Absolute Price Oscillator
+             *
+             * @extends      plotOptions.ema
+             * @since        7.0.0
+             * @product      highstock
+             * @excluding    allAreas, colorAxis, joinBy, keys, navigatorOptions,
+             *               pointInterval, pointIntervalUnit, pointPlacement,
+             *               pointRange, pointStart, showInNavigator, stacking
+             * @requires     stock/indicators/indicators
+             * @requires     stock/indicators/ema
+             * @requires     stock/indicators/apo
+             * @optionparent plotOptions.apo
+             */
+            APOIndicator.defaultOptions = merge(EMAIndicator.defaultOptions, {
+                /**
+                 * Paramters used in calculation of Absolute Price Oscillator
+                 * series points.
+                 *
+                 * @excluding period
+                 */
+                params: {
+                    period: void 0,
+                    /**
+                     * Periods for Absolute Price Oscillator calculations.
+                     *
+                     * @type    {Array<number>}
+                     * @default [10, 20]
+                     * @since   7.0.0
+                     */
+                    periods: [10, 20]
+                }
+            });
+            return APOIndicator;
+        }(EMAIndicator));
+        extend(APOIndicator.prototype, {
+            nameBase: 'APO',
+            nameComponents: ['periods']
         });
+        SeriesRegistry.registerSeriesType('apo', APOIndicator);
+        /* *
+         *
+         *  Default Export
+         *
+         * */
         /**
          * An `Absolute Price Oscillator` series. If the [type](#series.apo.type) option
          * is not specified, it is inherited from [chart.type](#chart.type).
@@ -213,6 +273,7 @@
          */
         ''; // to include the above in the js output
 
+        return APOIndicator;
     });
     _registerModule(_modules, 'masters/indicators/apo.src.js', [], function () {
 

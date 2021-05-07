@@ -1,9 +1,9 @@
 /**
- * @license Highstock JS v8.0.4 (2020-03-10)
+ * @license Highstock JS v9.1.0 (2021-05-03)
  *
- * Advanced Highstock tools
+ * Advanced Highcharts Stock tools
  *
- * (c) 2010-2019 Highsoft AS
+ * (c) 2010-2021 Highsoft AS
  * Author: Torstein Honsi
  *
  * License: www.highcharts.com/license
@@ -29,15 +29,16 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/full-screen.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'Extensions/FullScreen.js', [_modules['Core/Chart/Chart.js'], _modules['Core/Globals.js'], _modules['Core/Renderer/HTML/AST.js'], _modules['Core/Utilities.js']], function (Chart, H, AST, U) {
         /* *
-         * (c) 2009-2020 Rafal Sebestjanski
+         * (c) 2009-2021 Rafal Sebestjanski
          *
          * Full screen for Highcharts
          *
          * License: www.highcharts.com/license
          */
-        var addEvent = H.addEvent, Chart = H.Chart;
+        var doc = H.doc;
+        var addEvent = U.addEvent;
         /**
          * The module allows user to enable display chart in full screen mode.
          * Used in StockTools too.
@@ -48,24 +49,26 @@
         /**
          * Handles displaying chart's container in the fullscreen mode.
          *
+         * **Note**: Fullscreen is not supported on iPhone due to iOS limitations.
+         *
          * @class
          * @name Highcharts.Fullscreen
          * @hideconstructor
          * @requires modules/full-screen
          */
         var Fullscreen = /** @class */ (function () {
-            /* *
-             *
-             *  Constructors
-             *
-             * */
-            function Fullscreen(chart) {
-                /**
-                 * Chart managed by the fullscreen controller.
-                 * @name Highcharts.Fullscreen#chart
-                 * @type {Highcharts.Chart}
-                 */
-                this.chart = chart;
+                /* *
+                 *
+                 *  Constructors
+                 *
+                 * */
+                function Fullscreen(chart) {
+                    /**
+                     * Chart managed by the fullscreen controller.
+                     * @name Highcharts.Fullscreen#chart
+                     * @type {Highcharts.Chart}
+                     */
+                    this.chart = chart;
                 /**
                  * The flag is set to `true` when the chart is displayed in
                  * the fullscreen mode.
@@ -75,10 +78,7 @@
                  * @since 8.0.1
                  */
                 this.isOpen = false;
-                if (!(chart.container.parentNode instanceof Element)) {
-                    return;
-                }
-                var container = chart.container.parentNode;
+                var container = chart.renderTo;
                 // Hold event and methods available only for a current browser.
                 if (!this.browserProps) {
                     if (typeof container.requestFullscreen === 'function') {
@@ -127,7 +127,9 @@
              * @requires    modules/full-screen
              */
             Fullscreen.prototype.close = function () {
-                var fullscreen = this, chart = fullscreen.chart;
+                var fullscreen = this,
+                    chart = fullscreen.chart,
+                    optionsChart = chart.options.chart;
                 // Don't fire exitFullscreen() when user exited using 'Escape' button.
                 if (fullscreen.isOpen &&
                     fullscreen.browserProps &&
@@ -136,8 +138,15 @@
                 }
                 // Unbind event as it's necessary only before exiting from fullscreen.
                 if (fullscreen.unbindFullscreenEvent) {
-                    fullscreen.unbindFullscreenEvent();
+                    fullscreen.unbindFullscreenEvent = fullscreen.unbindFullscreenEvent();
                 }
+                chart.setSize(fullscreen.origWidth, fullscreen.origHeight, false);
+                fullscreen.origWidth = void 0;
+                fullscreen.origHeight = void 0;
+                optionsChart.width = fullscreen.origWidthOption;
+                optionsChart.height = fullscreen.origHeightOption;
+                fullscreen.origWidthOption = void 0;
+                fullscreen.origHeightOption = void 0;
                 fullscreen.isOpen = false;
                 fullscreen.setButtonText();
             };
@@ -154,31 +163,45 @@
              * @requires    modules/full-screen
              */
             Fullscreen.prototype.open = function () {
-                var fullscreen = this, chart = fullscreen.chart;
+                var fullscreen = this,
+                    chart = fullscreen.chart,
+                    optionsChart = chart.options.chart;
+                if (optionsChart) {
+                    fullscreen.origWidthOption = optionsChart.width;
+                    fullscreen.origHeightOption = optionsChart.height;
+                }
+                fullscreen.origWidth = chart.chartWidth;
+                fullscreen.origHeight = chart.chartHeight;
                 // Handle exitFullscreen() method when user clicks 'Escape' button.
                 if (fullscreen.browserProps) {
-                    fullscreen.unbindFullscreenEvent = H.addEvent(chart.container.ownerDocument, // chart's document
-                    fullscreen.browserProps.fullscreenChange, function () {
-                        // Handle lack of async of browser's fullScreenChange event.
-                        if (fullscreen.isOpen) {
-                            fullscreen.isOpen = false;
+                    var unbindChange_1 = addEvent(chart.container.ownerDocument, // chart's document
+                        fullscreen.browserProps.fullscreenChange,
+                        function () {
+                            // Handle lack of async of browser's fullScreenChange event.
+                            if (fullscreen.isOpen) {
+                                fullscreen.isOpen = false;
                             fullscreen.close();
                         }
                         else {
+                            chart.setSize(null, null, false);
                             fullscreen.isOpen = true;
                             fullscreen.setButtonText();
                         }
                     });
-                    if (chart.container.parentNode instanceof Element) {
-                        var promise = chart.container.parentNode[fullscreen.browserProps.requestFullscreen]();
-                        if (promise) {
-                            promise['catch'](function () {
-                                alert(// eslint-disable-line no-alert
-                                'Full screen is not supported inside a frame.');
-                            });
-                        }
+                    var unbindDestroy_1 = addEvent(chart, 'destroy',
+                        unbindChange_1);
+                    fullscreen.unbindFullscreenEvent = function () {
+                        unbindChange_1();
+                        unbindDestroy_1();
+                    };
+                    var promise = chart.renderTo[fullscreen.browserProps.requestFullscreen]();
+                    if (promise) {
+                        // No dot notation because of IE8 compatibility
+                        promise['catch'](function () {
+                            alert(// eslint-disable-line no-alert
+                            'Full screen is not supported inside a frame.');
+                        });
                     }
-                    H.addEvent(chart, 'destroy', fullscreen.unbindFullscreenEvent);
                 }
             };
             /**
@@ -193,17 +216,24 @@
              * @return {void}
              */
             Fullscreen.prototype.setButtonText = function () {
-                var _a;
-                var chart = this.chart, exportDivElements = chart.exportDivElements, exportingOptions = chart.options.exporting, menuItems = (_a = exportingOptions === null || exportingOptions === void 0 ? void 0 : exportingOptions.buttons) === null || _a === void 0 ? void 0 : _a.contextButton.menuItems, lang = chart.options.lang;
-                if ((exportingOptions === null || exportingOptions === void 0 ? void 0 : exportingOptions.menuItemDefinitions) && (lang === null || lang === void 0 ? void 0 : lang.exitFullscreen) &&
+                var chart = this.chart,
+                    exportDivElements = chart.exportDivElements,
+                    exportingOptions = chart.options.exporting,
+                    menuItems = (exportingOptions &&
+                        exportingOptions.buttons &&
+                        exportingOptions.buttons.contextButton.menuItems),
+                    lang = chart.options.lang;
+                if (exportingOptions &&
+                    exportingOptions.menuItemDefinitions &&
+                    lang &&
+                    lang.exitFullscreen &&
                     lang.viewFullscreen &&
                     menuItems &&
                     exportDivElements &&
                     exportDivElements.length) {
-                    exportDivElements[menuItems.indexOf('viewFullscreen')]
-                        .innerHTML = !this.isOpen ?
+                    AST.setElementHTML(exportDivElements[menuItems.indexOf('viewFullscreen')], !this.isOpen ?
                         (exportingOptions.menuItemDefinitions.viewFullscreen.text ||
-                            lang.viewFullscreen) : lang.exitFullscreen;
+                            lang.viewFullscreen) : lang.exitFullscreen);
                 }
             };
             /**

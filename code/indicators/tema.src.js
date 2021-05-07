@@ -1,9 +1,9 @@
 /**
- * @license Highstock JS v8.0.4 (2020-03-10)
+ * @license Highstock JS v9.1.0 (2021-05-03)
  *
- * Indicator series type for Highstock
+ * Indicator series type for Highcharts Stock
  *
- * (c) 2010-2019 Rafal Sebestjanski
+ * (c) 2010-2021 Rafal Sebestjanski
  *
  * License: www.highcharts.com/license
  */
@@ -28,10 +28,10 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'mixins/indicator-required.js', [_modules['parts/Utilities.js']], function (U) {
+    _registerModule(_modules, 'Mixins/IndicatorRequired.js', [_modules['Core/Utilities.js']], function (U) {
         /**
          *
-         *  (c) 2010-2020 Daniel Studencki
+         *  (c) 2010-2021 Daniel Studencki
          *
          *  License: www.highcharts.com/license
          *
@@ -41,26 +41,31 @@
         var error = U.error;
         /* eslint-disable no-invalid-this, valid-jsdoc */
         var requiredIndicatorMixin = {
-            /**
-             * Check whether given indicator is loaded, else throw error.
-             * @private
-             * @param {Highcharts.Indicator} indicator
-             *        Indicator constructor function.
-             * @param {string} requiredIndicator
-             *        Required indicator type.
-             * @param {string} type
-             *        Type of indicator where function was called (parent).
-             * @param {Highcharts.IndicatorCallbackFunction} callback
-             *        Callback which is triggered if the given indicator is loaded.
-             *        Takes indicator as an argument.
-             * @param {string} errMessage
-             *        Error message that will be logged in console.
-             * @return {boolean}
-             *         Returns false when there is no required indicator loaded.
-             */
-            isParentLoaded: function (indicator, requiredIndicator, type, callback, errMessage) {
-                if (indicator) {
-                    return callback ? callback(indicator) : true;
+                /**
+                 * Check whether given indicator is loaded,
+            else throw error.
+                 * @private
+                 * @param {Highcharts.Indicator} indicator
+                 *        Indicator constructor function.
+                 * @param {string} requiredIndicator
+                 *        Required indicator type.
+                 * @param {string} type
+                 *        Type of indicator where function was called (parent).
+                 * @param {Highcharts.IndicatorCallbackFunction} callback
+                 *        Callback which is triggered if the given indicator is loaded.
+                 *        Takes indicator as an argument.
+                 * @param {string} errMessage
+                 *        Error message that will be logged in console.
+                 * @return {boolean}
+                 *         Returns false when there is no required indicator loaded.
+                 */
+                isParentLoaded: function (indicator,
+            requiredIndicator,
+            type,
+            callback,
+            errMessage) {
+                    if (indicator) {
+                        return callback ? callback(indicator) : true;
                 }
                 error(errMessage || this.generateMessage(type, requiredIndicator));
                 return false;
@@ -85,7 +90,7 @@
 
         return requiredIndicatorMixin;
     });
-    _registerModule(_modules, 'indicators/tema.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/indicator-required.js']], function (H, U, requiredIndicatorMixin) {
+    _registerModule(_modules, 'Stock/Indicators/TEMA/TEMAIndicator.js', [_modules['Mixins/IndicatorRequired.js'], _modules['Core/Series/SeriesRegistry.js'], _modules['Core/Utilities.js']], function (RequiredIndicatorMixin, SeriesRegistry, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -93,8 +98,26 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var correctFloat = U.correctFloat, isArray = U.isArray, seriesType = U.seriesType;
-        var EMAindicator = H.seriesTypes.ema, requiredIndicator = requiredIndicatorMixin;
+        var __extends = (this && this.__extends) || (function () {
+                var extendStatics = function (d,
+            b) {
+                    extendStatics = Object.setPrototypeOf ||
+                        ({ __proto__: [] } instanceof Array && function (d,
+            b) { d.__proto__ = b; }) ||
+                        function (d,
+            b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+                return extendStatics(d, b);
+            };
+            return function (d, b) {
+                extendStatics(d, b);
+                function __() { this.constructor = d; }
+                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+            };
+        })();
+        var EMAIndicator = SeriesRegistry.seriesTypes.ema;
+        var correctFloat = U.correctFloat,
+            isArray = U.isArray,
+            merge = U.merge;
         /**
          * The TEMA series type.
          *
@@ -104,62 +127,63 @@
          *
          * @augments Highcharts.Series
          */
-        seriesType('tema', 'ema', 
-        /**
-         * Triple exponential moving average (TEMA) indicator. This series requires
-         * `linkedTo` option to be set and should be loaded after the
-         * `stock/indicators/indicators.js` and `stock/indicators/ema.js`.
-         *
-         * @sample {highstock} stock/indicators/tema
-         *         TEMA indicator
-         *
-         * @extends      plotOptions.ema
-         * @since        7.0.0
-         * @product      highstock
-         * @excluding    allAreas, colorAxis, compare, compareBase, joinBy, keys,
-         *               navigatorOptions, pointInterval, pointIntervalUnit,
-         *               pointPlacement, pointRange, pointStart, showInNavigator,
-         *               stacking
-         * @requires     stock/indicators/indicators
-         * @requires     stock/indicators/ema
-         * @requires     stock/indicators/tema
-         * @optionparent plotOptions.tema
-         */
-        {}, 
-        /**
-         * @lends Highcharts.Series#
-         */
-        {
-            init: function () {
-                var args = arguments, ctx = this;
-                requiredIndicator.isParentLoaded(EMAindicator, 'ema', ctx.type, function (indicator) {
+        var TEMAIndicator = /** @class */ (function (_super) {
+                __extends(TEMAIndicator, _super);
+            function TEMAIndicator() {
+                var _this = _super !== null && _super.apply(this,
+                    arguments) || this;
+                _this.EMApercent = void 0;
+                _this.data = void 0;
+                _this.options = void 0;
+                _this.points = void 0;
+                return _this;
+            }
+            TEMAIndicator.prototype.init = function () {
+                var args = arguments,
+                    ctx = this;
+                RequiredIndicatorMixin.isParentLoaded(EMAIndicator, 'ema', ctx.type, function (indicator) {
                     indicator.prototype.init.apply(ctx, args);
                     return;
                 });
-            },
-            getEMA: function (yVal, prevEMA, SMA, index, i, xVal) {
-                return EMAindicator.prototype.calculateEma(xVal || [], yVal, typeof i === 'undefined' ? 1 : i, this.chart.series[0].EMApercent, prevEMA, typeof index === 'undefined' ? -1 : index, SMA);
-            },
-            getTemaPoint: function (xVal, tripledPeriod, EMAlevels, i) {
+            };
+            TEMAIndicator.prototype.getEMA = function (yVal, prevEMA, SMA, index, i, xVal) {
+                return EMAIndicator.prototype.calculateEma(xVal || [], yVal, typeof i === 'undefined' ? 1 : i, this.EMApercent, prevEMA, typeof index === 'undefined' ? -1 : index, SMA);
+            };
+            TEMAIndicator.prototype.getTemaPoint = function (xVal, tripledPeriod, EMAlevels, i) {
                 var TEMAPoint = [
-                    xVal[i - 3],
-                    correctFloat(3 * EMAlevels.level1 -
-                        3 * EMAlevels.level2 + EMAlevels.level3)
-                ];
+                        xVal[i - 3],
+                        correctFloat(3 * EMAlevels.level1 -
+                            3 * EMAlevels.level2 + EMAlevels.level3)
+                    ];
                 return TEMAPoint;
-            },
-            getValues: function (series, params) {
-                var period = params.period, doubledPeriod = 2 * period, tripledPeriod = 3 * period, xVal = series.xData, yVal = series.yData, yValLen = yVal ? yVal.length : 0, index = -1, accumulatePeriodPoints = 0, SMA = 0, TEMA = [], xDataTema = [], yDataTema = [], 
-                // EMA of previous point
-                prevEMA, prevEMAlevel2, 
-                // EMA values array
-                EMAvalues = [], EMAlevel2values = [], i, TEMAPoint, 
-                // This object contains all EMA EMAlevels calculated like below
-                // EMA = level1
-                // EMA(EMA) = level2,
-                // EMA(EMA(EMA)) = level3,
-                EMAlevels = {};
-                series.EMApercent = (2 / (period + 1));
+            };
+            TEMAIndicator.prototype.getValues = function (series, params) {
+                var period = params.period,
+                    doubledPeriod = 2 * period,
+                    tripledPeriod = 3 * period,
+                    xVal = series.xData,
+                    yVal = series.yData,
+                    yValLen = yVal ? yVal.length : 0,
+                    index = -1,
+                    accumulatePeriodPoints = 0,
+                    SMA = 0,
+                    TEMA = [],
+                    xDataTema = [],
+                    yDataTema = [], 
+                    // EMA of previous point
+                    prevEMA,
+                    prevEMAlevel2, 
+                    // EMA values array
+                    EMAvalues = [],
+                    EMAlevel2values = [],
+                    i,
+                    TEMAPoint, 
+                    // This object contains all EMA EMAlevels calculated like below
+                    // EMA = level1
+                    // EMA(EMA) = level2,
+                    // EMA(EMA(EMA)) = level3,
+                    EMAlevels = {};
+                this.EMApercent = (2 / (period + 1));
                 // Check period, if bigger than EMA points length, skip
                 if (yValLen < 3 * period - 2) {
                     return;
@@ -170,7 +194,7 @@
                 }
                 // Accumulate first N-points
                 accumulatePeriodPoints =
-                    EMAindicator.prototype.accumulatePeriodPoints(period, index, yVal);
+                    EMAIndicator.prototype.accumulatePeriodPoints(period, index, yVal);
                 // first point
                 SMA = accumulatePeriodPoints / period;
                 accumulatePeriodPoints = 0;
@@ -231,13 +255,41 @@
                     xData: xDataTema,
                     yData: yDataTema
                 };
-            }
-        });
+            };
+            /**
+             * Triple exponential moving average (TEMA) indicator. This series requires
+             * `linkedTo` option to be set and should be loaded after the
+             * `stock/indicators/indicators.js` and `stock/indicators/ema.js`.
+             *
+             * @sample {highstock} stock/indicators/tema
+             *         TEMA indicator
+             *
+             * @extends      plotOptions.ema
+             * @since        7.0.0
+             * @product      highstock
+             * @excluding    allAreas, colorAxis, compare, compareBase, joinBy, keys,
+             *               navigatorOptions, pointInterval, pointIntervalUnit,
+             *               pointPlacement, pointRange, pointStart, showInNavigator,
+             *               stacking
+             * @requires     stock/indicators/indicators
+             * @requires     stock/indicators/ema
+             * @requires     stock/indicators/tema
+             * @optionparent plotOptions.tema
+             */
+            TEMAIndicator.defaultOptions = merge(EMAIndicator.defaultOptions);
+            return TEMAIndicator;
+        }(EMAIndicator));
+        SeriesRegistry.registerSeriesType('tema', TEMAIndicator);
+        /* *
+         *
+         *  Default Export
+         *
+         * */
         /**
-         * A `TEMA` series. If the [type](#series.ema.type) option is not
+         * A `TEMA` series. If the [type](#series.tema.type) option is not
          * specified, it is inherited from [chart.type](#chart.type).
          *
-         * @extends   series,plotOptions.ema
+         * @extends   series,plotOptions.tema
          * @since     7.0.0
          * @product   highstock
          * @excluding allAreas, colorAxis, compare, compareBase, dataParser, dataURL,
@@ -250,6 +302,7 @@
          */
         ''; // to include the above in the js output
 
+        return TEMAIndicator;
     });
     _registerModule(_modules, 'masters/indicators/tema.src.js', [], function () {
 

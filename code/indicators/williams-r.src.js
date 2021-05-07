@@ -1,9 +1,9 @@
 /**
- * @license Highstock JS v8.0.4 (2020-03-10)
+ * @license Highstock JS v9.1.0 (2021-05-03)
  *
- * Indicator series type for Highstock
+ * Indicator series type for Highcharts Stock
  *
- * (c) 2010-2019 Wojciech Chmiel
+ * (c) 2010-2021 Wojciech Chmiel
  *
  * License: www.highcharts.com/license
  */
@@ -28,28 +28,30 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'mixins/reduce-array.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'Mixins/ReduceArray.js', [], function () {
         /**
          *
-         *  (c) 2010-2020 Pawel Fus & Daniel Studencki
+         *  (c) 2010-2021 Pawel Fus & Daniel Studencki
          *
          *  License: www.highcharts.com/license
          *
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var reduce = H.reduce;
         var reduceArrayMixin = {
-            /**
-             * Get min value of array filled by OHLC data.
-             * @private
-             * @param {Array<*>} arr Array of OHLC points (arrays).
-             * @param {string} index Index of "low" value in point array.
-             * @return {number} Returns min value.
-             */
-            minInArray: function (arr, index) {
-                return reduce(arr, function (min, target) {
-                    return Math.min(min, target[index]);
+                /**
+                 * Get min value of array filled by OHLC data.
+                 * @private
+                 * @param {Array<*>} arr Array of OHLC points (arrays).
+                 * @param {string} index Index of "low" value in point array.
+                 * @return {number} Returns min value.
+                 */
+                minInArray: function (arr,
+            index) {
+                    return arr.reduce(function (min,
+            target) {
+                        return Math.min(min,
+            target[index]);
                 }, Number.MAX_VALUE);
             },
             /**
@@ -60,7 +62,7 @@
              * @return {number} Returns max value.
              */
             maxInArray: function (arr, index) {
-                return reduce(arr, function (max, target) {
+                return arr.reduce(function (max, target) {
                     return Math.max(max, target[index]);
                 }, -Number.MAX_VALUE);
             },
@@ -73,7 +75,7 @@
              * @return {Array<number,number>} Returns array with min and max value.
              */
             getArrayExtremes: function (arr, minIndex, maxIndex) {
-                return reduce(arr, function (prev, target) {
+                return arr.reduce(function (prev, target) {
                     return [
                         Math.min(prev[0], target[minIndex]),
                         Math.max(prev[1], target[maxIndex])
@@ -84,7 +86,7 @@
 
         return reduceArrayMixin;
     });
-    _registerModule(_modules, 'indicators/williams-r.src.js', [_modules['parts/Utilities.js'], _modules['mixins/reduce-array.js']], function (U, reduceArrayMixin) {
+    _registerModule(_modules, 'Stock/Indicators/WilliamsR/WilliamsRIndicator.js', [_modules['Mixins/ReduceArray.js'], _modules['Core/Series/SeriesRegistry.js'], _modules['Core/Utilities.js']], function (ReduceArrayMixin, SeriesRegistry, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -92,8 +94,27 @@
          *  !!!!!!! SOURCE GETS TRANSPILED BY TYPESCRIPT. EDIT TS FILE ONLY. !!!!!!!
          *
          * */
-        var isArray = U.isArray, seriesType = U.seriesType;
-        var getArrayExtremes = reduceArrayMixin.getArrayExtremes;
+        var __extends = (this && this.__extends) || (function () {
+                var extendStatics = function (d,
+            b) {
+                    extendStatics = Object.setPrototypeOf ||
+                        ({ __proto__: [] } instanceof Array && function (d,
+            b) { d.__proto__ = b; }) ||
+                        function (d,
+            b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+                return extendStatics(d, b);
+            };
+            return function (d, b) {
+                extendStatics(d, b);
+                function __() { this.constructor = d; }
+                d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+            };
+        })();
+        var getArrayExtremes = ReduceArrayMixin.getArrayExtremes;
+        var SMAIndicator = SeriesRegistry.seriesTypes.sma;
+        var extend = U.extend,
+            isArray = U.isArray,
+            merge = U.merge;
         /**
          * The Williams %R series type.
          *
@@ -103,47 +124,34 @@
          *
          * @augments Highcharts.Series
          */
-        seriesType('williamsr', 'sma', 
-        /**
-         * Williams %R. This series requires the `linkedTo` option to be
-         * set and should be loaded after the `stock/indicators/indicators.js`.
-         *
-         * @sample {highstock} stock/indicators/williams-r
-         *         Williams %R
-         *
-         * @extends      plotOptions.sma
-         * @since        7.0.0
-         * @product      highstock
-         * @excluding    allAreas, colorAxis, joinBy, keys, navigatorOptions,
-         *               pointInterval, pointIntervalUnit, pointPlacement,
-         *               pointRange, pointStart, showInNavigator, stacking
-         * @requires     stock/indicators/indicators
-         * @requires     stock/indicators/williams-r
-         * @optionparent plotOptions.williamsr
-         */
-        {
-            /**
-             * Paramters used in calculation of Williams %R series points.
-             * @excluding index
-             */
-            params: {
-                /**
-                 * Period for Williams %R oscillator
-                 */
-                period: 14
+        var WilliamsRIndicator = /** @class */ (function (_super) {
+                __extends(WilliamsRIndicator, _super);
+            function WilliamsRIndicator() {
+                var _this = _super !== null && _super.apply(this,
+                    arguments) || this;
+                _this.data = void 0;
+                _this.options = void 0;
+                _this.points = void 0;
+                return _this;
             }
-        }, 
-        /**
-         * @lends Highcharts.Series#
-         */
-        {
-            nameBase: 'Williams %R',
-            getValues: function (series, params) {
-                var period = params.period, xVal = series.xData, yVal = series.yData, yValLen = yVal ? yVal.length : 0, WR = [], // 0- date, 1- Williams %R
-                xData = [], yData = [], slicedY, close = 3, low = 2, high = 1, extremes, R, HH, // Highest high value in period
-                LL, // Lowest low value in period
-                CC, // Current close value
-                i;
+            WilliamsRIndicator.prototype.getValues = function (series, params) {
+                var period = params.period,
+                    xVal = series.xData,
+                    yVal = series.yData,
+                    yValLen = yVal ? yVal.length : 0,
+                    WR = [], // 0- date, 1- Williams %R
+                    xData = [],
+                    yData = [],
+                    slicedY,
+                    close = 3,
+                    low = 2,
+                    high = 1,
+                    extremes,
+                    R,
+                    HH, // Highest high value in period
+                    LL, // Lowest low value in period
+                    CC, // Current close value
+                    i;
                 // Williams %R requires close value
                 if (xVal.length < period ||
                     !isArray(yVal[0]) ||
@@ -171,8 +179,48 @@
                     xData: xData,
                     yData: yData
                 };
-            }
+            };
+            /**
+             * Williams %R. This series requires the `linkedTo` option to be
+             * set and should be loaded after the `stock/indicators/indicators.js`.
+             *
+             * @sample {highstock} stock/indicators/williams-r
+             *         Williams %R
+             *
+             * @extends      plotOptions.sma
+             * @since        7.0.0
+             * @product      highstock
+             * @excluding    allAreas, colorAxis, joinBy, keys, navigatorOptions,
+             *               pointInterval, pointIntervalUnit, pointPlacement,
+             *               pointRange, pointStart, showInNavigator, stacking
+             * @requires     stock/indicators/indicators
+             * @requires     stock/indicators/williams-r
+             * @optionparent plotOptions.williamsr
+             */
+            WilliamsRIndicator.defaultOptions = merge(SMAIndicator.defaultOptions, {
+                /**
+                 * Paramters used in calculation of Williams %R series points.
+                 * @excluding index
+                 */
+                params: {
+                    index: void 0,
+                    /**
+                     * Period for Williams %R oscillator
+                     */
+                    period: 14
+                }
+            });
+            return WilliamsRIndicator;
+        }(SMAIndicator));
+        extend(WilliamsRIndicator.prototype, {
+            nameBase: 'Williams %R'
         });
+        SeriesRegistry.registerSeriesType('williamsr', WilliamsRIndicator);
+        /* *
+         *
+         *  Default Export
+         *
+         * */
         /**
          * A `Williams %R Oscillator` series. If the [type](#series.williamsr.type)
          * option is not specified, it is inherited from [chart.type](#chart.type).
@@ -189,6 +237,7 @@
          */
         ''; // adds doclets above to the transpiled file
 
+        return WilliamsRIndicator;
     });
     _registerModule(_modules, 'masters/indicators/williams-r.src.js', [], function () {
 
