@@ -900,7 +900,7 @@ function mapChart() {
 				animation: false
 			},
 			vbp: {
-				animation: false,
+				animation: true,
 				volumeDivision: {
 					styles: {
 						negativeColor: 'rgba(0, 200, 0, 0.2)',
