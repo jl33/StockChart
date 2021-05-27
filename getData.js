@@ -1257,19 +1257,19 @@ function mapChart() {
 					return s;
 				}
 			}
-		}, {
-			type: 'vbp',
-			linkedTo: '_price',
-			yAxis: 1,
-			params: {
-				volumeSeriesID: '_volumn',
-			},
-			dataLabels: {
-				enabled: false,
-			},
-			zoneLines: {
-				enabled: false,
-			}
+		// }, {
+		// 	type: 'vbp',
+		// 	linkedTo: '_price',
+		// 	yAxis: 1,
+		// 	params: {
+		// 		volumeSeriesID: '_volumn',
+		// 	},
+		// 	dataLabels: {
+		// 		enabled: false,
+		// 	},
+		// 	zoneLines: {
+		// 		enabled: false,
+		// 	}
 		}, {
 			name: '⇦5日均量',
 			type: 'column',
