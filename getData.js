@@ -359,7 +359,8 @@ stSelElm.onchange = function () {
 			var _sd = "SELECT date,PBRVal,PBRHigh,PBRLow,PERVal,price,Volume,buyLawF,";
 			_sd = _sd + "buyDealer,buyInvTrust,main20Day,open,high,low,K5,K10,K20,K60,K120,";
 			_sd = _sd + "K240,K,D,V5,V20,note,";
-			_sd = _sd + "voucherSell,dailyDividendRate,buyLawFCombine,buyDealerCombine,buyInvTrustCombine ";
+			_sd = _sd + "voucherSell,dailyDividendRate,buyLawFCombine,buyDealerCombine,buyInvTrustCombine, ";
+			_sd = _sd + "epsp618Price,epsp8Price,epsPrice,eps1p2Price,eps1p382Price ";
 			_sd = _sd + " FROM StockValue ";
 			_sd = _sd + "WHERE stockNum='" + v + "' and date<=date('now','+14 day') and price > 0 Order By date;";
 			setChartData(worker, _sd);
@@ -556,6 +557,10 @@ function setChartData(w, sqlst) {
 					tfg = Object.assign({}, memoFlag);
 					_D_MemoList.push(tfg);
 				}
+				_D_pe_toofar.push([newDate, item[30], item[34]]);
+				_D_pe_proper.push([newDate, item[31], item[33]]);
+				_D_pe.push([newDate, item[32]]);
+
 			});
 		}
 
@@ -1157,6 +1162,32 @@ function mapChart() {
 			credits: {
 				enabled: false
 			}
+		}, {
+			name: '本益比1倍價⇨',
+			data: _D_pe,
+			color: '#8a0000',
+			id: '_ar_pe',
+			yAxis: 1,
+			linkedTo: '_price',
+			zIndex: 2,
+		}, {
+			name: '本益比合理價⇨',
+			data: _D_pe_proper,
+			type: 'arearange',
+			color: '#6d9ffc',
+			id: '_ar_pe_proper',
+			yAxis: 1,
+			linkedTo: '_ar_pe',
+			zIndex: 1,
+		}, {
+			name: '本益比超級價⇨',
+			data: _D_pe_toofar,
+			type: 'arearange',
+			color: '#fffb26',
+			id: '_ar_pe_toofar',
+			yAxis: 1,
+			linkedTo: '_ar_pe',
+			zIndex: 0,
 		}, {
 			name: '5日均線⇨',
 			data: _D_k5,
