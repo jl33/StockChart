@@ -1172,7 +1172,7 @@ function mapChart() {
 			id: '_ar_pe',
 			lineWidth: 0.7,
 			yAxis: 1,
-			linkedTo: '_price',
+			//linkedTo: '_price',
 			zIndex: 1,
 		}, {
 			name: '本益比合理價⇨',
@@ -1181,7 +1181,7 @@ function mapChart() {
 			color: 'rgba(109, 159, 252, 0.3)',
 			id: '_ar_pe_proper',
 			yAxis: 1,
-			linkedTo: '_ar_pe',
+			//linkedTo: '_ar_pe',
 			zIndex: 0,
 		}, {
 			name: '本益比超級價⇨',
@@ -1190,7 +1190,7 @@ function mapChart() {
 			color: 'rgba(255, 251, 38, 0.2)',
 			id: '_ar_pe_toofar',
 			yAxis: 1,
-			linkedTo: '_ar_pe',
+			//linkedTo: '_ar_pe',
 			zIndex: 0,
 		}, {
 			name: '5日均線⇨',
