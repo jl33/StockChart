@@ -61,6 +61,9 @@ var _D_v20 = [];
 var _D_MemoList = [];
 var _D_sell = [];
 var _D_divR = [];
+var _D_pe =[]
+var _D_pe_proper=[]
+var _D_pe_toofar=[]
 
 
 var _M_range = [];
@@ -3318,6 +3321,9 @@ function clearArrayNDestroyChart() {
 	_K_LineMarkList = [];
 	_D_sell = [];
 	_D_divR = [];
+	_D_pe=[]
+	_D_pe_proper=[]
+	_D_pe_toofar=[]
 }
 function clearArrayNDestroyChartM() {
 	_M_range = [];
