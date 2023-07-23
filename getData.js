@@ -1174,6 +1174,7 @@ function mapChart() {
 			yAxis: 1,
 			// linkedTo: '_price',
 			zIndex: 1,
+			visible: false,
 		}, {
 			name: '本益比合理價⇨',
 			data: _D_pe_proper,
