@@ -2828,7 +2828,8 @@ function mapChartY() {
 				},
 				credits: {
 					enabled: false
-				}
+				},
+        visible:false,
 			}, {
 				name: '營業活動⇨',
 				data: _Y_bizAct,
