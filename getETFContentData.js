@@ -2,35 +2,13 @@
 //#region var section
 var Highcharts;
 var errorElm = document.getElementById('error');
-var loadElm = document.getElementById('load');
 var dbFileElm = document.getElementById('dbfile');
-var stSelElm = document.getElementById('stockSel');
-var popDescElm = document.getElementById('popDesc');
-var nameElm = document.getElementById('stockName');
-var typeElm = document.getElementById('stockType');
-var t1 = document.getElementById('t1');
-const urlParams = new URLSearchParams(window.location.search);
-const myParam = urlParams.get('f');
-const myParamList = urlParams.get('l');
-const myParamRange = urlParams.get('t');
-var par_BestPrice = false;
-var par_FilterList = 1;
 var par_DaySelectRange = 1;
-if (myParam == "1") { par_BestPrice = true; }
-else { par_BestPrice = false; }
 
-if (myParamList == 1 || myParamList == 2 || myParamList == 3) { par_FilterList = myParamList; }
-else { par_FilterList = 1; }
-
-if (myParamRange == 0 || myParamRange == 2 || myParamRange == 3 || myParamRange == 4) { par_DaySelectRange = myParamRange; }
-else { par_DaySelectRange = 1; }
 
 var _chart_D = null;
 var _chart_Y = null;
-var _chart_Q = null;
-var _chart_W = null;
 var _chart_M = null;
-var _chart_Y2 = null;
 
 var stockPBR = [];
 var stockPBRLo = [];
@@ -125,32 +103,7 @@ var _Y_freeCashFlow = [];
 var _Y_endBalance = [];
 var _Y_inr = [];
 
-var _Q_range = [];
-var _Q_totalLiabRatio = [];
-var _Q_shareholderEqtyRatio = [];
-var _Q_debtNetRatio = [];
-var _Q_currentRatio = [];
-var _Q_fastRatio = [];
-var _Q_ContractLiability = [];
 
-var _W_range = [];
-var _W_shareholderGT1000 = [];
-var _W_FI_SC_5d = [];
-var _W_FI_SC_1m = [];
-var _W_FI_SC_3m = [];
-var _W_FI_SC_1y = [];
-var _W_FI_SC_3y = [];
-var _W_TI_SC_5d = [];
-var _W_TI_SC_1m = [];
-var _W_TI_SC_3m = [];
-var _W_TI_SC_1y = [];
-var _W_TI_SC_3y = [];
-var _W_SI_SC_5d = [];
-var _W_SI_SC_1m = [];
-var _W_SI_SC_3m = [];
-var _W_SI_SC_1y = [];
-var _W_SI_SC_3y = [];
-var _W_F_Own_ratio = [];
 
 //#endregion
 
@@ -160,23 +113,14 @@ var _W_F_Own_ratio = [];
 var worker = new Worker("worker.sql.js");
 var worker2 = new Worker("worker.sql.js");
 var worker3 = new Worker("worker.sql.js");
-var worker4 = new Worker("worker.sql.js");
-var worker5 = new Worker("worker.sql.js");
-var worker6 = new Worker("worker.sql.js");
 worker.onerror = error;
 worker2.onerror = error;
 worker3.onerror = error;
-worker4.onerror = error;
-worker5.onerror = error;
-worker6.onerror = error;
 
 // Open a database
 worker.postMessage({ action: 'open' });
 worker2.postMessage({ action: 'open' });
 worker3.postMessage({ action: 'open' });
-worker4.postMessage({ action: 'open' });
-worker5.postMessage({ action: 'open' });
-worker6.postMessage({ action: 'open' });
 
 //#endregion
 
@@ -191,310 +135,97 @@ function noerror() {
 }
 
 //#endregion
-
-
-//#region dbFileElm.onchange: read database & make <option>
-dbFileElm.onchange = function () {
-	// var f = dbFileElm.files[0];
-	var getfile = function () {
-		if ('files' in dbFileElm) {
-			for (var i = 0; i < dbFileElm.files.length; i++) {
-				var file = dbFileElm.files[i];
-				if ('name' in file) {
-					if (file.name === "stock_wm.db") {
-						// console.log("got my db(name)!");
-						return file;
-					}
-				}
-				else {
-					if (file.fileName === "stock_wm.db") {
-						// console.log("got my db(fileName)!");
-						return file;
-					}
-				}
-			}
-		}
-	}
-	// console.log(getfile());
-	// console.log(getfile() instanceof Blob);
-	var f = getfile();
-	var r = new FileReader();
-	var lstr = "", qr = "";
-	if (par_FilterList == 1) {
-		//所有清單
-		lstr = "下拉選取";
-	}
-	else if (par_FilterList == 2) {
-		//最佳選清單
-		lstr = "優選清單選取"; qr = " and bestChoice=1 ";
-	}
-	else if (par_FilterList == 3) {
-		//次優選清單
-		lstr = "次優清單選取"; qr = " and secondChoice=1 ";
-	}
-	else { lstr = "下拉選取"; }
-
-	if (f != null) { loadElm.innerText = ""; }
-	r.onload = function () {
-		worker.onmessage = function () {
-			noerror()
-			worker.onmessage = function (event) {
-				var res = event.data.results, i = 0;
-				for (i = 0; i < res.length; i++) {
-					var selObj = res[i].values;
-					stSelElm.innerHTML += "<option value=''>(" + lstr + ")</option>";
-					selObj.forEach(function (item) {
-						stSelElm.innerHTML += '<option value=' + item[0] + '>' + item[0] + ' ' + item[1] + '(' + (item[2] == null ? '' : item[2]) + ')</option>';
-					});
-				}
-				t1.focus();
-			}
-			worker.postMessage({ action: 'exec', sql: "SELECT stockNum,StockName,bizType FROM stockInfo Where enable=1 " + qr + " Order By bizType, otherOrder,stockNum;" });
-		};
-		try {
-			worker.postMessage({ action: 'open', buffer: r.result }, [r.result]);
-		}
-		catch (exception) {
-			worker.postMessage({ action: 'open', buffer: r.result });
-		}
-	}
-	r.readAsArrayBuffer(f);
-}
-//#endregion
-function showStockFont(_b) {
-	if (!_b) {
-		document.getElementById('stockName').classList.remove('transparentFont');
-		document.getElementById('stockName').classList.add('wholeTransparentFont');
-		document.getElementById('stockType').classList.remove('transparentFont');
-		document.getElementById('stockType').classList.add('wholeTransparentFont');
-	} else {
-		document.getElementById('stockName').classList.remove('wholeTransparentFont');
-		document.getElementById('stockName').classList.add('transparentFont');
-		document.getElementById('stockType').classList.remove('wholeTransparentFont');
-		document.getElementById('stockType').classList.add('transparentFont');
-	}
-}
-stSelElm.addEventListener('keydown', function (e) {
-    var keynum;
-    keynum = e.key;
-    if (keynum === "Escape") {
-        t1.focus();
-        return;
-    }
-    if (((e.key >= "0" && e.key <= "9") || (e.key >= "A" && e.key <= "Z"))) {
-        t1.value = e.key;
-        t1.focus();
-        return;
-    }
-});
   
-//#region t1=key-in stock textbox-------
-t1.addEventListener('keydown', function (e) {
-    var keynum;
-    keynum = e.key;
-    if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(keynum)) {
-        stSelElm.focus();
-        return;
-    }
-    if (keynum === "Enter") {
-        var _v = t1.value.toUpperCase();
-        t1.value = "";
-        stSelElm.addEventListener('change', function () { });
-        stSelElm.value = _v;
-        stSelElm.dispatchEvent(new Event('change'));
-        return;
-    }
-    if (!((keynum >= "0" && keynum <= "9") || (keynum >= "A" && keynum <= "Z"))) {
-        return;
-    }
-});
-t1.onfocus = stSelElm.onfocus = function () {
-	var f = this;
-	f.style.backgroundColor = 'rgba(255,0,0,0.3)';
-	if (f === stSelElm) {
-		t1.value = "";
-	}
-}
 
-t1.onblur = stSelElm.onblur = function () {
-	var f = this;
-	f.style.backgroundColor = 'rgba(255,255,255,0.4)';
-}
-//#endregion
-
-//#region
-//#region stSelElm.onchange
-stSelElm.onchange = function () {
-	var getfile = function (n) {
-		if ('files' in dbFileElm) {
-			for (var i = 0; i < dbFileElm.files.length; i++) {
-				var file = dbFileElm.files[i];
-				if ('name' in file) {
-					if (file.name === n) {
-						// console.log("got my db(name)->select elem!");
-						return file;
-					}
+var getfile = function (n) {
+	if ('files' in dbFileElm) {
+		for (var i = 0; i < dbFileElm.files.length; i++) {
+			var file = dbFileElm.files[i];
+			if ('name' in file) {
+				if (file.name === n) {
+					return file;
 				}
-				else {
-					if (file.fileName === n) {
-						// console.log("got my db(fileName)->select elem!");
-						return file;
-					}
+			}
+			else {
+				if (file.fileName === n) {
+					return file;
 				}
 			}
 		}
 	}
-	var fdy = getfile("stock_dy.db");
-	var fq = getfile("stock_q.db");
-	var fwm = getfile("stock_wm.db");
-	// var f = dbFileElm.files[0];
-	var r = new FileReader();
-	var r2 = new FileReader();
-	var r3 = new FileReader();
-	var r4 = new FileReader();
-	var r5 = new FileReader();
-	var r6 = new FileReader();
-	var v = stSelElm.value;
-
-	//#region query daily data--------------------------------
-	r.onload = function () {
-		worker.onmessage = function () {
-			noerror();
-			var _sd = "SELECT date,PBRVal,PBRHigh,PBRLow,PERVal,price,Volume,buyLawF,";
-			_sd = _sd + "buyDealer,buyInvTrust,main20Day,open,high,low,K5,K10,K20,K60,K120,";
-			_sd = _sd + "K240,K,D,V5,V20,note,";
-			_sd = _sd + "voucherSell,dailyDividendRate,buyLawFCombine,buyDealerCombine,buyInvTrustCombine, ";
-			_sd = _sd + "epsp618Price,epsp8Price,epsPrice,eps1p2Price,eps1p382Price ";
-			_sd = _sd + " FROM StockValue ";
-			_sd = _sd + "WHERE stockNum='" + v + "' and date<=date('now','+14 day') and price > 0 Order By date;";
-			setChartData(worker, _sd);
-		};
-		try {
-			worker.postMessage({ action: 'open', buffer: r.result }, [r.result]);
-		}
-		catch (exception) {
-			worker.postMessage({ action: 'open', buffer: r.result });
-		}
+}
+var fdy = getfile("etf.db");
+var r = new FileReader();
+var r2 = new FileReader();
+var r3 = new FileReader();
+//TODO: 待整理3個統計的SQL語法, SQLite無法用pivot
+//#region query daily data--------------------------------
+r.onload = function () {
+	worker.onmessage = function () {
+		noerror();
+		var _sd = "SELECT date,PBRVal,PBRHigh,PBRLow,PERVal,price,Volume,buyLawF,";
+		_sd = _sd + "buyDealer,buyInvTrust,main20Day,open,high,low,K5,K10,K20,K60,K120,";
+		_sd = _sd + "K240,K,D,V5,V20,note,";
+		_sd = _sd + "voucherSell,dailyDividendRate,buyLawFCombine,buyDealerCombine,buyInvTrustCombine, ";
+		_sd = _sd + "epsp618Price,epsp8Price,epsPrice,eps1p2Price,eps1p382Price ";
+		_sd = _sd + " FROM StockValue ";
+		_sd = _sd + "WHERE stockNum='' and date<=date('now','+14 day') and price > 0 Order By date;";
+		setChartData(worker, _sd);
+	};
+	try {
+		worker.postMessage({ action: 'open', buffer: r.result }, [r.result]);
 	}
-	//#endregion
-
-	//#region query month data------------------------------
-	r2.onload = function () {
-		worker2.onmessage = function () {
-			noerror();
-			setChartDataM(worker2, "SELECT range,startPrice,endPrice,hiPrice,lowPrice,inPerMMoM,inPerMYoY,inAllMYoY,SVshareholder,Fshareholder,SVpledge,Yh,Y1,Y5,Y10,Volume FROM StockMonth WHERE stockNum='" + v + "' and endPrice > 0 Order By range;");
-		};
-		try {
-			worker2.postMessage({ action: 'open', buffer: r2.result }, [r2.result]);
-		}
-		catch (exception) {
-			worker2.postMessage({ action: 'open', buffer: r2.result });
-		}
+	catch (exception) {
+		worker.postMessage({ action: 'open', buffer: r.result });
 	}
-	//#endregion
-
-	//#region query year data------------------------
-	r3.onload = function () {
-		worker3.onmessage = function () {
-			noerror();
-			var sq = "SELECT range,shareCap,endPrice,avgPrice,operMargin,operProfitMargin,";
-			sq = sq + "lossOutside,afterTaxRate,ROE,ROA,afterTaxEPS,dirRewardRate,dirNetRate,";
-			sq = sq + "empRewardRate,cashDividendRate,stockDividendRate,dividendRate,";
-			sq = sq + "distributionRate,cashRate,receivableGet,liabilityPay,cashFlow,";
-			sq = sq + "netTaxProfit,bizAct,investAct,finAct,otherAct,netCashFlow,freeCashFlow,";
-			sq = sq + "endBalance,inr,openPrice,highPrice,lowPrice FROM vStockYear WHERE stockNum='" + v + "' and (shareCap > 0 or endPrice > 0) ";
-			sq = sq + "Order By case when range like '%Q%' then range else range || 'Z' end;";
-			setChartDataY(worker3, sq);
-
-		};
-		try {
-			worker3.postMessage({ action: 'open', buffer: r3.result }, [r3.result]);
-		}
-		catch (exception) {
-			worker3.postMessage({ action: 'open', buffer: r3.result });
-		}
-	}
-	//#endregion
-
-	//#region query stock info---------------------------------
-	r4.onload = function () {
-		worker4.onmessage = function () {
-			noerror();
-			setPopDesc(worker4, "SELECT stockNum,bizDesc FROM StockInfo WHERE stockNum='" + v + "';");
-		};
-		try {
-			worker4.postMessage({ action: 'open', buffer: r4.result }, [r4.result]);
-		}
-		catch (exception) {
-			worker4.postMessage({ action: 'open', buffer: r4.result });
-		}
-	}
-	//#endregion
-
-	//#region query quarter data-----------------------------
-	r5.onload = function () {
-		worker5.onmessage = function () {
-			noerror();
-			setChartDataQ(worker5, "SELECT range,fastRatio,currentRatio,debtNetRatio,shareholderEqtyRatio,totalLiabRatio,ContrLiabRatio as ContractLiability FROM StockQuarter WHERE stockNum='" + v + "';");
-		};
-		try {
-			worker5.postMessage({ action: 'open', buffer: r5.result }, [r5.result]);
-		}
-		catch (exception) {
-			worker5.postMessage({ action: 'open', buffer: r5.result });
-		}
-	}
-	//#endregion
-
-	//#region query week data------------------------------------
-	r6.onload = function () {
-		worker6.onmessage = function () {
-			noerror();
-			setChartDataW(worker6, "SELECT range,shareholderGT1000,FI_SC_5d,FI_SC_1m,FI_SC_3m,FI_SC_1y,FI_SC_3y,TI_SC_5d,TI_SC_1m,TI_SC_3m,TI_SC_1y,TI_SC_3y,SI_SC_5d,SI_SC_1m,SI_SC_3m,SI_SC_1y,SI_SC_3y,F_Own_ratio FROM StockWeek WHERE stockNum='" + v + "';");
-		};
-		try {
-			worker6.postMessage({ action: 'open', buffer: r6.result }, [r6.result]);
-		}
-		catch (exception) {
-			worker6.postMessage({ action: 'open', buffer: r6.result });
-		}
-	}
-	//#endregion
-
-	r.readAsArrayBuffer(fdy);
-	r2.readAsArrayBuffer(fwm);
-	r3.readAsArrayBuffer(fdy);
-	r4.readAsArrayBuffer(fwm);
-	r5.readAsArrayBuffer(fq);
-	r6.readAsArrayBuffer(fwm);
-	var op = stSelElm.options[stSelElm.selectedIndex].text;
-	nameElm.innerText = op.substring(0, op.indexOf("("));
-	if (!(op.includes("ETF"))) {
-		typeElm.innerText = op.substring(op.indexOf("(") + 1, op.indexOf(")"));
-	}
-
-	showStockFont(true);
 }
 //#endregion
+//#region query month data------------------------------
+r2.onload = function () {
+	worker2.onmessage = function () {
+		noerror();
+		setChartDataM(worker2, "SELECT range,startPrice,endPrice,hiPrice,lowPrice,inPerMMoM,inPerMYoY,inAllMYoY,SVshareholder,Fshareholder,SVpledge,Yh,Y1,Y5,Y10,Volume FROM StockMonth WHERE stockNum='" + v + "' and endPrice > 0 Order By range;");
+	};
+	try {
+		worker2.postMessage({ action: 'open', buffer: r2.result }, [r2.result]);
+	}
+	catch (exception) {
+		worker2.postMessage({ action: 'open', buffer: r2.result });
+	}
+}
+//#endregion
+
+//#region query year data------------------------
+r3.onload = function () {
+	worker3.onmessage = function () {
+		noerror();
+		var sq = "SELECT range,shareCap,endPrice,avgPrice,operMargin,operProfitMargin,";
+		sq = sq + "lossOutside,afterTaxRate,ROE,ROA,afterTaxEPS,dirRewardRate,dirNetRate,";
+		sq = sq + "empRewardRate,cashDividendRate,stockDividendRate,dividendRate,";
+		sq = sq + "distributionRate,cashRate,receivableGet,liabilityPay,cashFlow,";
+		sq = sq + "netTaxProfit,bizAct,investAct,finAct,otherAct,netCashFlow,freeCashFlow,";
+		sq = sq + "endBalance,inr,openPrice,highPrice,lowPrice FROM vStockYear WHERE stockNum='" + v + "' and (shareCap > 0 or endPrice > 0) ";
+		sq = sq + "Order By case when range like '%Q%' then range else range || 'Z' end;";
+		setChartDataY(worker3, sq);
+
+	};
+	try {
+		worker3.postMessage({ action: 'open', buffer: r3.result }, [r3.result]);
+	}
+	catch (exception) {
+		worker3.postMessage({ action: 'open', buffer: r3.result });
+	}
+}
+//#endregion
+
+r.readAsArrayBuffer(fdy);
+r2.readAsArrayBuffer(fdy);
+r3.readAsArrayBuffer(fdy);
+
 
 //#region Set array data...
-function setPopDesc(w, sqlst) {
-	var s = sqlst;
-	w.onmessage = function (event) {
-		var results = event.data.results;
-		for (var i = 0; i < results.length; i++) {
-			stockObj = results[i].values;
-			stockObj.forEach(function (item) {
-				popDescElm.innerHTML = item[1];
-				if (item[0].startsWith("00")) {
-					typeElm.innerText = item[1].substring(0, item[1].indexOf(","));
-				}
-			});
-		}
-	}
-	w.postMessage({ action: 'exec', sql: s });
-}
 
+//TODO: 待整理3個chart的資料對應
 function setChartData(w, sqlst) {
 	var s = sqlst, newDate;
 	if (_chart_D) { _chart_D.showLoading(); }
@@ -762,74 +493,6 @@ function setChartDataY(w, sqlsty) {
 	w.postMessage({ id: 3, action: 'exec', sql: s });
 }
 
-function setChartDataQ(w, sqlstm) {
-	var s = sqlstm, newDate;
-	if (_chart_Q) { _chart_Q.showLoading(); }
-	w.onmessage = function (event) {
-		var results = event.data.results, newYear = '';
-		for (var i = 0; i < results.length; i++) {
-			stockQObj = results[i].values;
-			stockQObj.forEach(function (item) {
-				newYear = item[0].replace('Q1', '-03').replace('Q2', '-06').replace('Q3', '-09').replace('Q4', '-12');
-				newDate = new Date(newYear).getTime();
-				_Q_fastRatio.push([newDate, item[1]]);
-				_Q_currentRatio.push([newDate, item[2]]);
-				_Q_debtNetRatio.push([newDate, item[3]]);
-				_Q_shareholderEqtyRatio.push([newDate, item[4]]);
-				_Q_totalLiabRatio.push([newDate, item[5]]);
-				_Q_ContractLiability.push([newDate, item[6]]);
-			});
-		}
-		mapChartQ();
-		clearArrayNDestroyChartQ();
-		_chart_Q.hideLoading();
-	}
-	w.postMessage({ id: 2, action: 'exec', sql: s });
-}
-
-function setChartDataW(w, sqlstm) {
-	var s = sqlstm;
-	if (_chart_W) { _chart_W.showLoading(); }
-	w.onmessage = function (event) {
-		var results = event.data.results, newYear, d1, ds,
-			oneDay = 1000 * 60 * 60 * 24;
-
-		for (var i = 0; i < results.length; i++) {
-			var stockWbj = results[i].values;
-			stockWbj.forEach(function (item) {
-				d1 = new Date('20' + item[0].substr(item[0].indexOf('W') - 2, 2), 0, 0);
-				ds = item[0].substr(item[0].indexOf('W') + 1, 2) * 7;
-				newYear = ds * oneDay + d1.getTime();
-				// console.log(d1);
-				// console.log(ds);
-				// console.log(newYear);
-				if (!Number.isNaN(newYear)) {
-					_W_shareholderGT1000.push([newYear, item[1]]);
-					_W_FI_SC_5d.push([newYear, item[2]]);
-					_W_FI_SC_1m.push([newYear, item[3]]);
-					_W_FI_SC_3m.push([newYear, item[4]]);
-					_W_FI_SC_1y.push([newYear, item[5]]);
-					_W_FI_SC_3y.push([newYear, item[6]]);
-					_W_TI_SC_5d.push([newYear, item[7]]);
-					_W_TI_SC_1m.push([newYear, item[8]]);
-					_W_TI_SC_3m.push([newYear, item[9]]);
-					_W_TI_SC_1y.push([newYear, item[10]]);
-					_W_TI_SC_3y.push([newYear, item[11]]);
-					_W_SI_SC_5d.push([newYear, item[12]]);
-					_W_SI_SC_1m.push([newYear, item[13]]);
-					_W_SI_SC_3m.push([newYear, item[14]]);
-					_W_SI_SC_1y.push([newYear, item[15]]);
-					_W_SI_SC_3y.push([newYear, item[16]]);
-					_W_F_Own_ratio.push([newYear, item[17]]);
-				}
-			});
-		}
-		mapChartW();
-		clearArrayNDestroyChartW();
-		_chart_W.hideLoading();
-	}
-	w.postMessage({ id: 2, action: 'exec', sql: s });
-}
 //#endregion
 
 Highcharts.setOptions({
@@ -854,10 +517,10 @@ function mapChart() {
 	//#region base var
 	// console.log(document.getElementById('containerD').clientWidth);
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
+		_leftYLabOffset = 170 - document.getElementById('contShare').clientWidth; //-460;
 	//#endregion
 	//#region  chart~
-	_chart_D = Highcharts.stockChart('containerD', {
+	_chart_D = Highcharts.stockChart('contShare', {
 		//#region head setting
 		chart: {
 			backgroundColor: 'rgba(255,255,255,0)',
@@ -1573,338 +1236,13 @@ function mapChart() {
 	}
 }
 
-function mapChartW() {
-	//#region var ~
-	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
-	//#endregion
-	//#region chart~
-	_chart_W = Highcharts.stockChart('containerW', {
-		//#region head setting~
-		chart: {
-			backgroundColor: 'rgba(255,255,255,0)',
-			spacingBottom: 1,
-			spacingTop: 1,
-			spacingLeft: 30,
-			spacingRight: 1,
-			animation: false,
-		},
-		credits: {
-			enabled: false
-		},
-		boost: {
-			useGPUTranslations: true,
-			allowForce: true,
-		},
-		rangeSelector: {
-			selected: 2,
-			verticalAlign: 'bottom',
-			margin: 0,
-			inputEnabled: false,
-			buttons: [{
-				type: 'week',
-				count: 13,
-				text: 'Q'
-			}, {
-				type: 'week',
-				count: 52,
-				text: 'y'
-			}, {
-				type: 'week',
-				count: 260,
-				text: '5y'
-			}, {
-				type: 'all',
-				text: 'All'
-			}]
-		},
-		plotOptions: {
-			// area: {
-			// 	stacking: 'normal',
-			// },
-			candlestick: {
-				color: 'green',
-				upColor: 'red',
-				animation: false,
-			},
-			series: {
-				animation: false
-			}
-		},
-		legend: {
-			title: {
-				text: '<span class="spanRange">週</span>',
-			},
-			enabled: true,
-			align: 'right',
-			verticalAlign: 'top',
-			layout: 'vertical',
-			symbolPadding: 1,
-			margin: 0,
-			x: 0,
-			y: 10,
-			width: 80
-		},
-		navigator: {
-			height: 20,
-			margin: 0
-		},
-		tooltip: {
-			animation: false,
-			split: false,
-			padding: 1,
-			valueDecimals: 2,
-			hideDelay: 0,
-			shared: true,
-			outside: true,
-			// crosshairs: [true, true],
-			xDateFormat: "'%y/%m/%d",
-			positioner: function (boxWidth, boxHeight, point) {
-				return { x: 490, y: 650 };
-			}
-		},
-		//#endregion
-		xAxis: {
-			crosshair: {
-				width: 1,
-				// color: 'red'
-			},
-			type: 'datetime',
-			tickInterval: 3 * 7 * 24 * 36e5, // 3 weeks
-			labels: {
-				format: '{value:\'%y/%m/%d}',
-			}
-		},
-		//#region yAxis~		
-		yAxis: [{
-			labels: {
-				align: 'left',
-			},
-			title: {
-				text: '外持股比',
-				x: _leftYLabTitlePos + 10,
-				y: 0
-			},
-			offset: _leftYLabOffset,
-			margin: 0,
-			height: '50%',
-			startOnTick: false,
-			minRange: 10
-		}, {
-			title: {
-				text: '外資買賣超',
-			},
-			offset: 0,
-			height: '50%',
-			startOnTick: false,
-			opposite: true
-		}, {
-			labels: {
-				align: 'left',
-			},
-			title: {
-				text: '千張大戶比',
-				x: _leftYLabTitlePos + 10,
-				y: 0
-			},
-			offset: _leftYLabOffset,
-			margin: 0,
-			top: '50%',
-			height: '50%',
-			startOnTick: false,
-			minRange: 10
-		}, {
-			title: {
-				text: '投信買賣超',
-			},
-			offset: 0,
-			top: '50%',
-			height: '50%',
-			startOnTick: false,
-			opposite: true
-		}],
-		//#endregion
-
-		//#region series~
-		series: [{
-			name: '⇦外資持股比',
-			data: _W_F_Own_ratio,
-			// type: 'area',
-			color: '#2941DF',
-			connectNulls: true,
-			yAxis: 0,
-			zIndex: 3,
-			lineWidth: 3,
-			tooltip: {
-				valueSuffix: '%',
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '外資5日⇨',
-			data: _W_FI_SC_5d,
-			// type: 'area',
-			color: '#F0AD31',
-			yAxis: 1,
-			// zIndex: 1,
-			lineWidth: 0.7,
-			tooltip: {
-				valueSuffix: '張',
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '外資1月⇨',
-			data: _W_FI_SC_1m,
-			type: 'area',
-			yAxis: 1,
-			color: 'rgba(201,38,195,1)',
-			fillColor: 'rgba(201,38,195,0.2)',
-			lineWidth: 1.2,
-			tooltip: {
-				valueSuffix: '張'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '外資3月⇨',
-			data: _W_FI_SC_3m,
-			yAxis: 1,
-			color: '#796400',
-			dashStyle: 'Dot',
-			lineWidth: 1,
-			tooltip: {
-				valueSuffix: '張'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '外資1年⇨',
-			data: _W_FI_SC_1y,
-			dashStyle: 'ShortDot',
-			yAxis: 1,
-			lineWidth: 1,
-			color: '#00db00',
-			tooltip: {
-				valueSuffix: '張'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '外資3年⇨',
-			data: _W_FI_SC_3y,
-			dashStyle: 'DashDot',
-			yAxis: 1,
-			lineWidth: 1,
-			visible: false,
-			color: '#3d7878',
-			tooltip: {
-				valueSuffix: '張'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '⇦千張以上大戶',
-			data: _W_shareholderGT1000,
-			// dashStyle: 'DashDot',
-			color: '#f75000',
-			connectNulls: true,
-			yAxis: 2,
-			lineWidth: 3,
-			zIndex: 3,
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '投信5日⇨',
-			data: _W_SI_SC_5d,
-			// type: 'area',
-			color: '#F0AD31',
-			yAxis: 3,
-			// zIndex: 1,
-			lineWidth: 0.7,
-			tooltip: {
-				valueSuffix: '張',
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '投信1月⇨',
-			data: _W_SI_SC_1m,
-			type: 'area',
-			yAxis: 3,
-			color: 'rgba(201,38,195,1)',
-			fillColor: 'rgba(201,38,195,0.2)',
-			lineWidth: 1.2,
-			tooltip: {
-				valueSuffix: '張'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '投信3月⇨',
-			data: _W_SI_SC_3m,
-			yAxis: 3,
-			color: '#796400',
-			dashStyle: 'Dot',
-			lineWidth: 1,
-			tooltip: {
-				valueSuffix: '張'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '投信1年⇨',
-			data: _W_SI_SC_1y,
-			dashStyle: 'ShortDot',
-			yAxis: 3,
-			color: '#00db00',
-			lineWidth: 1,
-			tooltip: {
-				valueSuffix: '張'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '投信3年⇨',
-			data: _W_SI_SC_3y,
-			dashStyle: 'DashDot',
-			yAxis: 3,
-			color: '#3d7878',
-			lineWidth: 1,
-			visible: false,
-			tooltip: {
-				valueSuffix: '張'
-			},
-			credits: {
-				enabled: false
-			}
-		}]
-		//#endregion
-	});
-	//#endregion
-}
-
 function mapChartM() {
 	//#region var ~
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
+		_leftYLabOffset = 170 - document.getElementById('contShare').clientWidth; //-460;
 	//#endregion
 	//#region chart~
-	_chart_M = Highcharts.stockChart('containerM', {
+	_chart_M = Highcharts.stockChart('contAvgRate', {
 		//#region head setting~
 		chart: {
 			backgroundColor: 'rgba(255,255,255,0)',
@@ -2282,227 +1620,13 @@ function mapChartM() {
 	}
 }
 
-function mapChartQ() {
-	Highcharts.dateFormats = {
-		Q: function (timestamp) {
-			var date = new Date(timestamp);
-			return 1 + Math.floor(date.getUTCMonth() / 3);
-		}
-	};
-	//#region var ~
-	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
-	//#endregion
-	//#region chart~
-	_chart_Q = Highcharts.stockChart('containerQ', {
-		//#region head setting~
-		chart: {
-			backgroundColor: 'rgba(255,255,255,0)',
-			spacingBottom: 1,
-			spacingTop: 1,
-			spacingLeft: 30,
-			spacingRight: 1,
-			animation: false,
-		},
-		credits: {
-			enabled: false
-		},
-		boost: {
-			useGPUTranslations: true,
-			allowForce: true,
-		},
-		rangeSelector: {
-			selected: 2,
-			verticalAlign: 'bottom',
-			margin: 0,
-			inputEnabled: false,
-			buttons: [{
-				type: 'year',
-				count: 2,
-				text: '2y'
-			}, {
-				type: 'year',
-				count: 5,
-				text: '5y'
-			}, {
-				type: 'all',
-				text: 'All'
-			}]
-		},
-		plotOptions: {
-			area: {
-				stacking: 'normal',
-				animation: false,
-			},
-			candlestick: {
-				color: 'green',
-				upColor: 'red',
-				animation: false,
-			},
-			series: {
-				animation: false,
-				dataGrouping: {
-					forced: true,
-					units: [[
-						'month',
-						[3, 6, 9]
-					], [
-						'year',
-						[1]
-					]]
-				}
-			}
-		},
-		legend: {
-			title: {
-				text: '<span class="spanRange">季</span>',
-			},
-			enabled: true,
-			align: 'right',
-			verticalAlign: 'top',
-			layout: 'vertical',
-			symbolPadding: 1,
-			margin: 0,
-			x: 0,
-			y: 5,
-			width: 80
-		},
-		navigator: {
-			height: 20,
-			margin: 0
-		},
-		tooltip: {
-			animation: false,
-			split: false,
-			padding: 1,
-			valueDecimals: 2,
-			hideDelay: 0,
-			shared: true,
-			outside: true,
-			crosshairs: [true, false],
-			xDateFormat: "'%y Q%Q",
-			positioner: function (boxWidth, boxHeight, point) {
-				return { x: 490, y: 940 };
-			}
-		},
-		//#endregion
-		xAxis: {
-			type: 'datetime',
-			labels: {
-				format: '{value:\'%y Q%Q}',
-				x: 10
-			}
-		},
-		//#region yAxis~		
-		yAxis: [{
-			title: {
-				text: '比率',
-			},
-			offset: 0,
-			height: '100%',
-			startOnTick: false,
-		}, {
-			labels: {
-				align: 'left',
-			},
-			title: {
-				text: '佔股本比',
-				x: _leftYLabTitlePos + 10,
-				y: 0
-			},
-			offset: _leftYLabOffset,
-			margin: 0,
-			height: '100%',
-			startOnTick: false,
-		}],
-		//#endregion
-
-		//#region series~
-		series: [{
-			name: '速動比',
-			data: _Q_fastRatio,
-			color: '#c2ff68',
-			yAxis: 0,
-			tooltip: {
-				valueSuffix: '%',
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '流動比',
-			data: _Q_currentRatio,
-			color: '#ff9797',
-			yAxis: 0,
-			zIndex: 1,
-			tooltip: {
-				valueSuffix: '%',
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '負債對淨值比',
-			data: _Q_debtNetRatio,
-			type: 'area',
-			yAxis: 0,
-			color: 'rgba(93,160,227,1)',
-			fillColor: 'rgba(93,160,227,0.2)',
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '股東權益總額',
-			data: _Q_shareholderEqtyRatio,
-			yAxis: 0,
-			color: '#796400',
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '負債總額',
-			data: _Q_totalLiabRatio,
-			dashStyle: 'ShortDot',
-			yAxis: 0,
-			color: '#00db00',
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '⇦合約負債',
-			data: _Q_ContractLiability,
-			dashStyle: 'Dash',
-			// type: 'area',
-			yAxis: 1,
-			color: '#0000ff',
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}]
-		//#endregion
-	});
-	//#endregion
-}
-
 function mapChartY() {
 	//#region var ~
 	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
+		_leftYLabOffset = 170 - document.getElementById('contShare').clientWidth; //-460;
 	//#endregion
 	//#region chart~
-	_chart_Y = Highcharts.stockChart('containerY', {
+	_chart_Y = Highcharts.stockChart('contSumRate', {
 		//#region head setting~
 		chart: {
 			backgroundColor: 'rgba(255,255,255,0)',
@@ -3012,284 +2136,6 @@ function mapChartY() {
 	//#endregion
 }
 
-function mapChartY2() {
-	//#region var ~
-	var _leftYLabTitlePos = -55,
-		_leftYLabOffset = 170 - document.getElementById('containerD').clientWidth; //-460;
-	//#endregion
-	//#region chart~
-	_chart_Y2 = Highcharts.stockChart('containerY2', {
-		//#region head setting~
-		chart: {
-			backgroundColor: 'rgba(255,255,255,0)',
-			spacingBottom: 1,
-			spacingTop: 1,
-			spacingLeft: 30,
-			spacingRight: 1,
-			animation: false,
-		},
-		credits: {
-			enabled: false
-		},
-		boost: {
-			useGPUTranslations: true,
-			allowForce: true,
-		},
-		rangeSelector: {
-			selected: 3,
-			verticalAlign: 'bottom',
-			margin: 0,
-			inputEnabled: false,
-			buttons: [{
-				type: 'year',
-				count: 3,
-				text: '3y'
-			}, {
-				type: 'year',
-				count: 5,
-				text: '5y'
-			}, {
-				type: 'year',
-				count: 10,
-				text: '10y'
-			}, {
-				type: 'year',
-				count: 20,
-				text: '20y'
-			}, {
-				type: 'all',
-				text: 'All'
-			}]
-		},
-		plotOptions: {
-			area: {
-				stacking: 'normal',
-				animation: false
-			},
-			candlestick: {
-				color: 'green',
-				upColor: 'red',
-				lineColor: '#009100',
-				upLineColor: '#ae0000',
-				animation: false
-			},
-			series: {
-				animation: false
-			}
-		},
-		legend: {
-			title: {
-				text: '<span class="spanRange">年</span>',
-			},
-			enabled: true,
-			align: 'right',
-			verticalAlign: 'top',
-			layout: 'vertical',
-			symbolPadding: 1,
-			margin: 0,
-			x: 0,
-			y: 10,
-			width: 80
-		},
-		navigator: {
-			height: 20,
-			margin: 0
-		},
-		tooltip: {
-			animation: false,
-			split: false,
-			padding: 1,
-			valueDecimals: 2,
-			hideDelay: 0,
-			shared: true,
-			outside: true,
-			useHTML: true,
-			xDateFormat: "%Y",
-			positioner: function (boxWidth, boxHeight, point) {
-				return { x: 490, y: 350 };
-			}
-		},
-		//#endregion
-		xAxis: {
-			type: 'datetime',
-			labels: {
-				format: '{value:%Y}',
-				x: 35,
-			}
-		},
-		//#region yAxis~		
-		yAxis: [{
-			labels: {
-				align: 'left',
-			},
-			title: {
-				text: '盈餘分配率',
-				x: _leftYLabTitlePos + 10,
-				y: 0
-			},
-			height: '30%',
-			offset: _leftYLabOffset,
-			margin: 0,
-			startOnTick: false,
-			plotLines: [{
-				value: 50,
-				color: 'green',
-				dashStyle: 'dash',
-				width: 1.2,
-			}, {
-				value: 100,
-				color: 'red',
-				dashStyle: 'dash',
-				width: 1.2,
-			}]
-		}, {
-			title: {
-				text: '佔股利比',
-			},
-			height: '30%',
-			offset: 0,
-			startOnTick: false,
-			opposite: true
-		}, {
-			labels: {
-				align: 'left',
-			},
-			title: {
-				text: '股價',
-				x: _leftYLabTitlePos,
-				y: 0
-			},
-			top: '25%',
-			height: '75%',
-			offset: _leftYLabOffset,
-			margin: 0,
-			startOnTick: false,
-		}, {
-			title: {
-				text: '殖利率'
-			},
-			top: '25%',
-			height: '75%',
-			offset: 0,
-			opposite: true
-		}],
-		//#endregion
-
-		//#region series~
-		series: [{
-			name: '⇦盈餘分配率',
-			data: _Y_distributionRate,
-			color: 'blue',
-			//dashStyle: 'Dash',
-			lineWidth: 1.5,
-			connectNulls: true,
-			yAxis: 0,
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '董酬佔股利比',
-			data: _Y_dirRewardRate,
-			yAxis: 1,
-			visible: false,
-			color: '#ffd2d2',
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '董酬佔淨利比',
-			data: _Y_dirNetRate,
-			yAxis: 1,
-			color: '#ae8f00',
-			visible: false,
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '員工紅利佔股利比',
-			data: _Y_empRewardRate,
-			yAxis: 1,
-			color: '#02c874',
-			visible: false,
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '⇦收盤價',
-			data: _Y_endPrice,
-			type: 'candlestick',
-			yAxis: 2,
-			tooltip: {
-				valueSuffix: '元'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '⇦平均價',
-			data: _Y_avgPrice,
-			color: '#499BEE',
-			connectNulls: true,
-			yAxis: 2,
-			tooltip: {
-				valueSuffix: '元'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '股票殖利率⇨',
-			type: 'area',
-			data: _Y_stockDividendRate,
-			yAxis: 3,
-			color: 'rgba(220,181,255,1)',
-			fillColor: 'rgba(220,181,255,0.3)',
-			zIndex: -1,
-			marker: {
-				enabled: true,
-				radius: 5
-			},
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}, {
-			name: '現金殖利率⇨',
-			type: 'area',
-			data: _Y_cashDividendRate,
-			yAxis: 3,
-			color: 'rgba(255,237,151,1)',
-			fillColor: 'rgba(255,237,151,0.2)',
-			zIndex: -1,
-			marker: {
-				enabled: true,
-				radius: 5
-			},
-			tooltip: {
-				valueSuffix: '%'
-			},
-			credits: {
-				enabled: false
-			}
-		}]
-		//#endregion
-	});
-	//#endregion
-}
 //#endregion
 
 //#region clear array data...
@@ -3386,35 +2232,7 @@ function clearArrayNDestroyChartY() {
 	_Y_inr = [];
 	_Y_OHLC_wQ = [];
 }
-function clearArrayNDestroyChartQ() {
-	_Q_range = [];
-	_Q_totalLiabRatio = [];
-	_Q_shareholderEqtyRatio = [];
-	_Q_debtNetRatio = [];
-	_Q_currentRatio = [];
-	_Q_fastRatio = [];
-	_Q_ContractLiability = [];
-}
-function clearArrayNDestroyChartW() {
-	_W_range = [];
-	_W_shareholderGT1000 = [];
-	_W_FI_SC_5d = [];
-	_W_FI_SC_1m = [];
-	_W_FI_SC_3m = [];
-	_W_FI_SC_1y = [];
-	_W_FI_SC_3y = [];
-	_W_TI_SC_5d = [];
-	_W_TI_SC_1m = [];
-	_W_TI_SC_3m = [];
-	_W_TI_SC_1y = [];
-	_W_TI_SC_3y = [];
-	_W_SI_SC_5d = [];
-	_W_SI_SC_1m = [];
-	_W_SI_SC_3m = [];
-	_W_SI_SC_1y = [];
-	_W_SI_SC_3y = [];
-	_W_F_Own_ratio = [];
-}
+
 //#endregion
 
 //#endregion
