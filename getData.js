@@ -292,10 +292,10 @@ stSelElm.addEventListener('keydown', function (e) {
 t1.addEventListener('keydown', function (e) {
     var keynum;
     keynum = e.key;
-    if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(keynum)) {
-        stSelElm.focus();
-        return;
-    }
+    // if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(keynum)) {
+    //     stSelElm.focus();
+    //     return;
+    // }
     if (keynum === "Enter") {
         var _v = t1.value.toUpperCase();
         t1.value = "";
