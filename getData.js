@@ -288,7 +288,7 @@ stSelElm.addEventListener('keydown', function (e) {
         return;
     }
     if (((e.key >= "0" && e.key <= "9") || (e.key >= "A" && e.key <= "Z"))) {
-        t1.value = e.key;
+        // t1.value = e.key;
         t1.focus();
         return;
     }
