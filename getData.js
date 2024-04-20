@@ -302,6 +302,9 @@ t1.addEventListener('keydown', function (e) {
     if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(keynum)) {
 		t1.value = "";
 		stSelElm.focus();
+		if (["ArrowUp", "ArrowDown"].includes(keynum)) {
+			e.preventDefault();
+		}
         return;
     }
     if (keynum === "Enter") {
