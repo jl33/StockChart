@@ -277,6 +277,12 @@ function showStockFont(_b) {
 stSelElm.addEventListener('keydown', function (e) {
     var keynum;
     keynum = e.key;
+	console.log("stSelElm > ",e.key);	
+    if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(keynum)) {
+		t1.value = "";
+        stSelElm.focus();
+        return;
+    }	
     if (keynum === "Escape") {
         t1.focus();
         return;
@@ -292,10 +298,12 @@ stSelElm.addEventListener('keydown', function (e) {
 t1.addEventListener('keydown', function (e) {
     var keynum;
     keynum = e.key;
-    // if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(keynum)) {
-    //     stSelElm.focus();
-    //     return;
-    // }
+	console.log("t1 > ",e.key);
+    if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(keynum)) {
+		t1.value = "";
+		stSelElm.focus();
+        return;
+    }
     if (keynum === "Enter") {
         var _v = t1.value.toUpperCase();
         t1.value = "";
