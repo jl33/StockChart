@@ -51,80 +51,79 @@ function noerror() {
 
 //#endregion
   
-
-var getfile = function (n) {
-	if ('files' in dbFileElm) {
-		for (var i = 0; i < dbFileElm.files.length; i++) {
-			var file = dbFileElm.files[i];
-			if ('name' in file) {
-				if (file.name === n) {
-					return file;
+dbFileElm.onchange = function () {
+	var getfile = function (n) {
+		if ('files' in dbFileElm) {
+			for (var i = 0; i < dbFileElm.files.length; i++) {
+				var file = dbFileElm.files[i];
+				if ('name' in file) {
+					if (file.name === n) {
+						return file;
+					}
 				}
-			}
-			else {
-				if (file.fileName === n) {
-					return file;
+				else {
+					if (file.fileName === n) {
+						return file;
+					}
 				}
 			}
 		}
 	}
-}
-var fdy = getfile("etf.db");
-var rStock = new FileReader();
-var r = new FileReader();
+	var fdy = getfile("etf.db");
+	var rStock = new FileReader();
+	var r = new FileReader();
 
 
-//TODO: 待整理3個統計的SQL語法, SQLite無法用pivot
-//#region query daily data--------------------------------
-rStock.onload = function () {
-	workerStock.onmessage = function () {
-		noerror();
-		var _sd = "";
+	//TODO: 待整理3個統計的SQL語法, SQLite無法用pivot
+	//#region query daily data--------------------------------
+	rStock.onload = function () {
+		workerStock.onmessage = function () {
+			noerror();
+			var _sd = "";
 
-		_sd = "SELECT stockNum From hisStock Group By stockNum Order By stockNum;";
-		getStock(workerStock, _sd);
-		console.log(_stockList);
-	};
-	try {
-		workerStock.postMessage({ action: 'open', buffer: rStock.result }, [rStock.result]);
-	}
-	catch (exception) {
-		workerStock.postMessage({ action: 'open', buffer: rStock.result });
-	}
-}
-//#endregion
-//#region query daily data--------------------------------
-r.onload = function () {
-	worker.onmessage = function () {
-		noerror();
-		if (_chart_M) { _chart_M.showLoading(); }
-
-		//TODO: for loop-------
-		var _sd = "";
-		for (var s=0; s<_stockList.length; s++){
-			_sd = "SELECT date,pcentAvg FROM hisStock WHERE stockNum='"+_stockList[s]+"' Order By date;";
-			getAvgData(worker, _sd, _stockList[s]);
+			_sd = "SELECT stockNum From hisStock Group By stockNum Order By stockNum;";
+			getStock(workerStock, _sd);
+		};
+		try {
+			workerStock.postMessage({ action: 'open', buffer: rStock.result }, [rStock.result]);
 		}
-		//TODO: set chart data ------------		
-		mapChartAvg();
-		clearArrayNDestroyChartM();
-		_chart_M.hideLoading();		
-	};
-	try {
-		worker.postMessage({ action: 'open', buffer: r.result }, [r.result]);
+		catch (exception) {
+			workerStock.postMessage({ action: 'open', buffer: rStock.result });
+		}
 	}
-	catch (exception) {
-		worker.postMessage({ action: 'open', buffer: r.result });
+	//#endregion
+	//#region query daily data--------------------------------
+	r.onload = function () {
+		worker.onmessage = function () {
+			noerror();
+			if (_chart_M) { _chart_M.showLoading(); }
+
+			//TODO: for loop-------
+			var _sd = "";
+			for (var s=0; s<_stockList.length; s++){
+				_sd = "SELECT date,pcentAvg FROM hisStock WHERE stockNum='"+_stockList[s]+"' Order By date;";
+				getAvgData(worker, _sd, _stockList[s]);
+			}
+			//TODO: set chart data ------------		
+			mapChartAvg();
+			clearArrayNDestroyChartM();
+			_chart_M.hideLoading();		
+		};
+		try {
+			worker.postMessage({ action: 'open', buffer: r.result }, [r.result]);
+		}
+		catch (exception) {
+			worker.postMessage({ action: 'open', buffer: r.result });
+		}
 	}
+	//#endregion
+
+
+
+	rStock.readAsArrayBuffer(fdy);
+	r.readAsArrayBuffer(fdy);
+
 }
-//#endregion
-
-
-
-rStock.readAsArrayBuffer(fdy);
-r.readAsArrayBuffer(fdy);
-
-
 //#region Set array data...
 
 //TODO: 待整理3個chart的資料對應
