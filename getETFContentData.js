@@ -102,7 +102,7 @@ dbFileElm.onchange = function () {
 			var _sd = "";
 			for (var s=0; s<_stockList.length; s++){
 				_sd = "SELECT date,pcentAvg FROM hisStock WHERE stockNum='"+_stockList[s]+"' Order By date;";
-				getAvgData(worker, _sd, _stockList[s]);
+				getAvgData(worker, _sd, _stockList[s], s);
 			}
 			//TODO: set chart data ------------		
 			mapChartAvg();
@@ -142,7 +142,7 @@ function getStock(w, sqlstm) {
 	w.postMessage({ id: 1, action: 'exec', sql: s });
 }
 
-function getAvgData(w, sqlstm, stock) {
+function getAvgData(w, sqlstm, stock, idx) {
 	var s = sqlstm, newDate;
 	w.onmessage = function (event) {
 		var results = event.data.results;
@@ -150,7 +150,7 @@ function getAvgData(w, sqlstm, stock) {
 			stockMObj = results[i].values;
 			stockMObj.forEach(function (item) {
 				newDate = new Date(item[0]).getTime();
-				_stockAvgVal[stock].push([newDate, item[1]]);
+				_stockAvgVal[idx].push([newDate,item[1]]);
 			});
 		}
 	}
