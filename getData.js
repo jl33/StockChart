@@ -274,39 +274,40 @@ function showStockFont(_b) {
 		document.getElementById('stockType').classList.add('transparentFont');
 	}
 }
-stSelElm.onkeypress = function (e) {
-	var keynum;
-	keynum = e.which || e.keyCode;
-	if (keynum == 27) {
-		t1.focus();
-		return;
-	}
-	if (((keynum >= 48 && keynum <= 57) || (keynum >= 65 && keynum <= 90) || (keynum >= 96 && keynum <= 105))) {
-		t1.value = String.fromCharCode(keynum);
-		t1.focus();
-		return;
-	}
-}
+stSelElm.addEventListener('keydown', function (e) {
+    var keynum;
+    keynum = e.key;
+    if (keynum === "Escape") {
+        t1.focus();
+        return;
+    }
+    if (((e.key >= "0" && e.key <= "9") || (e.key >= "A" && e.key <= "Z"))) {
+        t1.value = e.key;
+        t1.focus();
+        return;
+    }
+});
+  
 //#region t1=key-in stock textbox-------
-t1.onkeypress = function (e) {
-	var keynum;
-	keynum = e.which || e.keyCode;
-	if (keynum >= 37 && keynum <= 40) {
-		stSelElm.focus();
-		return;
-	}
-	if (keynum == 13) {
-		var _v = t1.value.toUpperCase();
-		t1.value = "";
-		stSelElm.addEventListener('change', function () { });
-		stSelElm.value = _v;
-		stSelElm.dispatchEvent(new Event('change'));
-		return;
-	}
-	if (!((keynum >= 48 && keynum <= 57) || (keynum >= 65 && keynum <= 90) || (keynum >= 96 && keynum <= 105))) {
-		return;
-	}
-}
+t1.addEventListener('keydown', function (e) {
+    var keynum;
+    keynum = e.key;
+    if (["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(keynum)) {
+        stSelElm.focus();
+        return;
+    }
+    if (keynum === "Enter") {
+        var _v = t1.value.toUpperCase();
+        t1.value = "";
+        stSelElm.addEventListener('change', function () { });
+        stSelElm.value = _v;
+        stSelElm.dispatchEvent(new Event('change'));
+        return;
+    }
+    if (!((keynum >= "0" && keynum <= "9") || (keynum >= "A" && keynum <= "Z"))) {
+        return;
+    }
+});
 t1.onfocus = stSelElm.onfocus = function () {
 	var f = this;
 	f.style.backgroundColor = 'rgba(255,0,0,0.3)';

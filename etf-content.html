@@ -77,8 +77,8 @@
         }
 
         .chartHBig {
-            min-height: 640px;
-            max-height: 640px;
+            min-height: 500px;
+            max-height: 500px;
             width: 99%;
         }
 
@@ -234,41 +234,25 @@
     <!-- DB選檔 -->
     <div class="transparentBackcolor fontColor" style="z-index:99;position:fixed;bottom: 5px; right: 30px;">
         <label id="load">Load an SQLite database file(Alt+F1):
-            <input id="dbfile" type="file" multiple="multiple" accept=".db" />
+            <input id="dbfile" type="file" accept=".db" />
         </label>
-        <div id="divStock">
-            <p class="tooltip" style="margin-top:0px;margin-bottom:0px;">
-                <span id="popDesc" class="tooltiptext"></span>股票代碼(Alt+F2)
-            </p>
-            <input type="text" id="t1" maxlength="6"
-                style="text-align: right; width:50px;border-color: rgba(0,0,0,0.1);background-color: rgba(255,255,255,0);">
-            <select id="stockSel" class="transparentBackcolor">
-            </select>
-        </div>
         <div id="error" class="error"></div>
-    </div>
-    <div style="z-index:-1;position:fixed;top: 1%;left: 50%;transform: translate(-50%, -20%);text-align: center;">
-        <h1 id="stockName" class="transparentFont" style="font-size:2em;"></h1>
-        <h2 id="stockType" class="transparentFont" style="font-size:1em;"></h2>
     </div>
     <!-- Chart圖區域 -->
     <table style="width: 100%;border-width: 0px;margin-left: 0px;margin-right: 0px;margin-top: 0px;margin-bottom: 0px;">
         <tr style="margin-left: 0px;margin-right: 0px;">
             <td class="tdStyle">
-                <div id="containerD" class="chartStyle chartHBig"></div>
-                <div id="containerY" class="chartStyle chartBig"></div>
-            </td>
-            <td class="tdStyle">
-                <div id="containerM" class="chartStyle chartSmall"></div>
-                <div id="containerY2" class="chartStyle chartMini"></div>
-                <div id="containerW" class="chartStyle chartSmall"></div>
-                <div id="containerQ" class="chartStyle chartTiny"></div>
-            </td>
+                <div id="contAvgRate" class="chartStyle chartHBig"></div>
+            </td>            
+            <!-- <td class="tdStyle">
+                <div id="contShare" class="chartStyle chartHBig"></div>
+                <div id="contSumRate" class="chartStyle chartHBig"></div>
+            </td> -->
         </tr>
     </table>
 
     <!-- 邏輯計算處理 -->
-    <script type="text/javascript" src="getData.js"></script>
+    <script type="text/javascript" src="getETFContentData.js"></script>
 
 </body>
 
